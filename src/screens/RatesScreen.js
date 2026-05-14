@@ -126,8 +126,8 @@ export default function RatesScreen() {
                     {items.map((item) => (
                       <View key={item.id} style={styles.field}>
                         <View style={styles.fieldLabelRow}>
-                          <Text style={styles.fieldLabel}>{item.label}</Text>
-                          <Text style={styles.fieldUnit}>{item.unit}</Text>
+                          <Text style={styles.fieldLabel}>{t('item.' + item.id)}</Text>
+                          <Text style={styles.fieldUnit}>{t('unit.' + item.unit)}</Text>
                         </View>
                         <View style={styles.inputWrap}>
                           <TextInput

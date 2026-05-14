@@ -34,9 +34,7 @@
       }
     },
     "owner": "stavco",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "exposdk:54.0.0",
     "updates": {
       "url": "https://u.expo.dev/15edb612-8df0-4a48-bb50-c85e64e00d39"
     }

@@ -118,10 +118,11 @@ export default function QuoteBuilderScreen({ navigation }) {
     const s = search.trim().toLowerCase();
     return CATALOG.filter((i) => {
       const hasRate = (rates[i.id] || 0) > 0;
-      const matches = !s || i.label.toLowerCase().includes(s);
+      const itemLabel = t('item.' + i.id);
+      const matches = !s || itemLabel.toLowerCase().includes(s) || i.label.toLowerCase().includes(s);
       return hasRate && matches;
     });
-  }, [rates, search]);
+  }, [rates, search, t]);
 
   const resetForm = () => {
     setQuantities({});
@@ -296,9 +297,9 @@ export default function QuoteBuilderScreen({ navigation }) {
                         <MaterialIcons name={item.icon} size={22} color={selected ? '#fff' : colors.primaryBright} />
                       </View>
                       <View style={{ flex: 1, marginHorizontal: 12 }}>
-                        <Text style={styles.itemLabel}>{item.label}</Text>
+                        <Text style={styles.itemLabel}>{t('item.' + item.id)}</Text>
                         <Text style={styles.itemPrice}>
-                          {formatILS(price)} / {item.unit}
+                          {formatILS(price)} / {t('unit.' + item.unit)}
                           {lineTotal > 0 ? ` · ${t('home.total')} ${formatILS(lineTotal)}` : ''}
                         </Text>
                       </View>
