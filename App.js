@@ -1,20 +1,122 @@
+import React from 'react';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { MaterialIcons } from '@expo/vector-icons';
+import {
+  useFonts,
+  Heebo_400Regular,
+  Heebo_500Medium,
+  Heebo_700Bold,
+  Heebo_800ExtraBold,
+} from '@expo-google-fonts/heebo';
+
+import HomeScreen from './src/screens/HomeScreen';
+import QuoteBuilderScreen from './src/screens/QuoteBuilderScreen';
+import RatesScreen from './src/screens/RatesScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
+import AuthScreen from './src/screens/AuthScreen';
+import { colors } from './src/theme/colors';
+import { AuthProvider, useAuth } from './src/contexts/AuthContext';
+import { LanguageProvider, useLanguage } from './src/contexts/LanguageContext';
+
+const Tab = createBottomTabNavigator();
+
+const navTheme = {
+  ...DefaultTheme,
+  dark: true,
+  colors: {
+    ...DefaultTheme.colors,
+    background: colors.bg,
+    primary: colors.primarySeed,
+    card: colors.bgSoft,
+    text: colors.text,
+    border: colors.dividerDark,
+  },
+};
+
+function MainTabs() {
+  const { t } = useLanguage();
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarActiveTintColor: colors.primaryBright,
+        tabBarInactiveTintColor: colors.textMuted,
+        tabBarStyle: {
+          backgroundColor: colors.bgSoft,
+          borderTopColor: colors.dividerDark,
+          height: 64, paddingBottom: 8, paddingTop: 6,
+        },
+        tabBarLabelStyle: { fontSize: 12, fontWeight: '700' },
+        tabBarIcon: ({ color, size }) => {
+          const name =
+            route.name === 'Home' ? 'home' :
+            route.name === 'Quote' ? 'add-circle' :
+            route.name === 'Rates' ? 'tune' :
+            'settings';
+          return <MaterialIcons name={name} size={size} color={color} />;
+        },
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: t('tabs.home') }} />
+      <Tab.Screen name="Quote" component={QuoteBuilderScreen} options={{ tabBarLabel: t('tabs.quote') }} />
+      <Tab.Screen name="Rates" component={RatesScreen} options={{ tabBarLabel: t('tabs.rates') }} />
+      <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarLabel: t('tabs.settings') }} />
+    </Tab.Navigator>
+  );
+}
+
+function AppGate() {
+  const { user, loading } = useAuth();
+  const { ready: langReady } = useLanguage();
+  if (loading || !langReady) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color={colors.primarySeed} />
+      </View>
+    );
+  }
+  return user ? <MainTabs /> : <AuthScreen />;
+}
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Heebo_400Regular,
+    Heebo_500Medium,
+    Heebo_700Bold,
+    Heebo_800ExtraBold,
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color={colors.primarySeed} />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <StatusBar style="light" />
+      <LanguageProvider>
+        <AuthProvider>
+          <NavigationContainer theme={navTheme}>
+            <AppGate />
+          </NavigationContainer>
+        </AuthProvider>
+      </LanguageProvider>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  loader: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.bg,
   },
 });
