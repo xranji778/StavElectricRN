@@ -10,6 +10,9 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  Modal,
+  Alert,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -17,11 +20,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { colors } from '../theme/colors';
-import { loadRates, saveRates } from '../data/storage';
-import { CATEGORIES, itemsByCategory } from '../data/catalog';
+import { getProfessionTheme } from '../theme/professionThemes';
+import { loadRates, saveRates, loadCustomItems, saveCustomItem, deleteCustomItem } from '../data/storage';
+import { categoriesForProfession, itemsByCategory } from '../data/catalog';
+import { PROFESSIONS } from '../data/auth';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import ScreenHeader from '../components/ScreenHeader';
+import ProfessionSwitcher from '../components/ProfessionSwitcher';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -30,16 +36,23 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 export default function RatesScreen() {
   const { user } = useAuth();
   const { t } = useLanguage();
+  const theme = getProfessionTheme(user?.activeProfession);
   const [rates, setRates] = useState({});
+  const [customItems, setCustomItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState({});
+  const [expandedFamilies, setExpandedFamilies] = useState({});
   const [savedToast, setSavedToast] = useState(false);
+  const [customModalOpen, setCustomModalOpen] = useState(false);
+  const [customModalCategory, setCustomModalCategory] = useState(null);
+  const [customForm, setCustomForm] = useState({ label: '', unit: 'piece', price: '' });
 
   useFocusEffect(useCallback(() => {
     if (!user) return;
     (async () => {
-      const r = await loadRates(user.id);
+      const [r, ci] = await Promise.all([loadRates(user.id), loadCustomItems(user.id)]);
       setRates(r);
+      setCustomItems(ci);
       setLoading(false);
     })();
   }, [user]));
@@ -47,6 +60,11 @@ export default function RatesScreen() {
   const toggleSection = (id) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleFamily = (familyId) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedFamilies((prev) => ({ ...prev, [familyId]: !prev[familyId] }));
   };
 
   const update = (itemId, v) => {
@@ -61,14 +79,91 @@ export default function RatesScreen() {
     setTimeout(() => setSavedToast(false), 2200);
   };
 
-  const filledByCategory = useMemo(() => {
+  const activeProfession = user?.activeProfession;
+
+  const openCustomModal = (categoryId) => {
+    setCustomModalCategory(categoryId);
+    setCustomForm({ label: '', unit: 'piece', price: '' });
+    setCustomModalOpen(true);
+  };
+
+  const closeCustomModal = () => {
+    setCustomModalOpen(false);
+    setCustomModalCategory(null);
+  };
+
+  const submitCustomItem = async () => {
+    const label = customForm.label.trim();
+    if (!label) {
+      Alert.alert(t('rates.customNameRequired'));
+      return;
+    }
+    const price = Number(String(customForm.price).replace(/[^\d.]/g, '')) || 0;
+    const item = {
+      label,
+      unit: customForm.unit,
+      category: customModalCategory,
+      profession: activeProfession || null,
+    };
+    const next = await saveCustomItem(user.id, item);
+    setCustomItems(next);
+    const newest = next.find((i) => i.label === label && i.category === customModalCategory);
+    if (newest && price > 0) {
+      const nextRates = { ...rates, [newest.id]: price };
+      setRates(nextRates);
+      await saveRates(user.id, nextRates);
+    }
+    closeCustomModal();
+  };
+
+  const onDeleteCustom = (item) => {
+    Alert.alert(
+      t('rates.customDeleteConfirm'),
+      t('rates.customDeleteMessage'),
+      [
+        { text: t('rates.customCancel'), style: 'cancel' },
+        {
+          text: t('common.delete') || 'מחק',
+          style: 'destructive',
+          onPress: async () => {
+            const next = await deleteCustomItem(user.id, item.id);
+            setCustomItems(next);
+            const nextRates = { ...rates };
+            delete nextRates[item.id];
+            setRates(nextRates);
+            await saveRates(user.id, nextRates);
+          },
+        },
+      ],
+    );
+  };
+
+  const customByCategory = useMemo(() => {
     const out = {};
-    for (const cat of CATEGORIES) {
-      const items = itemsByCategory(cat.id);
-      out[cat.id] = items.filter((i) => Number(rates[i.id] || 0) > 0).length;
+    for (const ci of customItems) {
+      if (ci.profession && activeProfession && ci.profession !== activeProfession) continue;
+      if (!out[ci.category]) out[ci.category] = [];
+      out[ci.category].push(ci);
     }
     return out;
-  }, [rates]);
+  }, [customItems, activeProfession]);
+
+  const visibleCategories = useMemo(
+    () => categoriesForProfession(activeProfession),
+    [activeProfession],
+  );
+
+  const filledByCategory = useMemo(() => {
+    const out = {};
+    for (const cat of visibleCategories) {
+      const items = itemsByCategory(cat.id);
+      const customs = customByCategory[cat.id] || [];
+      const filledBuiltin = items.filter((i) => Number(rates[i.id] || 0) > 0).length;
+      const filledCustom = customs.filter((i) => Number(rates[i.id] || 0) > 0).length;
+      out[cat.id] = filledBuiltin + filledCustom;
+    }
+    return out;
+  }, [rates, visibleCategories, customByCategory]);
 
   if (loading) {
     return (
@@ -81,13 +176,13 @@ export default function RatesScreen() {
   return (
     <View style={styles.flex}>
       <LinearGradient
-        colors={['#070B1C', '#0B1326', '#070B1C']}
+        colors={colors.bgGradient}
         start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFillObject}
       />
-      <MaterialIcons name="electric-bolt" size={220} color={colors.primaryBright} style={styles.bgBoltTop} />
-      <MaterialIcons name="flash-on" size={160} color={colors.voltageYellow} style={styles.bgBoltBottom} />
+      <MaterialIcons name={theme.bgIconPrimary} size={180} color="#fff" style={styles.bgBoltTop} />
+      <MaterialIcons name={theme.bgIconSecondary} size={135} color="#fff" style={styles.bgBoltBottom} />
 
       <SafeAreaView style={styles.flex} edges={['top']}>
         <ScrollView contentContainerStyle={styles.container}>
@@ -97,8 +192,12 @@ export default function RatesScreen() {
             subtitle={t('rates.subtitle')}
           />
 
-          {CATEGORIES.map((cat) => {
+          <ProfessionSwitcher />
+
+          {visibleCategories.map((cat) => {
             const items = itemsByCategory(cat.id);
+            const customs = customByCategory[cat.id] || [];
+            const totalCount = items.length + customs.length;
             const filled = filledByCategory[cat.id];
             const open = expanded[cat.id];
 
@@ -111,7 +210,7 @@ export default function RatesScreen() {
                   <Text style={styles.sectionTitle}>{t('cat.' + cat.id)}</Text>
                   {filled > 0 && (
                     <View style={styles.badge}>
-                      <Text style={styles.badgeText}>{filled}/{items.length}</Text>
+                      <Text style={styles.badgeText}>{filled}/{totalCount}</Text>
                     </View>
                   )}
                   <MaterialIcons
@@ -123,25 +222,124 @@ export default function RatesScreen() {
 
                 {open && (
                   <View style={styles.sectionBody}>
-                    {items.map((item) => (
-                      <View key={item.id} style={styles.field}>
-                        <View style={styles.fieldLabelRow}>
-                          <Text style={styles.fieldLabel}>{t('item.' + item.id)}</Text>
-                          <Text style={styles.fieldUnit}>{t('unit.' + item.unit)}</Text>
-                        </View>
-                        <View style={styles.inputWrap}>
-                          <TextInput
-                            style={styles.input}
-                            keyboardType="numeric"
-                            value={rates[item.id] ? String(rates[item.id]) : ''}
-                            onChangeText={(v) => update(item.id, v)}
-                            placeholder="0"
-                            placeholderTextColor={colors.textFaint}
-                          />
-                          <Text style={styles.inputSuffix}>₪</Text>
-                        </View>
-                      </View>
-                    ))}
+                    {(() => {
+                      const rendered = [];
+                      const seenFamilies = new Set();
+                      for (const item of items) {
+                        if (item.family) {
+                          if (seenFamilies.has(item.family)) continue;
+                          seenFamilies.add(item.family);
+                          const familyItems = items.filter((i) => i.family === item.family);
+                          const famOpen = !!expandedFamilies[item.family];
+                          const famFilled = familyItems.filter((i) => Number(rates[i.id] || 0) > 0).length;
+                          rendered.push(
+                            <View key={'fam_' + item.family} style={[styles.familyGroup, famOpen && styles.familyGroupOpen]}>
+                              <Pressable style={styles.familyHead} onPress={() => toggleFamily(item.family)}>
+                                <Text style={styles.familyTitle}>{t('family.' + item.family)}</Text>
+                                {famFilled > 0 && (
+                                  <View style={styles.familyBadge}>
+                                    <Text style={styles.familyBadgeText}>{famFilled}/{familyItems.length}</Text>
+                                  </View>
+                                )}
+                                <MaterialIcons
+                                  name={famOpen ? 'expand-less' : 'expand-more'}
+                                  size={22}
+                                  color={colors.textMuted}
+                                />
+                              </Pressable>
+                              {famOpen && (
+                                <View style={styles.familyBody}>
+                                  {familyItems.map((sub) => (
+                                    <View key={sub.id} style={styles.field}>
+                                      <View style={styles.fieldLabelRow}>
+                                        <Text style={styles.fieldLabel}>{sub.size} mm</Text>
+                                        <Text style={styles.fieldUnit}>{t('unit.' + sub.unit)}</Text>
+                                      </View>
+                                      <View style={styles.inputWrap}>
+                                        <TextInput
+                                          style={styles.input}
+                                          keyboardType="numeric"
+                                          value={rates[sub.id] ? String(rates[sub.id]) : ''}
+                                          onChangeText={(v) => update(sub.id, v)}
+                                          placeholder="0"
+                                          placeholderTextColor={colors.textFaint}
+                                        />
+                                        <Text style={styles.inputSuffix}>₪</Text>
+                                      </View>
+                                    </View>
+                                  ))}
+                                </View>
+                              )}
+                            </View>,
+                          );
+                        } else {
+                          rendered.push(
+                            <View key={item.id} style={styles.field}>
+                              <View style={styles.fieldLabelRow}>
+                                <Text style={styles.fieldLabel}>{t('item.' + item.id)}</Text>
+                                <Text style={styles.fieldUnit}>{t('unit.' + item.unit)}</Text>
+                              </View>
+                              <View style={styles.inputWrap}>
+                                <TextInput
+                                  style={styles.input}
+                                  keyboardType="numeric"
+                                  value={rates[item.id] ? String(rates[item.id]) : ''}
+                                  onChangeText={(v) => update(item.id, v)}
+                                  placeholder="0"
+                                  placeholderTextColor={colors.textFaint}
+                                />
+                                <Text style={styles.inputSuffix}>₪</Text>
+                              </View>
+                            </View>,
+                          );
+                        }
+                      }
+
+                      for (const ci of customs) {
+                        rendered.push(
+                          <View key={ci.id} style={styles.field}>
+                            <View style={styles.fieldLabelRow}>
+                              <View style={styles.customLabelWrap}>
+                                <Text style={styles.fieldLabel} numberOfLines={2}>{ci.label}</Text>
+                                <View style={styles.customBadge}>
+                                  <Text style={styles.customBadgeText}>{t('rates.customBadge')}</Text>
+                                </View>
+                              </View>
+                              <Text style={styles.fieldUnit}>{t('unit.' + ci.unit)}</Text>
+                            </View>
+                            <View style={styles.customRow}>
+                              <View style={[styles.inputWrap, styles.customInputWrap]}>
+                                <TextInput
+                                  style={styles.input}
+                                  keyboardType="numeric"
+                                  value={rates[ci.id] ? String(rates[ci.id]) : ''}
+                                  onChangeText={(v) => update(ci.id, v)}
+                                  placeholder="0"
+                                  placeholderTextColor={colors.textFaint}
+                                />
+                                <Text style={styles.inputSuffix}>₪</Text>
+                              </View>
+                              <Pressable onPress={() => onDeleteCustom(ci)} style={styles.deleteBtn} hitSlop={8}>
+                                <MaterialIcons name="delete-outline" size={22} color={colors.accentAmber || '#E2A03F'} />
+                              </Pressable>
+                            </View>
+                          </View>,
+                        );
+                      }
+
+                      rendered.push(
+                        <Pressable
+                          key={'add_custom_' + cat.id}
+                          onPress={() => openCustomModal(cat.id)}
+                          style={styles.addCustomBtn}
+                        >
+                          <MaterialIcons name="add-circle-outline" size={20} color={colors.primaryBright} />
+                          <Text style={styles.addCustomText}>{t('rates.addCustom')}</Text>
+                        </Pressable>,
+                      );
+
+                      return rendered;
+                    })()}
                   </View>
                 )}
               </View>
@@ -168,6 +366,68 @@ export default function RatesScreen() {
           )}
         </ScrollView>
       </SafeAreaView>
+
+      <Modal visible={customModalOpen} transparent animationType="fade" onRequestClose={closeCustomModal}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <MaterialIcons name="add-circle-outline" size={22} color={colors.primaryBright} />
+              <Text style={styles.modalTitle}>{t('rates.customModalTitle')}</Text>
+            </View>
+            <Text style={styles.modalSubtitle}>{t('rates.customModalSubtitle')}</Text>
+
+            <Text style={styles.modalFieldLabel}>{t('rates.customNameLabel')}</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={customForm.label}
+              onChangeText={(v) => setCustomForm((prev) => ({ ...prev, label: v }))}
+              placeholder={t('rates.customNamePlaceholder')}
+              placeholderTextColor={colors.textFaint}
+            />
+
+            <Text style={styles.modalFieldLabel}>{t('rates.customUnitLabel')}</Text>
+            <View style={styles.unitRow}>
+              {[
+                { id: 'piece', label: t('unit.piece') },
+                { id: 'meter', label: t('unit.meter') },
+                { id: 'point', label: t('unit.point') },
+              ].map((u) => (
+                <Pressable
+                  key={u.id}
+                  onPress={() => setCustomForm((prev) => ({ ...prev, unit: u.id }))}
+                  style={[styles.unitChip, customForm.unit === u.id && styles.unitChipActive]}
+                >
+                  <Text style={[styles.unitChipText, customForm.unit === u.id && styles.unitChipTextActive]}>
+                    {u.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+
+            <Text style={styles.modalFieldLabel}>{t('rates.customPriceLabel')}</Text>
+            <View style={styles.inputWrap}>
+              <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                value={customForm.price}
+                onChangeText={(v) => setCustomForm((prev) => ({ ...prev, price: v }))}
+                placeholder="0"
+                placeholderTextColor={colors.textFaint}
+              />
+              <Text style={styles.inputSuffix}>₪</Text>
+            </View>
+
+            <View style={styles.modalActions}>
+              <Pressable onPress={closeCustomModal} style={[styles.modalBtn, styles.modalBtnGhost]}>
+                <Text style={styles.modalBtnGhostText}>{t('rates.customCancel')}</Text>
+              </Pressable>
+              <Pressable onPress={submitCustomItem} style={[styles.modalBtn, styles.modalBtnPrimary]}>
+                <Text style={styles.modalBtnPrimaryText}>{t('rates.customSave')}</Text>
+              </Pressable>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 }
@@ -177,8 +437,8 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg },
   container: { padding: 16, paddingBottom: 32 },
 
-  bgBoltTop: { position: 'absolute', top: -30, left: -40, opacity: 0.035, transform: [{ rotate: '-18deg' }] },
-  bgBoltBottom: { position: 'absolute', bottom: 60, right: -30, opacity: 0.04, transform: [{ rotate: '14deg' }] },
+  bgBoltTop: { position: 'absolute', top: -20, left: -20, opacity: 0.08, transform: [{ rotate: '-18deg' }] },
+  bgBoltBottom: { position: 'absolute', bottom: 60, right: -20, opacity: 0.08, transform: [{ rotate: '14deg' }] },
 
   section: {
     backgroundColor: colors.card,
@@ -210,6 +470,33 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bgSoft,
   },
 
+  familyGroup: {
+    marginTop: 12,
+    backgroundColor: colors.primaryBright + '0F',
+    borderRadius: 12,
+    borderWidth: 1, borderColor: colors.primaryBright + '22',
+    overflow: 'hidden',
+  },
+  familyGroupOpen: {
+    paddingBottom: 10,
+    borderColor: colors.primaryBright + '55',
+  },
+  familyHead: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    paddingHorizontal: 12, paddingVertical: 10,
+  },
+  familyTitle: {
+    color: colors.primaryBright, fontWeight: '800', fontSize: 13,
+    flex: 1,
+  },
+  familyBadge: {
+    backgroundColor: colors.primaryBright + '22',
+    borderRadius: 999, paddingHorizontal: 9, paddingVertical: 2,
+    borderWidth: 1, borderColor: colors.primaryBright + '55',
+  },
+  familyBadgeText: { color: colors.primaryBright, fontWeight: '800', fontSize: 11 },
+  familyBody: { paddingHorizontal: 12, paddingTop: 2 },
+
   field: { marginTop: 12 },
   fieldLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 },
   fieldLabel: { color: colors.text, fontSize: 13, fontWeight: '600', flex: 1 },
@@ -238,4 +525,71 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, marginTop: 14,
   },
   toastText: { color: colors.text, fontWeight: '700' },
+
+  customLabelWrap: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 },
+  customBadge: {
+    backgroundColor: colors.voltageYellow + '22',
+    borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2,
+    borderWidth: 1, borderColor: colors.voltageYellow + '55',
+  },
+  customBadgeText: { color: colors.voltageYellow, fontWeight: '800', fontSize: 10 },
+  customRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  customInputWrap: { flex: 1 },
+  deleteBtn: {
+    width: 40, height: 40, borderRadius: 10,
+    backgroundColor: colors.cardBorder + '55',
+    alignItems: 'center', justifyContent: 'center',
+  },
+
+  addCustomBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+    marginTop: 14, paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1, borderStyle: 'dashed', borderColor: colors.primaryBright + '88',
+    backgroundColor: colors.primaryBright + '0F',
+  },
+  addCustomText: { color: colors.primaryBright, fontWeight: '800', fontSize: 13 },
+
+  modalBackdrop: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.6)',
+    alignItems: 'center', justifyContent: 'center', padding: 18,
+  },
+  modalCard: {
+    width: '100%', maxWidth: 420, backgroundColor: colors.card,
+    borderRadius: 18, padding: 18,
+    borderWidth: 1, borderColor: colors.cardBorderActive,
+  },
+  modalHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
+  modalTitle: { color: colors.text, fontSize: 17, fontWeight: '800' },
+  modalSubtitle: { color: colors.textMuted, fontSize: 12, marginBottom: 14 },
+  modalFieldLabel: { color: colors.text, fontSize: 12, fontWeight: '700', marginBottom: 6, marginTop: 10 },
+  modalInput: {
+    borderWidth: 1, borderColor: colors.cardBorder, borderRadius: 12,
+    paddingHorizontal: 14, paddingVertical: 10,
+    backgroundColor: colors.cardElevated, color: colors.text,
+    fontSize: 15, textAlign: 'right',
+  },
+
+  unitRow: { flexDirection: 'row', gap: 8 },
+  unitChip: {
+    paddingHorizontal: 14, paddingVertical: 8,
+    borderRadius: 999, borderWidth: 1, borderColor: colors.cardBorder,
+    backgroundColor: colors.cardElevated,
+  },
+  unitChipActive: {
+    backgroundColor: colors.primaryBright + '22',
+    borderColor: colors.primaryBright,
+  },
+  unitChipText: { color: colors.textMuted, fontWeight: '700', fontSize: 13 },
+  unitChipTextActive: { color: colors.primaryBright },
+
+  modalActions: { flexDirection: 'row', gap: 10, marginTop: 18 },
+  modalBtn: {
+    flex: 1, paddingVertical: 12, borderRadius: 12,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  modalBtnGhost: { borderWidth: 1, borderColor: colors.cardBorder, backgroundColor: 'transparent' },
+  modalBtnGhostText: { color: colors.textMuted, fontWeight: '700' },
+  modalBtnPrimary: { backgroundColor: colors.primaryBright },
+  modalBtnPrimaryText: { color: '#fff', fontWeight: '800' },
 });

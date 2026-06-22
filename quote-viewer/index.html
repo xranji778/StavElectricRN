@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>הצעת מחיר</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --primary: #0F1729;
+    --accent: #00bfa6;
+    --accent2: #2563eb;
+    --yellow: #f59e0b;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --success: #10b981;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Heebo", Tahoma, sans-serif; }
+  body { padding: 16px; padding-bottom: 100px; line-height: 1.5; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .biz-card { background: linear-gradient(135deg, var(--primary), #1e293b); color: #fff; border-radius: 18px; padding: 22px; box-shadow: 0 6px 24px rgba(15,23,41,0.18); }
+  .biz-card h1 { margin: 0 0 4px 0; font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+  .biz-card .biz-tag { display: inline-block; background: rgba(255,255,255,0.12); border-radius: 999px; padding: 4px 10px; font-size: 11px; font-weight: 700; margin-bottom: 12px; }
+  .biz-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-top: 10px; font-size: 13px; opacity: 0.94; }
+  .biz-meta div { display: flex; align-items: center; gap: 6px; }
+  .biz-meta svg { opacity: 0.7; }
+
+  .doc-title { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; }
+  .doc-title h2 { margin: 0; font-size: 18px; font-weight: 800; color: var(--primary); }
+  .doc-title .date-pill { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: 12px; color: var(--muted); font-weight: 700; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-top: 14px; }
+  .card h3 { margin: 0 0 10px 0; font-size: 14px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+
+  table.items { width: 100%; border-collapse: collapse; }
+  table.items th, table.items td { padding: 10px 8px; text-align: right; border-bottom: 1px solid var(--border); font-size: 13px; }
+  table.items th { background: #f9fafb; color: var(--muted); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
+  table.items td.num { font-feature-settings: "tnum" 1; text-align: left; direction: ltr; font-weight: 600; }
+  table.items tr:last-child td { border-bottom: none; }
+  .qty-cell { color: var(--accent2); font-weight: 800; }
+
+  .totals { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 14px; }
+  .totals .label { color: var(--muted); }
+  .totals .val { text-align: left; direction: ltr; font-weight: 700; }
+  .totals .grand { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; padding: 14px 16px; border-radius: 12px; margin-top: 8px; }
+  .totals .grand .label { color: #fff; font-weight: 800; font-size: 15px; }
+  .totals .grand .val { color: #fff; font-weight: 900; font-size: 19px; }
+
+  .signature-row { display: flex; align-items: center; gap: 14px; }
+  .signature-row img { max-width: 220px; max-height: 90px; border: 1px solid var(--border); border-radius: 8px; background: #fff; padding: 4px; }
+  .signature-row .signed-by { font-size: 12px; color: var(--muted); }
+
+  .approve-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: rgba(255,255,255,0.96); backdrop-filter: blur(8px); border-top: 1px solid var(--border); display: flex; justify-content: center; }
+  .approve-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; max-width: 460px; padding: 16px; border: none; border-radius: 14px; font-weight: 800; font-size: 16px; color: #fff; background: linear-gradient(135deg, #25D366, #128C7E); box-shadow: 0 6px 18px rgba(37,211,102,0.35); cursor: pointer; text-decoration: none; }
+  .approve-btn:hover { transform: translateY(-1px); }
+  .approve-btn:active { transform: translateY(0); }
+
+  .footer-note { text-align: center; font-size: 11px; color: var(--muted); margin-top: 22px; }
+  .footer-note a { color: var(--accent2); text-decoration: none; }
+
+  .error-card { background: #fff; border: 1px solid #fecaca; color: #991b1b; border-radius: 14px; padding: 18px; margin: 30px 0; text-align: center; }
+  .error-card h2 { margin: 0 0 6px 0; }
+
+  .validity { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; border-radius: 10px; padding: 10px 12px; font-size: 12px; font-weight: 700; text-align: center; margin-top: 10px; }
+
+  @media (max-width: 480px) {
+    .biz-card h1 { font-size: 19px; }
+    .biz-meta { grid-template-columns: 1fr; font-size: 12px; }
+    table.items th, table.items td { font-size: 12px; padding: 8px 6px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <div class="error-card" id="loading">טוען הצעה...</div>
+  </div>
+
+<script>
+(function () {
+  function fmtILS(n) {
+    var num = Number(n) || 0;
+    return '₪' + num.toLocaleString('he-IL', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+  function fmtDate(iso) {
+    try {
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return '';
+      var pad = function (n) { return String(n).padStart(2, '0'); };
+      return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear();
+    } catch (e) { return ''; }
+  }
+  function decodeData() {
+    var params = new URLSearchParams(window.location.search);
+    var raw = params.get('d');
+    if (!raw) return null;
+    try {
+      var b64 = raw.replace(/-/g, '+').replace(/_/g, '/');
+      var pad = b64.length % 4; if (pad) b64 += '='.repeat(4 - pad);
+      var binary = atob(b64);
+      var bytes = new Uint8Array(binary.length);
+      for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      var json = new TextDecoder('utf-8').decode(bytes);
+      return JSON.parse(json);
+    } catch (e) {
+      console.error('decode failed', e);
+      return null;
+    }
+  }
+
+  function svgIcon(path) {
+    return '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="' + path + '"/></svg>';
+  }
+  var iconPhone = 'M20 15.5c-1.25 0-2.45-.2-3.57-.57a1 1 0 0 0-1.02.24l-2.2 2.2a15.05 15.05 0 0 1-6.59-6.58l2.2-2.21a1 1 0 0 0 .25-1.02A11.36 11.36 0 0 1 8.5 4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1c0 9.39 7.61 17 17 17a1 1 0 0 0 1-1v-3.5a1 1 0 0 0-1-1z';
+  var iconMail = 'M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4l-8 5-8-5V6l8 5 8-5z';
+  var iconId = 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 7h6v2H7zm0 4h6v2H7zm10 8H7v-2h10zm0-4h-2V9h2z';
+  var iconPin = 'M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z';
+  var iconReceipt = 'M3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2 4.5 3.5 3 2v20zm15-6.5H6V14h12v1.5zm0-3H6V11h12v1.5zm0-3H6V8h12v1.5z';
+  var iconCart = 'M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z';
+
+  var data = decodeData();
+  var app = document.getElementById('app');
+
+  if (!data || !data.biz) {
+    app.innerHTML = '<div class="error-card"><h2>קישור לא תקין</h2><p>לא ניתן לטעון את הצעת המחיר. בקש מהשולח לשלוח קישור חדש.</p></div>';
+    return;
+  }
+
+  var biz = data.biz || {};
+  var items = Array.isArray(data.items) ? data.items : [];
+  var extras = Array.isArray(data.extras) ? data.extras : [];
+  var vatPct = Math.round((data.vatRate || 0.18) * 100);
+
+  var bizMeta = [];
+  if (biz.phone) bizMeta.push('<div>' + svgIcon(iconPhone) + '<span dir="ltr">' + biz.phone + '</span></div>');
+  if (biz.email) bizMeta.push('<div>' + svgIcon(iconMail) + '<span dir="ltr">' + biz.email + '</span></div>');
+  if (biz.license) bizMeta.push('<div>' + svgIcon(iconId) + '<span>רישיון: ' + biz.license + '</span></div>');
+  if (biz.address) bizMeta.push('<div>' + svgIcon(iconPin) + '<span>' + biz.address + '</span></div>');
+
+  var html = '';
+  html += '<div class="biz-card">';
+  html += '<div class="biz-tag">הצעת מחיר</div>';
+  html += '<h1>' + (biz.name || biz.displayName || 'הצעת מחיר') + '</h1>';
+  if (biz.displayName && biz.name && biz.name !== biz.displayName) {
+    html += '<div style="opacity:0.85;font-size:13px">' + biz.displayName + '</div>';
+  }
+  if (bizMeta.length) html += '<div class="biz-meta">' + bizMeta.join('') + '</div>';
+  html += '</div>';
+
+  html += '<div class="doc-title">';
+  html += '<h2>' + (data.projectName ? data.projectName : 'הצעת מחיר') + '</h2>';
+  html += '<div class="date-pill">' + fmtDate(data.createdAt) + '</div>';
+  html += '</div>';
+
+  if (items.length || extras.length) {
+    html += '<div class="card"><h3>' + svgIcon(iconReceipt) + 'פירוט פריטים</h3>';
+    html += '<table class="items"><thead><tr><th>פריט</th><th>כמות</th><th>מחיר ליח׳</th><th>סה"כ</th></tr></thead><tbody>';
+    items.forEach(function (it) {
+      html += '<tr>';
+      html += '<td>' + (it.label || '') + '</td>';
+      html += '<td class="qty-cell">' + (it.qty || 0) + '</td>';
+      html += '<td class="num">' + fmtILS(it.unitPrice) + '</td>';
+      html += '<td class="num">' + fmtILS(it.lineTotal) + '</td>';
+      html += '</tr>';
+    });
+    if (extras.length) {
+      html += '<tr><td colspan="4" style="background:#fff7ed;color:#9a3412;font-weight:800;font-size:12px;padding:8px;">תוספות בשטח</td></tr>';
+      extras.forEach(function (it) {
+        html += '<tr>';
+        html += '<td>' + (it.label || '') + '</td>';
+        html += '<td class="qty-cell">' + (it.qty || 0) + '</td>';
+        html += '<td class="num">' + fmtILS(it.unitPrice) + '</td>';
+        html += '<td class="num">' + fmtILS(it.lineTotal) + '</td>';
+        html += '</tr>';
+      });
+    }
+    html += '</tbody></table></div>';
+  }
+
+  html += '<div class="card"><h3>' + svgIcon(iconCart) + 'סיכום חשבון</h3>';
+  html += '<div class="totals">';
+  if (data.discount > 0) {
+    html += '<div class="label">סכום ביניים</div><div class="val">' + fmtILS(data.subtotal) + '</div>';
+    html += '<div class="label">הנחה</div><div class="val" style="color:#dc2626">−' + fmtILS(data.discount) + '</div>';
+  }
+  html += '<div class="label">לפני מע"מ</div><div class="val">' + fmtILS(data.afterDiscount) + '</div>';
+  html += '<div class="label">מע"מ (' + vatPct + '%)</div><div class="val">' + fmtILS(data.vat) + '</div>';
+  html += '<div class="grand"><div class="label">סה"כ לתשלום</div><div class="val">' + fmtILS(data.total) + '</div></div>';
+  html += '</div>';
+  if (data.validityDays) {
+    html += '<div class="validity">תוקף ההצעה: ' + data.validityDays + ' ימים מיום הוצאתה</div>';
+  }
+  html += '</div>';
+
+  if (data.signature) {
+    html += '<div class="card"><h3>חתימת ספק</h3>';
+    html += '<div class="signature-row">';
+    html += '<img src="' + data.signature + '" alt="חתימה" />';
+    html += '<div class="signed-by">' + (biz.displayName || biz.name || '') + '</div>';
+    html += '</div></div>';
+  }
+
+  html += '<div class="footer-note">הצעה דיגיטלית הופקה דרך אפליקציית הצעות מחיר &middot; <span dir="ltr">v1</span></div>';
+
+  app.innerHTML = html;
+
+  var bizPhone = (biz.phone || '').replace(/\D/g, '');
+  if (bizPhone.startsWith('0')) bizPhone = '972' + bizPhone.slice(1);
+  if (!bizPhone.startsWith('972')) bizPhone = '972' + bizPhone;
+
+  var approvalMsg = 'שלום' + (biz.displayName ? ' ' + biz.displayName : '') + ',\n\n' +
+    'אני מאשר את הצעת המחיר' +
+    (data.projectName ? ' עבור *' + data.projectName + '*' : '') + '.\n' +
+    'תאריך ההצעה: ' + fmtDate(data.createdAt) + '\n' +
+    'סה"כ לתשלום: ' + fmtILS(data.total) + '\n\n' +
+    'תודה!';
+
+  var approveBar = document.createElement('div');
+  approveBar.className = 'approve-bar';
+  if (bizPhone && bizPhone.length >= 11) {
+    approveBar.innerHTML = '<a class="approve-btn" href="https://wa.me/' + bizPhone + '?text=' + encodeURIComponent(approvalMsg) + '" target="_blank" rel="noopener">' +
+      '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>' +
+      'אני מאשר את ההצעה</a>';
+    document.body.appendChild(approveBar);
+  }
+})();
+</script>
+</body>
+</html>

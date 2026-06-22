@@ -1,38 +1,42 @@
+// Dark premium palette — deep navy bg, dark cards, vibrant pops per profession.
+// Friendly + contemporary; supports per-profession accents.
+
 export const colors = {
-  // Brand
-  primarySeed: '#1E5BFF',
-  primaryBright: '#3B82F6',
-  accentAmber: '#FFB300',
-  voltageYellow: '#FFD60A',
-  liveWire: '#16C784',
-  circuitTeal: '#0EA5C7',
+  // Brand defaults (overridden per profession)
+  primarySeed: '#7C3AED',
+  primaryBright: '#A78BFA',     // vivid lavender pops on dark
+  accentAmber: '#F59E0B',
+  voltageYellow: '#FBBF24',
+  liveWire: '#34D399',
+  circuitTeal: '#22D3EE',
 
-  // Dark theme surfaces
-  bg: '#070B1C',
-  bgSoft: '#0B1326',
-  card: '#0F1729',
-  cardElevated: '#162038',
-  cardBorder: 'rgba(94, 137, 255, 0.14)',
-  cardBorderActive: 'rgba(30, 91, 255, 0.55)',
-  glowBlue: 'rgba(30, 91, 255, 0.35)',
-  glowTeal: 'rgba(14, 165, 199, 0.3)',
+  // Surfaces — deep navy / charcoal
+  bg: '#0B0E18',                 // base
+  bgSoft: '#141826',             // slightly elevated
+  bgGradient: ['#0B0E18', '#141826', '#0B0E18'],  // subtle dark gradient
+  card: '#1A1F30',
+  cardElevated: '#22293F',
+  cardBorder: 'rgba(255, 255, 255, 0.06)',
+  cardBorderActive: 'rgba(167, 139, 250, 0.55)',
+  glowBlue: 'rgba(167, 139, 250, 0.18)',
+  glowTeal: 'rgba(34, 211, 238, 0.18)',
 
-  // Dark theme text
-  text: '#F0F4FA',
-  textMuted: 'rgba(240, 244, 250, 0.65)',
-  textFaint: 'rgba(240, 244, 250, 0.42)',
-  dividerDark: 'rgba(255, 255, 255, 0.08)',
+  // Text (light on dark)
+  text: '#F5F7FA',
+  textMuted: 'rgba(245, 247, 250, 0.65)',
+  textFaint: 'rgba(245, 247, 250, 0.40)',
+  dividerDark: 'rgba(255, 255, 255, 0.06)',
 
   // Status
-  success: '#1FAE6B',
-  danger: '#FF5C5C',
+  success: '#34D399',
+  danger: '#F87171',
 
-  // Legacy (kept for PDF + a few non-dark contexts)
-  textPrimary: '#0F1A2B',
-  textSecondary: '#5B6878',
-  divider: '#E3E8EF',
-  surfaceLight: '#F6F8FB',
-  panelDark: '#0B1424',
-  panelDarkSoft: '#142136',
-  traceGold: '#C8A656',
+  // Legacy aliases (PDF still expects light bg, keep separate)
+  textPrimary: '#F5F7FA',
+  textSecondary: '#9CA3AF',
+  divider: '#2A2F45',
+  surfaceLight: '#F5F4F0',       // PDF only
+  panelDark: '#0B0E18',
+  panelDarkSoft: '#141826',
+  traceGold: '#FBBF24',
 };

@@ -39,8 +39,16 @@ export function AuthProvider({ children }) {
     return updated;
   };
 
+  const switchProfession = async (professionId) => {
+    if (!user) return null;
+    if (!user.professions?.includes(professionId)) return user;
+    const updated = await authApi.setActiveProfession(user.id, professionId);
+    setUser(updated);
+    return updated;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile, switchProfession }}>
       {children}
     </AuthContext.Provider>
   );

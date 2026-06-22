@@ -19,6 +19,8 @@ import { colors } from '../theme/colors';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LANGUAGES } from '../i18n/translations';
+import { PROFESSIONS } from '../data/auth';
+import ProQuoteLogo from '../components/ProQuoteLogo';
 
 export default function AuthScreen() {
   const { login, register } = useAuth();
@@ -32,6 +34,17 @@ export default function AuthScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [professions, setProfessions] = useState(['electrician']);
+
+  const toggleProfession = (id) => {
+    setProfessions((prev) => {
+      if (prev.includes(id)) {
+        const next = prev.filter((p) => p !== id);
+        return next.length === 0 ? prev : next;
+      }
+      return [...prev, id];
+    });
+  };
 
   const logoGlow = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -55,7 +68,7 @@ export default function AuthScreen() {
       if (isLogin) {
         await login({ username, password });
       } else {
-        await register({ displayName, username, password, email, phone });
+        await register({ displayName, username, password, email, phone, professions });
       }
     } catch (e) {
       setError(e.message || t('auth.errorFallback'));
@@ -72,13 +85,13 @@ export default function AuthScreen() {
   return (
     <View style={styles.flex}>
       <LinearGradient
-        colors={['#0A1020', '#142136', '#0B1424']}
+        colors={colors.bgGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFillObject}
       />
-      <MaterialIcons name="bolt" size={220} color="#fff" style={styles.bgBoltTop} />
-      <MaterialIcons name="flash-on" size={180} color="#fff" style={styles.bgBoltBottom} />
+      <MaterialIcons name="request-quote" size={200} color="#fff" style={styles.bgBoltTop} />
+      <MaterialIcons name="receipt-long" size={160} color="#fff" style={styles.bgBoltBottom} />
 
       <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
@@ -86,23 +99,18 @@ export default function AuthScreen() {
           style={styles.flex}
         >
           <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-            <LangPicker
-              currentLang={lang}
-              onPick={setLang}
-              label={t('auth.chooseLang')}
-            />
+            {/* LangPicker paused 2026-05-17 — see memory/stavelectric_i18n_paused.md to restore */}
+            {false && (
+              <LangPicker
+                currentLang={lang}
+                onPick={setLang}
+                label={t('auth.chooseLang')}
+              />
+            )}
 
             <View style={styles.brand}>
-              <Animated.View style={[styles.brandGlow, { opacity: glowOpacity }]} />
-              <LinearGradient
-                colors={[colors.primarySeed, colors.circuitTeal]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.brandIcon}
-              >
-                <MaterialIcons name="electrical-services" size={42} color="#fff" />
-              </LinearGradient>
-              <Text style={styles.brandText}>StavElectric</Text>
+              <ProQuoteLogo size={84} gradient={['#2A4FBF', '#4A7AFF']} />
+              <Text style={styles.brandText}>הצעות מחיר</Text>
               <Text style={styles.brandSub}>{t('auth.tagline')}</Text>
             </View>
 
@@ -179,6 +187,33 @@ export default function AuthScreen() {
                     keyboardType="phone-pad"
                     align={inputAlign}
                   />
+
+                  <View style={styles.professionsBlock}>
+                    <Text style={styles.professionsLabel}>{t('auth.chooseProfessions')}</Text>
+                    <Text style={styles.professionsHint}>{t('auth.chooseProfessionsHint')}</Text>
+                    <View style={styles.professionsGrid}>
+                      {PROFESSIONS.map((p) => {
+                        const active = professions.includes(p.id);
+                        return (
+                          <Pressable
+                            key={p.id}
+                            onPress={() => toggleProfession(p.id)}
+                            style={[styles.professionCard, active && styles.professionCardActive]}
+                          >
+                            <Text style={styles.professionEmoji}>{p.emoji}</Text>
+                            <Text style={[styles.professionName, active && styles.professionNameActive]}>
+                              {p.label}
+                            </Text>
+                            {active && (
+                              <View style={styles.professionCheck}>
+                                <MaterialIcons name="check" size={14} color="#fff" />
+                              </View>
+                            )}
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                  </View>
                 </>
               )}
 
@@ -260,7 +295,7 @@ function Field({ label, rightIcon, align, ...rest }) {
         <TextInput
           {...rest}
           style={[styles.input, { textAlign: align || 'right' }]}
-          placeholderTextColor={colors.textSecondary + 'AA'}
+          placeholderTextColor="#94A3B8"
         />
         {rightIcon}
       </View>
@@ -363,17 +398,18 @@ const styles = StyleSheet.create({
   tabTextActive: { color: colors.primarySeed },
 
   field: { marginBottom: 12 },
-  fieldLabel: { color: colors.textSecondary, fontWeight: '600', fontSize: 13, marginBottom: 6 },
+  fieldLabel: { color: '#475569', fontWeight: '600', fontSize: 13, marginBottom: 6 },
   inputWrap: {
     flexDirection: 'row', alignItems: 'center',
-    borderWidth: 1, borderColor: colors.divider, borderRadius: 12,
+    borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 12,
     paddingHorizontal: 14,
+    backgroundColor: '#fff',
   },
   input: {
     flex: 1,
     paddingVertical: 12,
     fontSize: 15,
-    color: colors.textPrimary,
+    color: '#0F172A',
   },
 
   errorBox: {
@@ -383,6 +419,38 @@ const styles = StyleSheet.create({
     marginTop: 4, marginBottom: 6,
   },
   errorText: { color: colors.danger, fontWeight: '600', flex: 1, fontSize: 13 },
+
+  professionsBlock: { marginTop: 8 },
+  professionsLabel: { color: colors.text, fontSize: 13, fontWeight: '700', marginBottom: 4 },
+  professionsHint: { color: colors.textMuted, fontSize: 11, marginBottom: 10 },
+  professionsGrid: {
+    flexDirection: 'row', flexWrap: 'wrap',
+    gap: 8,
+  },
+  professionCard: {
+    flexBasis: '47%', flexGrow: 1,
+    flexDirection: 'row', alignItems: 'center',
+    paddingVertical: 10, paddingHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: colors.cardElevated,
+    borderWidth: 1, borderColor: colors.dividerDark,
+    gap: 8,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  professionCardActive: {
+    borderColor: colors.primaryBright,
+    backgroundColor: colors.primaryBright + '14',
+  },
+  professionEmoji: { fontSize: 22 },
+  professionName: { color: colors.text, fontSize: 13, fontWeight: '700', flex: 1 },
+  professionNameActive: { color: colors.primaryBright },
+  professionCheck: {
+    position: 'absolute', top: 6, end: 6,
+    width: 20, height: 20, borderRadius: 10,
+    backgroundColor: colors.primaryBright,
+    alignItems: 'center', justifyContent: 'center',
+  },
 
   submitWrap: { borderRadius: 14, marginTop: 10, overflow: 'hidden' },
   submitButton: {

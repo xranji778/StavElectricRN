@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -17,6 +17,8 @@ import HomeScreen from './src/screens/HomeScreen';
 import QuoteBuilderScreen from './src/screens/QuoteBuilderScreen';
 import RatesScreen from './src/screens/RatesScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import ClientsScreen from './src/screens/ClientsScreen';
+import CalendarScreen from './src/screens/CalendarScreen';
 import AuthScreen from './src/screens/AuthScreen';
 import { colors } from './src/theme/colors';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
@@ -39,22 +41,29 @@ const navTheme = {
 
 function MainTabs() {
   const { t } = useLanguage();
+  const insets = useSafeAreaInsets();
+  const bottomInset = Math.max(insets.bottom, 8);
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: colors.primaryBright,
         tabBarInactiveTintColor: colors.textMuted,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: colors.bgSoft,
           borderTopColor: colors.dividerDark,
-          height: 64, paddingBottom: 8, paddingTop: 6,
+          height: 60 + bottomInset,
+          paddingBottom: bottomInset,
+          paddingTop: 6,
         },
         tabBarLabelStyle: { fontSize: 12, fontWeight: '700' },
         tabBarIcon: ({ color, size }) => {
           const name =
             route.name === 'Home' ? 'home' :
             route.name === 'Quote' ? 'add-circle' :
+            route.name === 'Calendar' ? 'event' :
+            route.name === 'Clients' ? 'contacts' :
             route.name === 'Rates' ? 'tune' :
             'settings';
           return <MaterialIcons name={name} size={size} color={color} />;
@@ -63,8 +72,18 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: t('tabs.home') }} />
       <Tab.Screen name="Quote" component={QuoteBuilderScreen} options={{ tabBarLabel: t('tabs.quote') }} />
+      <Tab.Screen name="Calendar" component={CalendarScreen} options={{ tabBarLabel: t('tabs.calendar') }} />
+      <Tab.Screen name="Clients" component={ClientsScreen} options={{ tabBarLabel: t('tabs.clients') }} />
       <Tab.Screen name="Rates" component={RatesScreen} options={{ tabBarLabel: t('tabs.rates') }} />
-      <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarLabel: t('tabs.settings') }} />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarLabel: t('tabs.settings'),
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: 'none' },
+        }}
+      />
     </Tab.Navigator>
   );
 }

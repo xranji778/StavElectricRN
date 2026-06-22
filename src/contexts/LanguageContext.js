@@ -6,33 +6,25 @@ import { LANGUAGES, translate, isRtl } from '../i18n/translations';
 const LANG_KEY = 'stavelectric.lang.v1';
 const DEFAULT_LANG = 'he';
 
+// Multi-language UI paused 2026-05-17 — locked to Hebrew. To re-enable, see
+// memory/stavelectric_i18n_paused.md (or restore the original implementation
+// from git history of this file).
+const LOCKED_LANG = 'he';
+
 const LanguageContext = createContext(null);
 
 export function LanguageProvider({ children }) {
-  const [lang, setLangState] = useState(DEFAULT_LANG);
+  const [lang, setLangState] = useState(LOCKED_LANG);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const saved = await AsyncStorage.getItem(LANG_KEY);
-        const code = saved && LANGUAGES.some((l) => l.code === saved) ? saved : DEFAULT_LANG;
-        applyRTL(code);
-        setLangState(code);
-      } catch (e) {
-        applyRTL(DEFAULT_LANG);
-      } finally {
-        setReady(true);
-      }
-    })();
+    applyRTL(LOCKED_LANG);
+    setLangState(LOCKED_LANG);
+    setReady(true);
   }, []);
 
-  const setLang = useCallback(async (code) => {
-    if (!LANGUAGES.some((l) => l.code === code)) return;
-    await AsyncStorage.setItem(LANG_KEY, code);
-    applyRTL(code);
-    setLangState(code);
-  }, []);
+  // No-op while feature is paused. Kept exported so callers don't break.
+  const setLang = useCallback(async () => {}, []);
 
   const t = useCallback((key, params) => translate(lang, key, params), [lang]);
 
