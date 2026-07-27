@@ -175,7 +175,6 @@ export default function SettingsScreen() {
     displayName: '',
     businessName: '',
     phone: '',
-    email: '',
     licenseNumber: '',
     address: '',
     bitPhone: '',
@@ -187,7 +186,6 @@ export default function SettingsScreen() {
         displayName: user.displayName || '',
         businessName: user.businessName || '',
         phone: user.phone || '',
-        email: user.email || '',
         licenseNumber: user.licenseNumber || '',
         address: user.address || '',
         bitPhone: user.bitPhone || '',
@@ -199,7 +197,6 @@ export default function SettingsScreen() {
     (form.displayName || '') !== (user.displayName || '')
     || (form.businessName || '') !== (user.businessName || '')
     || (form.phone || '') !== (user.phone || '')
-    || (form.email || '') !== (user.email || '')
     || (form.licenseNumber || '') !== (user.licenseNumber || '')
     || (form.address || '') !== (user.address || '')
     || (form.bitPhone || '') !== (user.bitPhone || '')
@@ -228,7 +225,6 @@ export default function SettingsScreen() {
         displayName: form.displayName,
         businessName: form.businessName,
         phone: form.phone,
-        email: form.email,
         licenseNumber: form.licenseNumber,
         address: form.address,
         bitPhone: form.bitPhone,
@@ -364,16 +360,6 @@ export default function SettingsScreen() {
               isRTL={isRTL}
             />
             <FormField
-              icon="email"
-              label={t('settings.email')}
-              placeholder={t('settings.emailPh')}
-              value={form.email}
-              onChangeText={(v) => setForm((f) => ({ ...f, email: v }))}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              isRTL={isRTL}
-            />
-            <FormField
               icon="card-membership"
               label={t('settings.licenseNumber')}
               placeholder={t('settings.licenseNumberPh')}
@@ -401,8 +387,8 @@ export default function SettingsScreen() {
 
             <View style={styles.readOnlyRow}>
               <MaterialIcons name="alternate-email" size={16} color={colors.textMuted} />
-              <Text style={styles.readOnlyLabel}>{t('settings.username')}:</Text>
-              <Text style={styles.readOnlyValue}>{user?.username}</Text>
+              <Text style={styles.readOnlyLabel}>{t('settings.email')}:</Text>
+              <Text style={styles.readOnlyValue}>{user?.email}</Text>
             </View>
 
             <Pressable

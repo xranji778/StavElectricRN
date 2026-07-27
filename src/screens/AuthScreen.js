@@ -23,16 +23,16 @@ import { PROFESSIONS } from '../data/auth';
 import ProQuoteLogo from '../components/ProQuoteLogo';
 
 export default function AuthScreen() {
-  const { login, register } = useAuth();
+  const { login, register, resetPassword } = useAuth();
   const { t, lang, setLang, isRTL } = useLanguage();
   const [mode, setMode] = useState('login');
   const [displayName, setDisplayName] = useState('');
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
+  const [info, setInfo] = useState(null);
   const [busy, setBusy] = useState(false);
   const [professions, setProfessions] = useState(['electrician']);
 
@@ -63,12 +63,13 @@ export default function AuthScreen() {
 
   const submit = async () => {
     setError(null);
+    setInfo(null);
     setBusy(true);
     try {
       if (isLogin) {
-        await login({ username, password });
+        await login({ email, password });
       } else {
-        await register({ displayName, username, password, email, phone, professions });
+        await register({ displayName, email, password, phone, professions });
       }
     } catch (e) {
       setError(e.message || t('auth.errorFallback'));
@@ -79,7 +80,26 @@ export default function AuthScreen() {
 
   const switchMode = () => {
     setError(null);
+    setInfo(null);
     setMode(isLogin ? 'register' : 'login');
+  };
+
+  const submitForgotPassword = async () => {
+    setError(null);
+    setInfo(null);
+    if (!email.trim()) {
+      setError(t('auth.forgotPasswordNeedsEmail'));
+      return;
+    }
+    setBusy(true);
+    try {
+      await resetPassword(email);
+      setInfo(t('auth.forgotPasswordSent'));
+    } catch (e) {
+      setError(e.message || t('auth.errorFallback'));
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -141,11 +161,12 @@ export default function AuthScreen() {
                 />
               )}
               <Field
-                label={t('auth.username')}
-                placeholder={t('auth.usernamePh')}
-                value={username}
-                onChangeText={setUsername}
+                label={t('auth.email')}
+                placeholder={t('auth.emailPh')}
+                value={email}
+                onChangeText={setEmail}
                 autoCapitalize="none"
+                keyboardType="email-address"
                 autoCorrect={false}
                 align={inputAlign}
               />
@@ -167,18 +188,14 @@ export default function AuthScreen() {
                 }
               />
 
+              {isLogin && (
+                <Pressable onPress={submitForgotPassword} style={styles.forgotLink} hitSlop={6}>
+                  <Text style={styles.forgotLinkText}>{t('auth.forgotPassword')}</Text>
+                </Pressable>
+              )}
+
               {!isLogin && (
                 <>
-                  <Field
-                    label={t('auth.email')}
-                    placeholder={t('auth.emailPh')}
-                    value={email}
-                    onChangeText={setEmail}
-                    autoCapitalize="none"
-                    keyboardType="email-address"
-                    autoCorrect={false}
-                    align={inputAlign}
-                  />
                   <Field
                     label={t('auth.phone')}
                     placeholder={t('auth.phonePh')}
@@ -221,6 +238,13 @@ export default function AuthScreen() {
                 <View style={styles.errorBox}>
                   <MaterialIcons name="error-outline" size={18} color={colors.danger} />
                   <Text style={styles.errorText}>{error}</Text>
+                </View>
+              )}
+
+              {info && (
+                <View style={styles.infoBox}>
+                  <MaterialIcons name="check-circle-outline" size={18} color={colors.primarySeed} />
+                  <Text style={styles.infoText}>{info}</Text>
                 </View>
               )}
 
@@ -419,6 +443,17 @@ const styles = StyleSheet.create({
     marginTop: 4, marginBottom: 6,
   },
   errorText: { color: colors.danger, fontWeight: '600', flex: 1, fontSize: 13 },
+
+  infoBox: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: colors.primarySeed + '14',
+    borderRadius: 10, padding: 10,
+    marginTop: 4, marginBottom: 6,
+  },
+  infoText: { color: colors.primarySeed, fontWeight: '600', flex: 1, fontSize: 13 },
+
+  forgotLink: { alignItems: 'flex-end', marginTop: -4, marginBottom: 8 },
+  forgotLinkText: { color: colors.primarySeed, fontWeight: '700', fontSize: 12 },
 
   professionsBlock: { marginTop: 8 },
   professionsLabel: { color: colors.text, fontSize: 13, fontWeight: '700', marginBottom: 4 },

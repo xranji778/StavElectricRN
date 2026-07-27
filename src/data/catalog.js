@@ -50,29 +50,23 @@ export const CATEGORIES = [
 
 export const CATALOG = [
   // ============ תאורה ============
-  { id: 'lightPoint', label: 'נקודת מאור רגילה', icon: 'lightbulb', category: 'lighting', unit: 'point' },
-  { id: 'ledCeiling', label: 'נקודת לד תקרה', icon: 'wb-incandescent', category: 'lighting', unit: 'point' },
+  { id: 'lightPoint', label: 'נקודת מאור', icon: 'lightbulb', category: 'lighting', unit: 'point' },
   { id: 'recessedSpot', label: 'ספוט שקוע', icon: 'highlight', category: 'lighting', unit: 'piece' },
   { id: 'wallLamp', label: 'נקודת מנורת קיר', icon: 'wb-iridescent', category: 'lighting', unit: 'point' },
-  { id: 'ledStrip', label: 'רצועת לד', icon: 'linear-scale', category: 'lighting', unit: 'meter' },
-  { id: 'chandelier', label: 'נקודת נברשת', icon: 'wb-sunny', category: 'lighting', unit: 'point' },
-  { id: 'motionSensor', label: 'גלאי תנועה', icon: 'sensors', category: 'lighting', unit: 'piece' },
-  { id: 'floodlightLed', label: 'פנס LED שטח', icon: 'flare', category: 'lighting', unit: 'piece' },
   { id: 'gardenLight', label: 'גוף תאורת גינה', icon: 'park', category: 'lighting', unit: 'piece' },
-  { id: 'panelLight', label: 'גוף תאורה (פנל)', icon: 'wb-iridescent', category: 'lighting', unit: 'piece' },
   { id: 'emergencyLight', label: 'תאורת חירום', icon: 'emergency', category: 'lighting', unit: 'piece' },
 
   // ============ שקעים ============
-  { id: 'outlet16Single', label: 'שקע יחיד 16A', icon: 'power', category: 'outlets', unit: 'piece' },
-  { id: 'outlet16Double', label: 'שקע כפול 16A', icon: 'power', category: 'outlets', unit: 'piece' },
-  { id: 'outlet16Triple', label: 'שקע משולש 16A', icon: 'power', category: 'outlets', unit: 'piece' },
+  { id: 'outlet16Single', label: 'שקע כח יחיד', icon: 'power', category: 'outlets', unit: 'piece' },
+  { id: 'outlet16Double', label: 'שקע כח כפול', icon: 'power', category: 'outlets', unit: 'piece' },
+  { id: 'outlet16Triple', label: 'שלישיית שקעים', icon: 'power', category: 'outlets', unit: 'piece' },
   { id: 'outletUsb', label: 'שקע USB', icon: 'usb', category: 'outlets', unit: 'piece' },
   { id: 'outletWaterproof', label: 'שקע מוגן מים', icon: 'opacity', category: 'outlets', unit: 'piece' },
-  { id: 'outlet3Phase', label: 'שקע כוח 3-פאזי', icon: 'electrical-services', category: 'outlets', unit: 'piece' },
+  { id: 'outlet3Phase', label: 'שקע תלת פאזי', icon: 'electrical-services', category: 'outlets', unit: 'piece' },
   { id: 'outletFloor', label: 'שקע רצפה', icon: 'south', category: 'outlets', unit: 'piece' },
   { id: 'outletWithSwitch', label: 'שקע עם מפסק', icon: 'toggle-on', category: 'outlets', unit: 'piece' },
   { id: 'outletPhone', label: 'שקע טלפון', icon: 'phone', category: 'outlets', unit: 'piece' },
-  { id: 'outletPower', label: 'שקע כוח רגיל', icon: 'electrical-services', category: 'outlets', unit: 'piece' },
+  { id: 'outletPower', label: 'נקודת שקע רגיל', icon: 'electrical-services', category: 'outlets', unit: 'piece' },
   { id: 'ventPoint', label: 'נקודת וונטה', icon: 'air', category: 'outlets', unit: 'point' },
 
   // ============ מפסקים ============
@@ -81,8 +75,6 @@ export const CATALOG = [
   { id: 'switchCrossover', label: 'מפסק חילופים', icon: 'compare-arrows', category: 'switches', unit: 'piece' },
   { id: 'switchDimmer', label: 'מפסק דימר', icon: 'tune', category: 'switches', unit: 'piece' },
   { id: 'switchSmart', label: 'מפסק חכם', icon: 'smartphone', category: 'switches', unit: 'piece' },
-  { id: 'pushButton', label: 'כפתור לחיץ', icon: 'radio-button-checked', category: 'switches', unit: 'piece' },
-  { id: 'switchIlluminated', label: 'מפסק מואר', icon: 'lightbulb-outline', category: 'switches', unit: 'piece' },
   { id: 'switchTimer', label: 'מפסק טיימר', icon: 'timer', category: 'switches', unit: 'piece' },
 
   // ============ כבלים ============
@@ -94,37 +86,33 @@ export const CATALOG = [
   { id: 'cable5x6', label: 'כבל NYM 5×6 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
   { id: 'cable3x10', label: 'כבל NYM 3×10 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
   { id: 'cable5x10', label: 'כבל NYM 5×10 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
-  { id: 'cableNYY3x2_5', label: 'כבל NYY 3×2.5 mm² (חיצוני)', icon: 'cable', category: 'cables', unit: 'meter' },
-  { id: 'cableNYY3x4', label: 'כבל NYY 3×4 mm² (חיצוני)', icon: 'cable', category: 'cables', unit: 'meter' },
   { id: 'cableGround16', label: 'כבל אדמה 16 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
   { id: 'cableGround25', label: 'כבל אדמה 25 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
   { id: 'cableTelephone', label: 'כבל טלפון', icon: 'cable', category: 'cables', unit: 'meter' },
 
   // ============ צנרת ============
 
-  // צינור מריכף (4 גדלים)
+  // צינור מריכף (3 גדלים)
   { id: 'conduitMarichef_16', family: 'conduitMarichef', familyLabel: 'צינור מריכף', size: '16', label: 'צינור מריכף 16', icon: 'linear-scale', category: 'conduits', unit: 'meter' },
   { id: 'conduitMarichef_20', family: 'conduitMarichef', familyLabel: 'צינור מריכף', size: '20', label: 'צינור מריכף 20', icon: 'linear-scale', category: 'conduits', unit: 'meter' },
-  { id: 'conduitMarichef_23', family: 'conduitMarichef', familyLabel: 'צינור מריכף', size: '23', label: 'צינור מריכף 23', icon: 'linear-scale', category: 'conduits', unit: 'meter' },
-  { id: 'conduitMarichef_29', family: 'conduitMarichef', familyLabel: 'צינור מריכף', size: '29', label: 'צינור מריכף 29', icon: 'linear-scale', category: 'conduits', unit: 'meter' },
+  { id: 'conduitMarichef_25', family: 'conduitMarichef', familyLabel: 'צינור מריכף', size: '25', label: 'צינור מריכף 25', icon: 'linear-scale', category: 'conduits', unit: 'meter' },
 
-  // צינור שרשורי (4 גדלים)
+  // צינור שרשורי (2 גדלים)
   { id: 'conduitShirshuri_16', family: 'conduitShirshuri', familyLabel: 'צינור שרשורי', size: '16', label: 'צינור שרשורי 16', icon: 'waves', category: 'conduits', unit: 'meter' },
   { id: 'conduitShirshuri_20', family: 'conduitShirshuri', familyLabel: 'צינור שרשורי', size: '20', label: 'צינור שרשורי 20', icon: 'waves', category: 'conduits', unit: 'meter' },
-  { id: 'conduitShirshuri_23', family: 'conduitShirshuri', familyLabel: 'צינור שרשורי', size: '23', label: 'צינור שרשורי 23', icon: 'waves', category: 'conduits', unit: 'meter' },
-  { id: 'conduitShirshuri_29', family: 'conduitShirshuri', familyLabel: 'צינור שרשורי', size: '29', label: 'צינור שרשורי 29', icon: 'waves', category: 'conduits', unit: 'meter' },
 
-  // צינור קוברה (4 גדלים)
-  { id: 'conduitCobra_16', family: 'conduitCobra', familyLabel: 'צינור קוברה', size: '16', label: 'צינור קוברה 16', icon: 'polymer', category: 'conduits', unit: 'meter' },
-  { id: 'conduitCobra_20', family: 'conduitCobra', familyLabel: 'צינור קוברה', size: '20', label: 'צינור קוברה 20', icon: 'polymer', category: 'conduits', unit: 'meter' },
-  { id: 'conduitCobra_23', family: 'conduitCobra', familyLabel: 'צינור קוברה', size: '23', label: 'צינור קוברה 23', icon: 'polymer', category: 'conduits', unit: 'meter' },
-  { id: 'conduitCobra_29', family: 'conduitCobra', familyLabel: 'צינור קוברה', size: '29', label: 'צינור קוברה 29', icon: 'polymer', category: 'conduits', unit: 'meter' },
+  // צינור קוברה (גודל יחיד)
+  { id: 'conduitCobra_50', family: 'conduitCobra', familyLabel: 'צינור קוברה', size: '50', label: 'צינור קוברה 50', icon: 'polymer', category: 'conduits', unit: 'meter' },
 
-  // צינור פיגי / PG (4 גדלים - חיצוני עמיד UV)
+  // צינור פיגי / PG (2 גדלים - חיצוני עמיד UV)
   { id: 'conduitPG_16', family: 'conduitPG', familyLabel: 'צינור פיגי', size: '16', label: 'צינור פיגי 16', icon: 'wb-sunny', category: 'conduits', unit: 'meter' },
   { id: 'conduitPG_20', family: 'conduitPG', familyLabel: 'צינור פיגי', size: '20', label: 'צינור פיגי 20', icon: 'wb-sunny', category: 'conduits', unit: 'meter' },
-  { id: 'conduitPG_23', family: 'conduitPG', familyLabel: 'צינור פיגי', size: '23', label: 'צינור פיגי 23', icon: 'wb-sunny', category: 'conduits', unit: 'meter' },
-  { id: 'conduitPG_29', family: 'conduitPG', familyLabel: 'צינור פיגי', size: '29', label: 'צינור פיגי 29', icon: 'wb-sunny', category: 'conduits', unit: 'meter' },
+
+  // צינור מרירון (4 גדלים - באינץ')
+  { id: 'conduitMariron_34', family: 'conduitMariron', familyLabel: 'צינור מרירון', size: '3/4', sizeUnit: '"', label: 'צינור מרירון 3/4"', icon: 'linear-scale', category: 'conduits', unit: 'meter' },
+  { id: 'conduitMariron_1', family: 'conduitMariron', familyLabel: 'צינור מרירון', size: '1', sizeUnit: '"', label: 'צינור מרירון 1"', icon: 'linear-scale', category: 'conduits', unit: 'meter' },
+  { id: 'conduitMariron_1_5', family: 'conduitMariron', familyLabel: 'צינור מרירון', size: '1.5', sizeUnit: '"', label: 'צינור מרירון 1.5"', icon: 'linear-scale', category: 'conduits', unit: 'meter' },
+  { id: 'conduitMariron_2', family: 'conduitMariron', familyLabel: 'צינור מרירון', size: '2', sizeUnit: '"', label: 'צינור מרירון 2"', icon: 'linear-scale', category: 'conduits', unit: 'meter' },
 
   // תעלת רשת (4 גדלים)
   { id: 'cableTray_100', family: 'cableTray', familyLabel: 'תעלת רשת', size: '100', label: 'תעלת רשת 100 מ"מ', icon: 'view-week', category: 'conduits', unit: 'meter' },
@@ -149,7 +137,6 @@ export const CATALOG = [
 
   // לוחות אחרים
   { id: 'panelOutdoor', label: 'לוח חיצוני IP65', icon: 'shield', category: 'panels', unit: 'piece' },
-  { id: 'panelDoor', label: 'דלת ללוח חשמל', icon: 'door-sliding', category: 'panels', unit: 'piece' },
   { id: 'panelRail', label: 'פס DIN למודולים', icon: 'view-stream', category: 'panels', unit: 'piece' },
 
   // ============ בטיחות והגנה ============
@@ -161,7 +148,6 @@ export const CATALOG = [
   { id: 'mcb1ph_25', family: 'mcb1ph', familyLabel: 'מפסק אוטומטי חד-פאזי', size: '25A', label: 'מפסק אוטומטי חד-פאזי 25A', icon: 'flash-on', category: 'safety', unit: 'piece' },
   { id: 'mcb1ph_32', family: 'mcb1ph', familyLabel: 'מפסק אוטומטי חד-פאזי', size: '32A', label: 'מפסק אוטומטי חד-פאזי 32A', icon: 'flash-on', category: 'safety', unit: 'piece' },
   { id: 'mcb1ph_40', family: 'mcb1ph', familyLabel: 'מפסק אוטומטי חד-פאזי', size: '40A', label: 'מפסק אוטומטי חד-פאזי 40A', icon: 'flash-on', category: 'safety', unit: 'piece' },
-  { id: 'mcb1ph_63', family: 'mcb1ph', familyLabel: 'מפסק אוטומטי חד-פאזי', size: '63A', label: 'מפסק אוטומטי חד-פאזי 63A', icon: 'flash-on', category: 'safety', unit: 'piece' },
 
   // מפסק אוטומטי תלת-פאזי (משפחה)
   { id: 'mcb3ph_16', family: 'mcb3ph', familyLabel: 'מפסק אוטומטי תלת-פאזי', size: '16A', label: 'מפסק אוטומטי תלת-פאזי 16A', icon: 'flash-on', category: 'safety', unit: 'piece' },
@@ -207,15 +193,11 @@ export const CATALOG = [
   // ============ קופסאות ============
 
   // קופסת בטון (משפחה — לקירות בטון)
-  { id: 'concreteBox_1', family: 'concreteBox', familyLabel: 'קופסת בטון', size: '1', label: 'קופסת בטון 1 מקום', icon: 'crop-square', category: 'boxes', unit: 'piece' },
-  { id: 'concreteBox_2', family: 'concreteBox', familyLabel: 'קופסת בטון', size: '2', label: 'קופסת בטון 2 מקומות', icon: 'crop-square', category: 'boxes', unit: 'piece' },
   { id: 'concreteBox_3', family: 'concreteBox', familyLabel: 'קופסת בטון', size: '3', label: 'קופסת בטון 3 מקומות', icon: 'crop-square', category: 'boxes', unit: 'piece' },
   { id: 'concreteBox_4', family: 'concreteBox', familyLabel: 'קופסת בטון', size: '4', label: 'קופסת בטון 4 מקומות', icon: 'crop-square', category: 'boxes', unit: 'piece' },
-  { id: 'concreteBox_5', family: 'concreteBox', familyLabel: 'קופסת בטון', size: '5', label: 'קופסת בטון 5 מקומות', icon: 'crop-square', category: 'boxes', unit: 'piece' },
+  { id: 'concreteBox_6', family: 'concreteBox', familyLabel: 'קופסת בטון', size: '6', label: 'קופסת בטון 6 מקומות', icon: 'crop-square', category: 'boxes', unit: 'piece' },
 
   // קופסת גבס (משפחה — לקירות גבס)
-  { id: 'gypsumBox_1', family: 'gypsumBox', familyLabel: 'קופסת גבס', size: '1', label: 'קופסת גבס 1 מקום', icon: 'crop-din', category: 'boxes', unit: 'piece' },
-  { id: 'gypsumBox_2', family: 'gypsumBox', familyLabel: 'קופסת גבס', size: '2', label: 'קופסת גבס 2 מקומות', icon: 'crop-din', category: 'boxes', unit: 'piece' },
   { id: 'gypsumBox_3', family: 'gypsumBox', familyLabel: 'קופסת גבס', size: '3', label: 'קופסת גבס 3 מקומות', icon: 'crop-din', category: 'boxes', unit: 'piece' },
   { id: 'gypsumBox_4', family: 'gypsumBox', familyLabel: 'קופסת גבס', size: '4', label: 'קופסת גבס 4 מקומות', icon: 'crop-din', category: 'boxes', unit: 'piece' },
   { id: 'gypsumBox_5', family: 'gypsumBox', familyLabel: 'קופסת גבס', size: '5', label: 'קופסת גבס 5 מקומות', icon: 'crop-din', category: 'boxes', unit: 'piece' },
@@ -225,19 +207,16 @@ export const CATALOG = [
   { id: 'frame_2', family: 'frame', familyLabel: 'מסגרת', size: '2', label: 'מסגרת 2 מקומות', icon: 'crop-free', category: 'frames', unit: 'piece' },
   { id: 'frame_3', family: 'frame', familyLabel: 'מסגרת', size: '3', label: 'מסגרת 3 מקומות', icon: 'crop-free', category: 'frames', unit: 'piece' },
   { id: 'frame_4', family: 'frame', familyLabel: 'מסגרת', size: '4', label: 'מסגרת 4 מקומות', icon: 'crop-free', category: 'frames', unit: 'piece' },
-  { id: 'frame_5', family: 'frame', familyLabel: 'מסגרת', size: '5', label: 'מסגרת 5 מקומות', icon: 'crop-free', category: 'frames', unit: 'piece' },
+  { id: 'frame_6', family: 'frame', familyLabel: 'מסגרת', size: '6', label: 'מסגרת 6 מקומות', icon: 'crop-free', category: 'frames', unit: 'piece' },
 
-  // מתאמים לקופסאות חשמל
-  { id: 'adapterConcrete_3', family: 'adapterConcrete', familyLabel: 'מתאם לקופסת בטון', size: '3', label: 'מתאם לקופסת בטון 3 מקומות', icon: 'extension', category: 'boxes', unit: 'piece' },
-  { id: 'adapterConcrete_4', family: 'adapterConcrete', familyLabel: 'מתאם לקופסת בטון', size: '4', label: 'מתאם לקופסת בטון 4 מקומות', icon: 'extension', category: 'boxes', unit: 'piece' },
-  { id: 'adapterConcrete_5', family: 'adapterConcrete', familyLabel: 'מתאם לקופסת בטון', size: '5', label: 'מתאם לקופסת בטון 5 מקומות', icon: 'extension', category: 'boxes', unit: 'piece' },
-  { id: 'adapterGypsum_3', family: 'adapterGypsum', familyLabel: 'מתאם לקופסת גבס', size: '3', label: 'מתאם לקופסת גבס 3 מקומות', icon: 'extension', category: 'boxes', unit: 'piece' },
-  { id: 'adapterGypsum_4', family: 'adapterGypsum', familyLabel: 'מתאם לקופסת גבס', size: '4', label: 'מתאם לקופסת גבס 4 מקומות', icon: 'extension', category: 'boxes', unit: 'piece' },
-  { id: 'adapterGypsum_5', family: 'adapterGypsum', familyLabel: 'מתאם לקופסת גבס', size: '5', label: 'מתאם לקופסת גבס 5 מקומות', icon: 'extension', category: 'boxes', unit: 'piece' },
+  // מתאמים לקופסאות חשמל (מתאם אחיד — מתאים גם לבטון וגם לגבס)
+  { id: 'adapterConcrete_3', family: 'adapterConcrete', familyLabel: 'מתאם', size: '3', label: 'מתאם 3 מקומות', icon: 'extension', category: 'boxes', unit: 'piece' },
+  { id: 'adapterConcrete_4', family: 'adapterConcrete', familyLabel: 'מתאם', size: '4', label: 'מתאם 4 מקומות', icon: 'extension', category: 'boxes', unit: 'piece' },
+  { id: 'adapterConcrete_6', family: 'adapterConcrete', familyLabel: 'מתאם', size: '6', label: 'מתאם 6 מקומות', icon: 'extension', category: 'boxes', unit: 'piece' },
 
   // קופסאות אחרות
   { id: 'ceilingBox', label: 'קופסת תקרה (הסתעפות)', icon: 'crop-square', category: 'boxes', unit: 'piece' },
-  { id: 'officeFloorBox', label: 'קופסת אופיס (רצפה/קיר)', icon: 'view-quilt', category: 'boxes', unit: 'piece' },
+  { id: 'officeFloorBox', label: 'קופסת אופיס', icon: 'view-quilt', category: 'boxes', unit: 'piece' },
 
   // ============ אביזרים נוספים (חשמלאי) ============
   { id: 'electricalTape', label: 'בידוד (סלוטייפ חשמלאי)', icon: 'colorize', category: 'misc', unit: 'piece' },
@@ -251,7 +230,7 @@ export const CATALOG = [
   { id: 'smartLockYale', label: 'מנעול חכם דלת', icon: 'lock', category: 'smartHome', unit: 'piece' },
   { id: 'evCharger7kw', label: 'עמדת טעינה לרכב חשמלי 7kW', icon: 'ev-station', category: 'energy', unit: 'piece' },
   { id: 'evCharger22kw', label: 'עמדת טעינה לרכב חשמלי 22kW', icon: 'ev-station', category: 'energy', unit: 'piece' },
-  { id: 'acPoint', label: 'נקודת מזגן (חשמל + ניקוז)', icon: 'ac-unit', category: 'outlets', unit: 'point' },
+  { id: 'acPoint', label: 'פקט למזגן', icon: 'ac-unit', category: 'outlets', unit: 'point' },
   { id: 'solarInverter5kw', label: 'אינוורטר סולארי 5kW', icon: 'solar-power', category: 'energy', unit: 'piece' },
   { id: 'solarPanel400w', label: 'פאנל סולארי 400W', icon: 'solar-power', category: 'energy', unit: 'piece' },
   { id: 'floorHeatingPad', label: 'יריעת חימום רצפה חשמלית', icon: 'thermostat', category: 'energy', unit: 'meter' },

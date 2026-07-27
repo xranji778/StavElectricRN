@@ -252,7 +252,7 @@ export default function RatesScreen() {
                                   {familyItems.map((sub) => (
                                     <View key={sub.id} style={styles.field}>
                                       <View style={styles.fieldLabelRow}>
-                                        <Text style={styles.fieldLabel}>{sub.size} mm</Text>
+                                        <Text style={styles.fieldLabel}>{sub.size}{sub.sizeUnit || ' mm'}</Text>
                                         <Text style={styles.fieldUnit}>{t('unit.' + sub.unit)}</Text>
                                       </View>
                                       <View style={styles.inputWrap}>

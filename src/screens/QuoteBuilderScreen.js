@@ -956,7 +956,7 @@ export default function QuoteBuilderScreen({ navigation }) {
                     <Text style={[styles.sizeBadgeText, selected && { color: '#fff' }]}>{item.size}</Text>
                   </View>
                   <View style={{ flex: 1, marginHorizontal: 12 }}>
-                    <Text style={styles.itemLabel}>{item.size} mm</Text>
+                    <Text style={styles.itemLabel}>{item.size}{item.sizeUnit || ' mm'}</Text>
                     <Text style={styles.itemPrice}>
                       {formatILS(price)} / {t('unit.' + item.unit)}
                       {lineTotal > 0 ? ` · ${t('home.total')} ${formatILS(lineTotal)}` : ''}

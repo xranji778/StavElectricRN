@@ -1,10 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const ratesKey = (userId) => `stavelectric.rates.${userId}.v2`;
-const quotesKey = (userId) => `stavelectric.quotes.${userId}.v2`;
-const clientsKey = (userId) => `stavelectric.clients.${userId}.v1`;
-const eventsKey = (userId) => `stavelectric.events.${userId}.v1`;
-const customItemsKey = (userId) => `stavelectric.customItems.${userId}.v1`;
+import {
+  collection, doc, getDoc, getDocs, setDoc, deleteDoc,
+} from '@firebase/firestore';
+import { db } from '../firebase/firebaseConfig';
 
 const CONDUIT_MIGRATION = {
   conduit16: 'conduitMarichef_16',
@@ -36,14 +34,24 @@ function migrateRates(rates) {
   return { rates: next, changed };
 }
 
+function userDoc(userId, ...segments) {
+  return doc(db, 'users', userId, ...segments);
+}
+
+function userCollection(userId, name) {
+  return collection(db, 'users', userId, name);
+}
+
+// ---- Rates ----
+
 export async function loadRates(userId) {
   if (!userId) return {};
   try {
-    const raw = await AsyncStorage.getItem(ratesKey(userId));
-    const parsed = raw ? JSON.parse(raw) : {};
+    const snap = await getDoc(userDoc(userId, 'meta', 'rates'));
+    const parsed = snap.exists() ? (snap.data().values || {}) : {};
     const { rates, changed } = migrateRates(parsed);
     if (changed) {
-      await AsyncStorage.setItem(ratesKey(userId), JSON.stringify(rates));
+      await setDoc(userDoc(userId, 'meta', 'rates'), { values: rates });
     }
     return rates;
   } catch (e) {
@@ -53,7 +61,7 @@ export async function loadRates(userId) {
 
 export async function saveRates(userId, rates) {
   if (!userId) return;
-  await AsyncStorage.setItem(ratesKey(userId), JSON.stringify(rates));
+  await setDoc(userDoc(userId, 'meta', 'rates'), { values: rates });
 }
 
 export function hasAnyRate(rates) {
@@ -61,13 +69,18 @@ export function hasAnyRate(rates) {
   return Object.values(rates).some((v) => Number(v) > 0);
 }
 
+// ---- Quotes ----
+
 export async function loadQuotes(userId) {
   if (!userId) return [];
   try {
-    const raw = await AsyncStorage.getItem(quotesKey(userId));
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return parsed.map((q) => ({ ...q, createdAt: new Date(q.createdAt) }));
+    const snap = await getDocs(userCollection(userId, 'quotes'));
+    const list = snap.docs.map((d) => {
+      const data = d.data();
+      return { ...data, id: d.id, createdAt: new Date(data.createdAt) };
+    });
+    list.sort((a, b) => b.createdAt - a.createdAt);
+    return list;
   } catch (e) {
     return [];
   }
@@ -75,39 +88,38 @@ export async function loadQuotes(userId) {
 
 export async function saveQuote(userId, quote) {
   if (!userId) return [];
-  const all = await loadQuotes(userId);
-  const next = [quote, ...all];
-  await persistQuotes(userId, next);
-  return next;
+  const { id, createdAt, ...rest } = quote;
+  await setDoc(userDoc(userId, 'quotes', id), {
+    ...rest,
+    createdAt: createdAt instanceof Date ? createdAt.toISOString() : createdAt,
+  });
+  return loadQuotes(userId);
 }
 
 export async function updateQuote(userId, quoteId, patch) {
   if (!userId) return [];
-  const all = await loadQuotes(userId);
-  const next = all.map((q) => (q.id === quoteId ? { ...q, ...patch, id: quoteId } : q));
-  await persistQuotes(userId, next);
-  return next;
+  const patchData = { ...patch };
+  if (patchData.createdAt instanceof Date) patchData.createdAt = patchData.createdAt.toISOString();
+  await setDoc(userDoc(userId, 'quotes', quoteId), patchData, { merge: true });
+  return loadQuotes(userId);
 }
 
 export async function getQuoteById(userId, quoteId) {
   if (!userId || !quoteId) return null;
-  const all = await loadQuotes(userId);
-  return all.find((q) => q.id === quoteId) || null;
+  try {
+    const snap = await getDoc(userDoc(userId, 'quotes', quoteId));
+    if (!snap.exists()) return null;
+    const data = snap.data();
+    return { ...data, id: snap.id, createdAt: new Date(data.createdAt) };
+  } catch (e) {
+    return null;
+  }
 }
 
 export async function deleteQuote(userId, quoteId) {
   if (!userId) return [];
-  const all = await loadQuotes(userId);
-  const next = all.filter((q) => q.id !== quoteId);
-  await persistQuotes(userId, next);
-  return next;
-}
-
-async function persistQuotes(userId, quotes) {
-  await AsyncStorage.setItem(
-    quotesKey(userId),
-    JSON.stringify(quotes.map((q) => ({ ...q, createdAt: q.createdAt.toISOString() }))),
-  );
+  await deleteDoc(userDoc(userId, 'quotes', quoteId));
+  return loadQuotes(userId);
 }
 
 // ---- Clients ----
@@ -115,14 +127,16 @@ async function persistQuotes(userId, quotes) {
 export async function loadClients(userId) {
   if (!userId) return [];
   try {
-    const raw = await AsyncStorage.getItem(clientsKey(userId));
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return parsed.map((c) => ({
-      ...c,
-      createdAt: c.createdAt ? new Date(c.createdAt) : new Date(),
-      lastUsedAt: c.lastUsedAt ? new Date(c.lastUsedAt) : null,
-    }));
+    const snap = await getDocs(userCollection(userId, 'clients'));
+    return snap.docs.map((d) => {
+      const data = d.data();
+      return {
+        ...data,
+        id: d.id,
+        createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+        lastUsedAt: data.lastUsedAt ? new Date(data.lastUsedAt) : null,
+      };
+    });
   } catch (e) {
     return [];
   }
@@ -130,22 +144,24 @@ export async function loadClients(userId) {
 
 export async function saveClient(userId, client) {
   if (!userId || !client) return [];
-  const all = await loadClients(userId);
   const id = client.id || String(Date.now());
-  const existing = all.find((c) => c.id === id);
-  const next = existing
-    ? all.map((c) => (c.id === id ? { ...c, ...client, id } : c))
-    : [{ ...client, id, createdAt: new Date() }, ...all];
-  await persistClients(userId, next);
-  return next;
+  const existingSnap = await getDoc(userDoc(userId, 'clients', id));
+  const createdAt = existingSnap.exists()
+    ? existingSnap.data().createdAt
+    : new Date().toISOString();
+  const { id: _drop, createdAt: _dropCA, lastUsedAt, ...rest } = client;
+  await setDoc(userDoc(userId, 'clients', id), {
+    ...rest,
+    createdAt,
+    lastUsedAt: lastUsedAt instanceof Date ? lastUsedAt.toISOString() : (lastUsedAt || null),
+  });
+  return loadClients(userId);
 }
 
 export async function deleteClient(userId, clientId) {
   if (!userId) return [];
-  const all = await loadClients(userId);
-  const next = all.filter((c) => c.id !== clientId);
-  await persistClients(userId, next);
-  return next;
+  await deleteDoc(userDoc(userId, 'clients', clientId));
+  return loadClients(userId);
 }
 
 export async function upsertClientFromQuote(userId, { name, phone, address }) {
@@ -159,30 +175,26 @@ export async function upsertClientFromQuote(userId, { name, phone, address }) {
     (c) => c.name.trim() === trimmedName || (trimmedPhone && c.phone && c.phone.trim() === trimmedPhone),
   );
   if (match) {
-    const next = all.map((c) =>
-      c.id === match.id ? {
-        ...c,
-        name: trimmedName,
-        phone: trimmedPhone || c.phone || null,
-        address: trimmedAddress || c.address || null,
-        lastUsedAt: new Date(),
-      } : c,
-    );
-    await persistClients(userId, next);
-    return next;
+    await setDoc(userDoc(userId, 'clients', match.id), {
+      name: trimmedName,
+      phone: trimmedPhone || match.phone || null,
+      address: trimmedAddress || match.address || null,
+      email: match.email || null,
+      createdAt: match.createdAt instanceof Date ? match.createdAt.toISOString() : match.createdAt,
+      lastUsedAt: new Date().toISOString(),
+    });
+  } else {
+    const id = String(Date.now());
+    await setDoc(userDoc(userId, 'clients', id), {
+      name: trimmedName,
+      phone: trimmedPhone || null,
+      address: trimmedAddress || null,
+      email: null,
+      createdAt: new Date().toISOString(),
+      lastUsedAt: new Date().toISOString(),
+    });
   }
-  const fresh = {
-    id: String(Date.now()),
-    name: trimmedName,
-    phone: trimmedPhone || null,
-    address: trimmedAddress || null,
-    email: null,
-    createdAt: new Date(),
-    lastUsedAt: new Date(),
-  };
-  const next = [fresh, ...all];
-  await persistClients(userId, next);
-  return next;
+  return loadClients(userId);
 }
 
 // ---- Schedule events (jobs + reminders) ----
@@ -190,9 +202,8 @@ export async function upsertClientFromQuote(userId, { name, phone, address }) {
 export async function loadEvents(userId) {
   if (!userId) return [];
   try {
-    const raw = await AsyncStorage.getItem(eventsKey(userId));
-    if (!raw) return [];
-    return JSON.parse(raw);
+    const snap = await getDocs(userCollection(userId, 'events'));
+    return snap.docs.map((d) => ({ ...d.data(), id: d.id }));
   } catch (e) {
     return [];
   }
@@ -200,22 +211,18 @@ export async function loadEvents(userId) {
 
 export async function saveEvent(userId, event) {
   if (!userId || !event) return [];
-  const all = await loadEvents(userId);
   const id = event.id || String(Date.now());
-  const existing = all.find((e) => e.id === id);
-  const next = existing
-    ? all.map((e) => (e.id === id ? { ...e, ...event, id } : e))
-    : [...all, { ...event, id, createdAt: Date.now() }];
-  await AsyncStorage.setItem(eventsKey(userId), JSON.stringify(next));
-  return next;
+  const existingSnap = await getDoc(userDoc(userId, 'events', id));
+  const createdAt = existingSnap.exists() ? existingSnap.data().createdAt : Date.now();
+  const { id: _drop, ...rest } = event;
+  await setDoc(userDoc(userId, 'events', id), { ...rest, createdAt });
+  return loadEvents(userId);
 }
 
 export async function deleteEvent(userId, eventId) {
   if (!userId) return [];
-  const all = await loadEvents(userId);
-  const next = all.filter((e) => e.id !== eventId);
-  await AsyncStorage.setItem(eventsKey(userId), JSON.stringify(next));
-  return next;
+  await deleteDoc(userDoc(userId, 'events', eventId));
+  return loadEvents(userId);
 }
 
 // ---- Custom items (user-defined catalog entries) ----
@@ -223,9 +230,8 @@ export async function deleteEvent(userId, eventId) {
 export async function loadCustomItems(userId) {
   if (!userId) return [];
   try {
-    const raw = await AsyncStorage.getItem(customItemsKey(userId));
-    if (!raw) return [];
-    return JSON.parse(raw);
+    const snap = await getDocs(userCollection(userId, 'customItems'));
+    return snap.docs.map((d) => ({ ...d.data(), id: d.id }));
   } catch (e) {
     return [];
   }
@@ -233,55 +239,40 @@ export async function loadCustomItems(userId) {
 
 export async function saveCustomItem(userId, item) {
   if (!userId || !item) return [];
-  const all = await loadCustomItems(userId);
   const id = item.id || `custom_${Date.now()}`;
-  const existing = all.find((i) => i.id === id);
-  const next = existing
-    ? all.map((i) => (i.id === id ? { ...i, ...item, id } : i))
-    : [{ ...item, id, createdAt: item.createdAt || Date.now() }, ...all];
-  await AsyncStorage.setItem(customItemsKey(userId), JSON.stringify(next));
-  return next;
+  const existingSnap = await getDoc(userDoc(userId, 'customItems', id));
+  const createdAt = existingSnap.exists() ? existingSnap.data().createdAt : (item.createdAt || Date.now());
+  const { id: _drop, ...rest } = item;
+  await setDoc(userDoc(userId, 'customItems', id), { ...rest, createdAt });
+  return loadCustomItems(userId);
 }
 
 export async function deleteCustomItem(userId, itemId) {
   if (!userId) return [];
-  const all = await loadCustomItems(userId);
-  const next = all.filter((i) => i.id !== itemId);
-  await AsyncStorage.setItem(customItemsKey(userId), JSON.stringify(next));
-  return next;
+  await deleteDoc(userDoc(userId, 'customItems', itemId));
+  return loadCustomItems(userId);
 }
 
-async function persistClients(userId, clients) {
-  await AsyncStorage.setItem(
-    clientsKey(userId),
-    JSON.stringify(
-      clients.map((c) => ({
-        ...c,
-        createdAt: c.createdAt instanceof Date ? c.createdAt.toISOString() : c.createdAt,
-        lastUsedAt: c.lastUsedAt instanceof Date ? c.lastUsedAt.toISOString() : c.lastUsedAt,
-      })),
-    ),
-  );
-}
+// ---- Backup / restore (JSON file export-import, reads/writes the live cloud data) ----
 
 export async function exportAllUserData(userId) {
-  const [ratesRaw, quotesRaw, clientsRaw, eventsRaw, customItemsRaw] = await Promise.all([
-    AsyncStorage.getItem(ratesKey(userId)),
-    AsyncStorage.getItem(quotesKey(userId)),
-    AsyncStorage.getItem(clientsKey(userId)),
-    AsyncStorage.getItem(eventsKey(userId)),
-    AsyncStorage.getItem(customItemsKey(userId)),
+  const [ratesSnap, quotesSnap, clientsSnap, eventsSnap, customItemsSnap] = await Promise.all([
+    getDoc(userDoc(userId, 'meta', 'rates')),
+    getDocs(userCollection(userId, 'quotes')),
+    getDocs(userCollection(userId, 'clients')),
+    getDocs(userCollection(userId, 'events')),
+    getDocs(userCollection(userId, 'customItems')),
   ]);
   return {
     schema: 'proquote.backup',
     schemaVersion: 2,
     exportedAt: new Date().toISOString(),
     userId,
-    rates: ratesRaw ? JSON.parse(ratesRaw) : {},
-    quotes: quotesRaw ? JSON.parse(quotesRaw) : [],
-    clients: clientsRaw ? JSON.parse(clientsRaw) : [],
-    events: eventsRaw ? JSON.parse(eventsRaw) : [],
-    customItems: customItemsRaw ? JSON.parse(customItemsRaw) : [],
+    rates: ratesSnap.exists() ? (ratesSnap.data().values || {}) : {},
+    quotes: quotesSnap.docs.map((d) => ({ ...d.data(), id: d.id })),
+    clients: clientsSnap.docs.map((d) => ({ ...d.data(), id: d.id })),
+    events: eventsSnap.docs.map((d) => ({ ...d.data(), id: d.id })),
+    customItems: customItemsSnap.docs.map((d) => ({ ...d.data(), id: d.id })),
   };
 }
 
@@ -290,11 +281,23 @@ export async function importAllUserData(userId, backup) {
     throw new Error('קובץ הגיבוי לא תקין');
   }
   const ops = [];
-  if (backup.rates) ops.push(AsyncStorage.setItem(ratesKey(userId), JSON.stringify(backup.rates)));
-  if (backup.quotes) ops.push(AsyncStorage.setItem(quotesKey(userId), JSON.stringify(backup.quotes)));
-  if (backup.clients) ops.push(AsyncStorage.setItem(clientsKey(userId), JSON.stringify(backup.clients)));
-  if (backup.events) ops.push(AsyncStorage.setItem(eventsKey(userId), JSON.stringify(backup.events)));
-  if (backup.customItems) ops.push(AsyncStorage.setItem(customItemsKey(userId), JSON.stringify(backup.customItems)));
+  if (backup.rates) {
+    ops.push(setDoc(userDoc(userId, 'meta', 'rates'), { values: backup.rates }));
+  }
+  const collections = [
+    ['quotes', backup.quotes],
+    ['clients', backup.clients],
+    ['events', backup.events],
+    ['customItems', backup.customItems],
+  ];
+  for (const [name, items] of collections) {
+    if (!items) continue;
+    for (const item of items) {
+      const { id, ...rest } = item;
+      const docId = id || `${name}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      ops.push(setDoc(userDoc(userId, name, docId), rest));
+    }
+  }
   await Promise.all(ops);
   return {
     rates: backup.rates ? Object.keys(backup.rates).length : 0,
@@ -303,4 +306,77 @@ export async function importAllUserData(userId, backup) {
     events: backup.events ? backup.events.length : 0,
     customItems: backup.customItems ? backup.customItems.length : 0,
   };
+}
+
+// ---- One-time on-device -> cloud migration ----
+// Before this Firestore migration, all data above lived only in AsyncStorage under
+// these same key names. This copies whatever is already sitting on the device into
+// Firestore exactly once per account (guarded by a flag), so nothing is lost when a
+// user's data moves from local-only to cloud-backed storage.
+
+const LOCAL_SYNCED_FLAG_PREFIX = 'stavelectric.firestoreSynced.';
+const legacyRatesKey = (userId) => `stavelectric.rates.${userId}.v2`;
+const legacyQuotesKey = (userId) => `stavelectric.quotes.${userId}.v2`;
+const legacyClientsKey = (userId) => `stavelectric.clients.${userId}.v1`;
+const legacyEventsKey = (userId) => `stavelectric.events.${userId}.v1`;
+const legacyCustomItemsKey = (userId) => `stavelectric.customItems.${userId}.v1`;
+
+// Pure AsyncStorage-to-AsyncStorage copy: carries a pre-Firebase local account's data
+// (keyed by its old username) over to the new Firebase-uid keys, entirely on-device.
+// Does not touch Firestore — migrateLocalDataToFirestore (below) handles that next.
+export async function copyLegacyLocalData(oldUserId, newUserId) {
+  const [ratesRaw, quotesRaw, clientsRaw, eventsRaw, customItemsRaw] = await Promise.all([
+    AsyncStorage.getItem(legacyRatesKey(oldUserId)),
+    AsyncStorage.getItem(legacyQuotesKey(oldUserId)),
+    AsyncStorage.getItem(legacyClientsKey(oldUserId)),
+    AsyncStorage.getItem(legacyEventsKey(oldUserId)),
+    AsyncStorage.getItem(legacyCustomItemsKey(oldUserId)),
+  ]);
+  const ops = [];
+  if (ratesRaw) ops.push(AsyncStorage.setItem(legacyRatesKey(newUserId), ratesRaw));
+  if (quotesRaw) ops.push(AsyncStorage.setItem(legacyQuotesKey(newUserId), quotesRaw));
+  if (clientsRaw) ops.push(AsyncStorage.setItem(legacyClientsKey(newUserId), clientsRaw));
+  if (eventsRaw) ops.push(AsyncStorage.setItem(legacyEventsKey(newUserId), eventsRaw));
+  if (customItemsRaw) ops.push(AsyncStorage.setItem(legacyCustomItemsKey(newUserId), customItemsRaw));
+  await Promise.all(ops);
+}
+
+export async function migrateLocalDataToFirestore(userId) {
+  if (!userId) return;
+  try {
+    const flagKey = LOCAL_SYNCED_FLAG_PREFIX + userId;
+    if (await AsyncStorage.getItem(flagKey)) return;
+
+    const [ratesRaw, quotesRaw, clientsRaw, eventsRaw, customItemsRaw] = await Promise.all([
+      AsyncStorage.getItem(legacyRatesKey(userId)),
+      AsyncStorage.getItem(legacyQuotesKey(userId)),
+      AsyncStorage.getItem(legacyClientsKey(userId)),
+      AsyncStorage.getItem(legacyEventsKey(userId)),
+      AsyncStorage.getItem(legacyCustomItemsKey(userId)),
+    ]);
+
+    const ops = [];
+    if (ratesRaw) {
+      const { rates } = migrateRates(JSON.parse(ratesRaw));
+      ops.push(setDoc(userDoc(userId, 'meta', 'rates'), { values: rates }));
+    }
+    const collectionRaws = [
+      ['quotes', quotesRaw],
+      ['clients', clientsRaw],
+      ['events', eventsRaw],
+      ['customItems', customItemsRaw],
+    ];
+    for (const [name, raw] of collectionRaws) {
+      if (!raw) continue;
+      for (const item of JSON.parse(raw)) {
+        const { id, ...rest } = item;
+        if (!id) continue;
+        ops.push(setDoc(userDoc(userId, name, id), rest));
+      }
+    }
+    await Promise.all(ops);
+    await AsyncStorage.setItem(flagKey, '1');
+  } catch (e) {
+    // Best-effort; never block the app on this.
+  }
 }

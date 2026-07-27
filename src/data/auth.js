@@ -1,30 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Crypto from 'expo-crypto';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  updateProfile as updateAuthProfile,
+} from '@firebase/auth';
+import { doc, getDoc, setDoc } from '@firebase/firestore';
+import { auth, db } from '../firebase/firebaseConfig';
+import { copyLegacyLocalData, migrateLocalDataToFirestore } from './storage';
 
-const USERS_KEY = 'stavelectric.users.v1';
-const SESSION_KEY = 'stavelectric.session.v1';
-const HASH_ITERATIONS = 1000;
-const HASH_VERSION = 1;
-
-function bytesToHex(bytes) {
-  return Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-async function generateSalt() {
-  const bytes = await Crypto.getRandomBytesAsync(16);
-  return bytesToHex(bytes);
-}
-
-async function hashPassword(password, salt) {
-  let current = `${salt}:${password}`;
-  for (let i = 0; i < HASH_ITERATIONS; i += 1) {
-    current = await Crypto.digestStringAsync(
-      Crypto.CryptoDigestAlgorithm.SHA256,
-      current,
-    );
-  }
-  return current;
-}
+const LEGACY_USERS_KEY = 'stavelectric.users.v1';
+const LEGACY_MIGRATED_PREFIX = 'stavelectric.legacyMigrated.';
 
 export const PROFESSION_IDS = ['electrician', 'plumber', 'comms', 'contractor'];
 
@@ -35,26 +23,8 @@ export const PROFESSIONS = [
   { id: 'contractor', label: 'שיפוצניק', icon: 'construction', emoji: '🎨' },
 ];
 
-async function readUsers() {
-  try {
-    const raw = await AsyncStorage.getItem(USERS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    return [];
-  }
-}
-
-async function writeUsers(users) {
-  await AsyncStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-function normalizeUsername(u) {
-  return String(u || '').trim().toLowerCase();
-}
-
 function validateEmail(email) {
-  if (!email) return true;
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || ''));
 }
 
 function validatePhone(phone) {
@@ -68,106 +38,172 @@ function sanitizeProfessions(list) {
   return cleaned.length > 0 ? Array.from(new Set(cleaned)) : ['electrician'];
 }
 
-export async function register({ displayName, username, password, email, phone, professions }) {
+function mapAuthError(e) {
+  const code = e?.code || '';
+  const messages = {
+    'auth/email-already-in-use': 'כתובת האימייל הזו כבר רשומה במערכת',
+    'auth/invalid-email': 'כתובת אימייל לא תקינה',
+    'auth/weak-password': 'הסיסמה חלשה מדי',
+    'auth/invalid-credential': 'אימייל או סיסמה שגויים',
+    'auth/user-not-found': 'אימייל או סיסמה שגויים',
+    'auth/wrong-password': 'אימייל או סיסמה שגויים',
+    'auth/too-many-requests': 'יותר מדי ניסיונות — נסה שוב בעוד כמה דקות',
+    'auth/network-request-failed': 'בעיית תקשורת — בדוק את החיבור לאינטרנט',
+  };
+  return new Error(messages[code] || e?.message || 'אירעה שגיאה');
+}
+
+// One-time, best-effort copy of this device's pre-Firebase local data (rates/quotes/
+// clients/events/customItems) from the old username-keyed storage into the new
+// Firebase-uid-keyed storage, so nothing appears to vanish when switching accounts.
+// Non-destructive: the old data is left untouched. Full Firestore cloud sync is a
+// separate, later step — this only keeps the existing on-device data reachable.
+async function migrateLegacyDataIfNeeded(firebaseUser) {
+  try {
+    const flagKey = LEGACY_MIGRATED_PREFIX + firebaseUser.uid;
+    const already = await AsyncStorage.getItem(flagKey);
+    if (already) return;
+
+    const raw = await AsyncStorage.getItem(LEGACY_USERS_KEY);
+    const legacyUsers = raw ? JSON.parse(raw) : [];
+    if (legacyUsers.length > 0) {
+      const email = (firebaseUser.email || '').toLowerCase();
+      let match = email ? legacyUsers.find((u) => (u.email || '').toLowerCase() === email) : null;
+      if (!match && legacyUsers.length === 1) {
+        match = legacyUsers[0];
+      }
+      if (match) {
+        await copyLegacyLocalData(match.id, firebaseUser.uid);
+      }
+    }
+    await AsyncStorage.setItem(flagKey, '1');
+  } catch (e) {
+    // Never let this block login/registration.
+  }
+}
+
+async function fetchProfileDoc(uid) {
+  try {
+    const snap = await getDoc(doc(db, 'users', uid));
+    return snap.exists() ? snap.data() : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function publicUser(fbUser, profileData) {
+  const professions = sanitizeProfessions(profileData?.professions);
+  const activeProfession = professions.includes(profileData?.activeProfession)
+    ? profileData.activeProfession
+    : professions[0];
+  return {
+    id: fbUser.uid,
+    email: fbUser.email,
+    emailVerified: !!fbUser.emailVerified,
+    displayName: profileData?.displayName || fbUser.displayName || '',
+    businessName: profileData?.businessName || null,
+    phone: profileData?.phone || null,
+    licenseNumber: profileData?.licenseNumber || null,
+    address: profileData?.address || null,
+    bitPhone: profileData?.bitPhone || null,
+    professions,
+    activeProfession,
+    createdAt: profileData?.createdAt || null,
+  };
+}
+
+export async function register({ displayName, email, password, phone, professions }) {
   const name = String(displayName || '').trim();
-  const u = normalizeUsername(username);
-  const p = String(password || '');
   const em = String(email || '').trim();
+  const p = String(password || '');
   const ph = String(phone || '').trim();
   const profs = sanitizeProfessions(professions);
 
   if (!name) throw new Error('יש להזין שם תצוגה');
-  if (u.length < 4) throw new Error('שם משתמש חייב להיות לפחות 4 תווים');
-  if (!/^[a-z0-9_.-]+$/.test(u)) throw new Error('שם משתמש: רק אותיות באנגלית, ספרות, ונקודה/קו-תחתון');
+  if (!validateEmail(em)) throw new Error('כתובת אימייל לא תקינה');
   if (p.length < 8) throw new Error('סיסמה חייבת להיות לפחות 8 תווים');
   if (!/[A-Za-z]/.test(p)) throw new Error('הסיסמה חייבת לכלול לפחות אות אחת');
   if (!/[0-9]/.test(p)) throw new Error('הסיסמה חייבת לכלול לפחות ספרה אחת');
-  if (em && !validateEmail(em)) throw new Error('אימייל לא תקין');
   if (ph && !validatePhone(ph)) throw new Error('מספר טלפון לא תקין');
 
-  const users = await readUsers();
-  if (users.some((x) => x.username === u)) {
-    throw new Error('שם המשתמש כבר תפוס');
+  let cred;
+  try {
+    cred = await createUserWithEmailAndPassword(auth, em, p);
+  } catch (e) {
+    throw mapAuthError(e);
   }
 
-  const passwordSalt = await generateSalt();
-  const passwordHash = await hashPassword(p, passwordSalt);
-
-  const user = {
-    id: u,
-    username: u,
+  const profileData = {
     displayName: name,
-    passwordHash,
-    passwordSalt,
-    hashVersion: HASH_VERSION,
-    email: em || null,
     phone: ph || null,
+    businessName: null,
+    licenseNumber: null,
+    address: null,
+    bitPhone: null,
     professions: profs,
     activeProfession: profs[0],
     createdAt: new Date().toISOString(),
   };
-  users.push(user);
-  await writeUsers(users);
-  await AsyncStorage.setItem(SESSION_KEY, u);
-  return publicUser(user);
+
+  await Promise.all([
+    setDoc(doc(db, 'users', cred.user.uid), profileData),
+    updateAuthProfile(cred.user, { displayName: name }).catch(() => {}),
+    sendEmailVerification(cred.user).catch(() => {}),
+  ]);
+
+  await migrateLegacyDataIfNeeded(cred.user);
+  await migrateLocalDataToFirestore(cred.user.uid);
+  return publicUser(cred.user, profileData);
 }
 
-export async function login({ username, password }) {
-  const u = normalizeUsername(username);
+export async function login({ email, password }) {
+  const em = String(email || '').trim();
   const p = String(password || '');
-  if (!u || !p) throw new Error('יש להזין שם משתמש וסיסמה');
+  if (!em || !p) throw new Error('יש להזין אימייל וסיסמה');
 
-  const users = await readUsers();
-  const idx = users.findIndex((x) => x.username === u);
-  if (idx < 0) {
-    throw new Error('שם משתמש או סיסמה שגויים');
-  }
-  const match = users[idx];
-
-  let ok = false;
-  if (match.passwordHash && match.passwordSalt) {
-    const candidate = await hashPassword(p, match.passwordSalt);
-    ok = candidate === match.passwordHash;
-  } else if (typeof match.password === 'string') {
-    // Legacy plaintext user — verify, then upgrade to hashed on the fly.
-    ok = match.password === p;
-    if (ok) {
-      const passwordSalt = await generateSalt();
-      const passwordHash = await hashPassword(p, passwordSalt);
-      const upgraded = { ...match, passwordHash, passwordSalt, hashVersion: HASH_VERSION };
-      delete upgraded.password;
-      users[idx] = upgraded;
-      await writeUsers(users);
-    }
+  let cred;
+  try {
+    cred = await signInWithEmailAndPassword(auth, em, p);
+  } catch (e) {
+    throw mapAuthError(e);
   }
 
-  if (!ok) {
-    throw new Error('שם משתמש או סיסמה שגויים');
-  }
-  await AsyncStorage.setItem(SESSION_KEY, u);
-  return publicUser(users[idx]);
+  await migrateLegacyDataIfNeeded(cred.user);
+  await migrateLocalDataToFirestore(cred.user.uid);
+  const profileData = await fetchProfileDoc(cred.user.uid);
+  return publicUser(cred.user, profileData);
 }
 
 export async function logout() {
-  await AsyncStorage.removeItem(SESSION_KEY);
+  await signOut(auth);
 }
 
 export async function getCurrentUser() {
-  const sessionId = await AsyncStorage.getItem(SESSION_KEY);
-  if (!sessionId) return null;
-  const users = await readUsers();
-  const match = users.find((x) => x.username === sessionId);
-  return match ? publicUser(match) : null;
+  const fbUser = auth.currentUser;
+  if (!fbUser) return null;
+  const profileData = await fetchProfileDoc(fbUser.uid);
+  return publicUser(fbUser, profileData);
+}
+
+export async function resetPassword(email) {
+  const em = String(email || '').trim();
+  if (!validateEmail(em)) throw new Error('כתובת אימייל לא תקינה');
+  try {
+    await sendPasswordResetEmail(auth, em);
+  } catch (e) {
+    throw mapAuthError(e);
+  }
+}
+
+export async function resendVerificationEmail() {
+  if (!auth.currentUser) return;
+  await sendEmailVerification(auth.currentUser).catch(() => {});
 }
 
 export async function updateProfile(userId, patch) {
-  const users = await readUsers();
-  const idx = users.findIndex((u) => u.id === userId);
-  if (idx < 0) throw new Error('המשתמש לא נמצא');
+  const current = (await fetchProfileDoc(userId)) || {};
 
-  const current = users[idx];
   const name = patch.displayName !== undefined ? String(patch.displayName).trim() : current.displayName;
-  const em = patch.email !== undefined ? String(patch.email).trim() : (current.email || '');
   const ph = patch.phone !== undefined ? String(patch.phone).trim() : (current.phone || '');
   const businessName = patch.businessName !== undefined
     ? String(patch.businessName).trim()
@@ -183,11 +219,12 @@ export async function updateProfile(userId, patch) {
     : (current.bitPhone || '');
 
   if (patch.displayName !== undefined && !name) throw new Error('שם תצוגה לא יכול להיות ריק');
-  if (em && !validateEmail(em)) throw new Error('אימייל לא תקין');
   if (ph && !validatePhone(ph)) throw new Error('מספר טלפון לא תקין');
 
-  let professions = current.professions;
-  let activeProfession = current.activeProfession;
+  let professions = sanitizeProfessions(current.professions);
+  let activeProfession = professions.includes(current.activeProfession)
+    ? current.activeProfession
+    : professions[0];
   if (patch.professions !== undefined) {
     professions = sanitizeProfessions(patch.professions);
     if (!professions.includes(activeProfession)) {
@@ -200,10 +237,9 @@ export async function updateProfile(userId, patch) {
     }
   }
 
-  users[idx] = {
+  const next = {
     ...current,
     displayName: name,
-    email: em || null,
     phone: ph || null,
     businessName: businessName || null,
     licenseNumber: licenseNumber || null,
@@ -212,32 +248,14 @@ export async function updateProfile(userId, patch) {
     professions,
     activeProfession,
   };
-  await writeUsers(users);
-  return publicUser(users[idx]);
+
+  await setDoc(doc(db, 'users', userId), next);
+  if (patch.displayName !== undefined && auth.currentUser) {
+    await updateAuthProfile(auth.currentUser, { displayName: name }).catch(() => {});
+  }
+  return publicUser(auth.currentUser, next);
 }
 
 export async function setActiveProfession(userId, professionId) {
   return updateProfile(userId, { activeProfession: professionId });
-}
-
-function publicUser(u) {
-  // Migrate legacy users that don't have professions yet
-  const professions = sanitizeProfessions(u.professions);
-  const activeProfession = professions.includes(u.activeProfession)
-    ? u.activeProfession
-    : professions[0];
-  return {
-    id: u.id,
-    username: u.username,
-    displayName: u.displayName,
-    email: u.email || null,
-    phone: u.phone || null,
-    businessName: u.businessName || null,
-    licenseNumber: u.licenseNumber || null,
-    address: u.address || null,
-    bitPhone: u.bitPhone || null,
-    professions,
-    activeProfession,
-    createdAt: u.createdAt,
-  };
 }
