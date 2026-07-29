@@ -1,5 +1,6 @@
-// One-off: read src/data/catalog.js and emit a printable + interactive HTML review sheet.
-// Output goes to Desktop for local viewing, and to docs/catalog-review.html for GitHub Pages hosting.
+// One-off: read src/data/catalog.js and emit a landing page + one review page per profession.
+// Electrician section is excluded — already reviewed by טובי.
+// Output goes to docs/ for GitHub Pages hosting (index.html = picker, review-<prof>.html = per-trade review).
 // Usage: node tools/export-catalog-html.mjs
 
 import fs from 'node:fs';
@@ -41,25 +42,24 @@ for (const it of items) {
   itemsByCat[it.category].push(it);
 }
 
+// Electrician already reviewed — not offered in the picker anymore.
+const PROFESSIONS = ['plumber', 'comms', 'contractor'];
+
 const professionLabels = {
-  electrician: { he: 'חשמלאי', emoji: '⚡', color: '#1E40AF' },
-  plumber: { he: 'אינסטלטור', emoji: '🔧', color: '#0E7490' },
-  comms: { he: 'איש תקשורת', emoji: '📡', color: '#6D28D9' },
-  contractor: { he: 'שיפוצניק', emoji: '🎨', color: '#B45309' },
-  shared: { he: 'משותף לכל המקצועות', emoji: '🧰', color: '#374151' },
+  plumber: { he: 'אינסטלטור', emoji: '🔧', color: '#0E7490', file: 'review-plumber.html' },
+  comms: { he: 'איש תקשורת', emoji: '📡', color: '#6D28D9', file: 'review-comms.html' },
+  contractor: { he: 'קבלן / שיפוצניק', emoji: '🎨', color: '#B45309', file: 'review-contractor.html' },
 };
 
 const unitLabels = { point: 'נק׳', piece: 'יח׳', meter: 'מטר' };
 
-const catsByProf = { electrician: [], plumber: [], comms: [], contractor: [], shared: [] };
+// Only categories exclusive to that one profession — shared/electrician items are left out.
+const catsByProf = { plumber: [], comms: [], contractor: [] };
 for (const c of categories) {
-  if (c.professions.length >= 4) catsByProf.shared.push(c);
-  else if (c.professions.length === 1) catsByProf[c.professions[0]].push(c);
-  else catsByProf.shared.push(c);
+  if (c.professions.length === 1 && catsByProf[c.professions[0]]) {
+    catsByProf[c.professions[0]].push(c);
+  }
 }
-
-const totalItems = items.length;
-const totalCategories = categories.length;
 
 function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -69,11 +69,10 @@ function renderCategory(cat) {
   const list = itemsByCat[cat.id] || [];
   if (list.length === 0) return '';
   const rows = list.map((it) => `
-    <tr data-item-id="${esc(it.id)}" data-item-label="${esc(it.label)}" data-cat-id="${esc(cat.id)}">
+    <tr data-item-id="${esc(it.id)}" data-item-label="${esc(it.label)}" data-cat-id="${esc(cat.id)}" data-mark="">
       <td class="check">
-        <label class="opt opt-keep"><input type="radio" name="mark-${esc(it.id)}" value="keep"> שמור</label>
-        <label class="opt opt-edit"><input type="radio" name="mark-${esc(it.id)}" value="edit"> תקן</label>
-        <label class="opt opt-del"><input type="radio" name="mark-${esc(it.id)}" value="del"> מחק</label>
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
       </td>
       <td class="unit">${esc(unitLabels[it.unit] || it.unit)}</td>
       <td class="name">${esc(it.label)}</td>
@@ -86,7 +85,7 @@ function renderCategory(cat) {
       <table>
         <thead>
           <tr>
-            <th class="check">החלטה</th>
+            <th class="check">יש בעיה?</th>
             <th class="unit">יח׳</th>
             <th class="name">שם הפריט</th>
             <th class="notes">הערות / תיקון</th>
@@ -102,28 +101,7 @@ function renderCategory(cat) {
   `;
 }
 
-function renderProfession(profId) {
-  const cats = catsByProf[profId];
-  if (!cats || cats.length === 0) return '';
-  const meta = professionLabels[profId];
-  const itemsCount = cats.reduce((sum, c) => sum + (itemsByCat[c.id]?.length || 0), 0);
-  return `
-    <div class="profession" style="--prof-color: ${meta.color}">
-      <h2>${meta.emoji} ${esc(meta.he)} <span class="count">(${cats.length} קטגוריות · ${itemsCount} פריטים)</span></h2>
-      ${cats.map(renderCategory).join('')}
-    </div>
-  `;
-}
-
-const today = new Date().toLocaleDateString('he-IL');
-
-const html = `<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>סקירת קטלוג תעריפים — הצעות מחיר</title>
-  <style>
+const SHARED_STYLE = `
     * { box-sizing: border-box; }
     body {
       font-family: "Heebo", "Segoe UI", "Arial Hebrew", Tahoma, sans-serif;
@@ -137,7 +115,7 @@ const html = `<!DOCTYPE html>
     }
     .container { max-width: 1100px; margin: 0 auto; }
     .header {
-      background: linear-gradient(135deg, #1E40AF, #2563EB);
+      background: linear-gradient(135deg, var(--prof-color, #1E40AF), #2563EB);
       color: #fff;
       border-radius: 14px;
       padding: 18px 20px;
@@ -145,6 +123,17 @@ const html = `<!DOCTYPE html>
     }
     h1 { font-size: 22px; margin: 0 0 4px; }
     .subtitle { font-size: 13px; opacity: 0.9; margin: 0; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: #374151;
+      font-size: 13px;
+      text-decoration: none;
+      background: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
     .reviewer-card {
       background: #fff;
       border-radius: 12px;
@@ -187,20 +176,6 @@ const html = `<!DOCTYPE html>
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
     .summary-bar strong { color: #111827; font-size: 14px; }
-    .profession {
-      background: #fff;
-      border-radius: 14px;
-      padding: 14px 14px 18px;
-      margin-bottom: 14px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    }
-    .profession h2 {
-      font-size: 17px;
-      color: var(--prof-color, #111827);
-      border-bottom: 2px solid var(--prof-color, #111827);
-      padding: 4px 0 8px;
-      margin: 0 0 8px;
-    }
     .category { margin: 10px 0 6px; }
     .category h3 {
       font-size: 14px;
@@ -231,7 +206,9 @@ const html = `<!DOCTYPE html>
       border-bottom: 1px solid #F1F5F9;
       vertical-align: middle;
     }
-    tr:has(input[value="del"]:checked) td.name { text-decoration: line-through; color: #9CA3AF; }
+    tr[data-mark="del"] td.name { text-decoration: line-through; color: #9CA3AF; }
+    tr[data-mark="del"] { background: #FEF2F2; }
+    tr[data-mark="edit"] { background: #FFFBEB; }
     th.check, td.check { width: 36%; min-width: 220px; }
     th.unit, td.unit { width: 8%; text-align: center; color: #6B7280; }
     th.name, td.name { width: 26%; font-weight: 500; }
@@ -250,9 +227,10 @@ const html = `<!DOCTYPE html>
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 5px 9px;
+      padding: 7px 12px;
       margin: 2px 2px 2px 0;
       font-size: 13px;
+      font-family: inherit;
       color: #374151;
       cursor: pointer;
       border-radius: 8px;
@@ -261,20 +239,10 @@ const html = `<!DOCTYPE html>
       user-select: none;
       transition: all 0.15s;
     }
-    .opt input {
-      width: 16px;
-      height: 16px;
-      margin: 0;
-      cursor: pointer;
-    }
     .opt:active { transform: scale(0.97); }
-    .opt-keep input { accent-color: #16A34A; }
-    .opt-edit input { accent-color: #D97706; }
-    .opt-del input { accent-color: #DC2626; }
-    .opt:has(input:checked) { font-weight: 700; }
-    .opt-keep:has(input:checked) { background: #DCFCE7; border-color: #16A34A; color: #166534; }
-    .opt-edit:has(input:checked) { background: #FEF3C7; border-color: #D97706; color: #92400E; }
-    .opt-del:has(input:checked) { background: #FEE2E2; border-color: #DC2626; color: #991B1B; }
+    .opt.active { font-weight: 700; }
+    .opt-edit.active { background: #FEF3C7; border-color: #D97706; color: #92400E; }
+    .opt-del.active { background: #FEE2E2; border-color: #DC2626; color: #991B1B; }
     .missing-row {
       margin-top: 6px;
       padding: 8px 10px;
@@ -358,80 +326,47 @@ const html = `<!DOCTYPE html>
       td.unit::before { content: "יחידה: "; }
       td.check { width: 100%; min-width: 0; }
       td.notes { width: 100%; padding-top: 6px; }
-      .opt { flex: 1; justify-content: center; padding: 8px; }
+      .opt { flex: 1; justify-content: center; padding: 10px; font-size: 14px; }
       .note-input { font-size: 14px; padding: 8px; }
       .missing-input { font-size: 14px; padding: 8px; }
-      tr:has(input[value="del"]:checked) { background: #FEF2F2; border-color: #FCA5A5; }
-      tr:has(input[value="edit"]:checked) { background: #FFFBEB; border-color: #FCD34D; }
-      tr:has(input[value="keep"]:checked) { background: #F0FDF4; border-color: #86EFAC; }
+      tr[data-mark="del"] { border-color: #FCA5A5; }
+      tr[data-mark="edit"] { border-color: #FCD34D; }
     }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>📋 סקירת קטלוג תעריפים</h1>
-      <p class="subtitle">אפליקציית "הצעות מחיר" · עודכן ${today}</p>
-    </div>
+`;
 
-    <div class="reviewer-card">
-      <label for="reviewerName">השם שלך (כדי שסתיו יידע מי שלח):</label>
-      <input type="text" id="reviewerName" placeholder="לדוגמה: דני כהן (חשמלאי)" autocomplete="name">
-    </div>
-
-    <div class="instructions">
-      <strong>איך זה עובד:</strong>
-      <ul>
-        <li>לכל פריט תבחר אפשרות אחת: <strong style="color:#16A34A">שמור</strong> · <strong style="color:#D97706">תקן</strong> · <strong style="color:#DC2626">מחק</strong></li>
-        <li>אם בחרת "תקן" — כתוב בעמודת ההערות איך לתקן (שם חדש, יחידה חדשה, וכו')</li>
-        <li>אם חסר פריט שאתה חושב שצריך להיות — כתוב אותו בתיבת "פריטים חסרים" של הקטגוריה הנכונה</li>
-        <li>אין צורך לתת מחירים — מחירים נקבעים אצל כל בעל מקצוע באפליקציה. רק להחליט אילו פריטים צריכים להיות ברשימה.</li>
-        <li>בסוף — לחץ על הכפתור הירוק למטה לשליחת הסיכום בוואטסאפ.</li>
-      </ul>
-    </div>
-
-    <div class="summary-bar">
-      <div><strong>${totalItems}</strong> פריטים סה"כ</div>
-      <div><strong>${totalCategories}</strong> קטגוריות</div>
-      <div><strong>4</strong> מקצועות</div>
-    </div>
-
-    ${renderProfession('electrician')}
-    ${renderProfession('plumber')}
-    ${renderProfession('comms')}
-    ${renderProfession('contractor')}
-    ${renderProfession('shared')}
-
-    <div class="submit-bar">
-      <div class="submit-stats" id="submitStats">
-        <span class="stat-keep">✅ <strong id="countKeep">0</strong> לשמור</span>
-        <span class="stat-edit">📝 <strong id="countEdit">0</strong> לתקן</span>
-        <span class="stat-del">🗑️ <strong id="countDel">0</strong> למחיקה</span>
-        <span class="stat-missing">➕ <strong id="countMissing">0</strong> חסרים</span>
-      </div>
-      <button class="submit-btn" id="submitBtn" onclick="submitToWhatsApp()">
-        📲 שלח סיכום בוואטסאפ לסתיו
-      </button>
-      <p class="submit-hint">הכפתור יפתח וואטסאפ עם הודעה מוכנה. רק תלחץ "שליחה".</p>
-    </div>
-  </div>
-
+function reviewScript(profLabel) {
+  return `
   <script>
     const STAV_NUMBER = "${STAV_WHATSAPP}";
+    const PROF_LABEL = "${profLabel}";
 
     function getCatLabel(catId) {
       const el = document.querySelector('section.category[data-cat-id="' + catId + '"]');
       return el ? el.getAttribute('data-cat-label') : catId;
     }
 
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-mark-btn]');
+      if (!btn) return;
+      const row = btn.closest('tr[data-item-id]');
+      if (!row) return;
+      const clicked = btn.getAttribute('data-mark-btn');
+      const current = row.getAttribute('data-mark');
+      const next = current === clicked ? '' : clicked;
+      row.setAttribute('data-mark', next);
+      row.querySelectorAll('[data-mark-btn]').forEach((b) => {
+        b.classList.toggle('active', b.getAttribute('data-mark-btn') === next);
+      });
+      updateStats();
+    });
+
     function updateStats() {
-      let keep = 0, edit = 0, del = 0, missing = 0;
+      let total = 0, edit = 0, del = 0, missing = 0;
       document.querySelectorAll('tr[data-item-id]').forEach((row) => {
-        const checked = row.querySelector('input[type="radio"]:checked');
-        if (!checked) return;
-        if (checked.value === 'keep') keep++;
-        else if (checked.value === 'edit') edit++;
-        else if (checked.value === 'del') del++;
+        total++;
+        const mark = row.getAttribute('data-mark');
+        if (mark === 'edit') edit++;
+        else if (mark === 'del') del++;
       });
       document.querySelectorAll('.missing-input').forEach((ta) => {
         const v = ta.value.trim();
@@ -439,13 +374,12 @@ const html = `<!DOCTYPE html>
           missing += v.split(/[,\\n]/).map((s) => s.trim()).filter(Boolean).length;
         }
       });
-      document.getElementById('countKeep').textContent = keep;
+      document.getElementById('countKeep').textContent = total - edit - del;
       document.getElementById('countEdit').textContent = edit;
       document.getElementById('countDel').textContent = del;
       document.getElementById('countMissing').textContent = missing;
     }
 
-    document.addEventListener('change', updateStats);
     document.addEventListener('input', updateStats);
 
     function submitToWhatsApp() {
@@ -461,21 +395,20 @@ const html = `<!DOCTYPE html>
       let keepCount = 0;
 
       document.querySelectorAll('tr[data-item-id]').forEach((row) => {
-        const checked = row.querySelector('input[type="radio"]:checked');
-        if (!checked) return;
+        const mark = row.getAttribute('data-mark');
         const itemLabel = row.getAttribute('data-item-label');
         const catId = row.getAttribute('data-cat-id');
         const catLabel = getCatLabel(catId);
         const noteInput = row.querySelector('.note-input');
         const note = noteInput ? noteInput.value.trim() : '';
 
-        if (checked.value === 'edit') {
+        if (mark === 'edit') {
           if (!editsByCat[catLabel]) editsByCat[catLabel] = [];
           editsByCat[catLabel].push(note ? itemLabel + ' → ' + note : itemLabel + ' (ללא פירוט)');
-        } else if (checked.value === 'del') {
+        } else if (mark === 'del') {
           if (!delsByCat[catLabel]) delsByCat[catLabel] = [];
           delsByCat[catLabel].push(note ? itemLabel + ' (' + note + ')' : itemLabel);
-        } else if (checked.value === 'keep') {
+        } else {
           keepCount++;
         }
       });
@@ -491,7 +424,7 @@ const html = `<!DOCTYPE html>
       });
 
       const lines = [];
-      lines.push('📋 סקירת קטלוג מאת ' + name);
+      lines.push('📋 סקירת קטלוג (' + PROF_LABEL + ') מאת ' + name);
       lines.push('תאריך: ' + new Date().toLocaleDateString('he-IL'));
       lines.push('');
 
@@ -546,21 +479,177 @@ const html = `<!DOCTYPE html>
 
     updateStats();
   </script>
+`;
+}
+
+function renderProfessionPage(profId) {
+  const meta = professionLabels[profId];
+  const cats = catsByProf[profId];
+  const itemsCount = cats.reduce((sum, c) => sum + (itemsByCat[c.id]?.length || 0), 0);
+  const today = new Date().toLocaleDateString('he-IL');
+
+  return `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>סקירת קטלוג — ${esc(meta.he)} — הצעות מחיר</title>
+  <style>${SHARED_STYLE}</style>
+</head>
+<body style="--prof-color: ${meta.color}">
+  <div class="container">
+    <a class="back-link" href="index.html">→ חזרה לבחירת מקצוע</a>
+
+    <div class="header">
+      <h1>${meta.emoji} סקירת קטלוג — ${esc(meta.he)}</h1>
+      <p class="subtitle">אפליקציית "הצעות מחיר" · עודכן ${today}</p>
+    </div>
+
+    <div class="reviewer-card">
+      <label for="reviewerName">השם שלך (כדי שסתיו יידע מי שלח):</label>
+      <input type="text" id="reviewerName" placeholder="לדוגמה: דני כהן" autocomplete="name">
+    </div>
+
+    <div class="instructions">
+      <strong>איך זה עובד — פשוט:</strong>
+      <ul>
+        <li>כל פריט כבר נחשב <strong style="color:#16A34A">תקין</strong> — אין צורך לגעת בו. תסמן רק פריטים שבאמת <strong>יש איתם בעיה</strong>.</li>
+        <li>פריט לא טוב? לחץ <strong style="color:#D97706">📝 תקן</strong> וכתוב בעמודת ההערות מה לתקן, או <strong style="color:#DC2626">🗑️ מחק</strong> אם הוא מיותר.</li>
+        <li>חסר פריט? כתוב אותו בתיבת "פריטים חסרים" בתחתית הקטגוריה המתאימה.</li>
+        <li>אין צורך לתת מחירים — רק להחליט אילו פריטים צריכים להיות ברשימה.</li>
+        <li>בסוף — לחץ על הכפתור הירוק למטה לשליחת הסיכום בוואטסאפ.</li>
+      </ul>
+    </div>
+
+    <div class="summary-bar">
+      <div><strong>${itemsCount}</strong> פריטים סה"כ</div>
+      <div><strong>${cats.length}</strong> קטגוריות</div>
+    </div>
+
+    ${cats.map(renderCategory).join('')}
+
+    <div class="submit-bar">
+      <div class="submit-stats" id="submitStats">
+        <span class="stat-keep">✅ <strong id="countKeep">0</strong> לשמור</span>
+        <span class="stat-edit">📝 <strong id="countEdit">0</strong> לתקן</span>
+        <span class="stat-del">🗑️ <strong id="countDel">0</strong> למחיקה</span>
+        <span class="stat-missing">➕ <strong id="countMissing">0</strong> חסרים</span>
+      </div>
+      <button class="submit-btn" id="submitBtn" onclick="submitToWhatsApp()">
+        📲 שלח סיכום בוואטסאפ לסתיו
+      </button>
+      <p class="submit-hint">הכפתור יפתח וואטסאפ עם הודעה מוכנה. רק תלחץ "שליחה".</p>
+    </div>
+  </div>
+${reviewScript(meta.he)}
 </body>
 </html>
 `;
+}
 
-const desktopOut = path.join(process.env.USERPROFILE || process.env.HOME || '.', 'Desktop', 'catalog-review.html');
+function renderIndexPage() {
+  const today = new Date().toLocaleDateString('he-IL');
+  const cards = PROFESSIONS.map((profId) => {
+    const meta = professionLabels[profId];
+    const cats = catsByProf[profId];
+    const itemsCount = cats.reduce((sum, c) => sum + (itemsByCat[c.id]?.length || 0), 0);
+    return `
+      <a class="prof-card" href="${meta.file}" style="--prof-color: ${meta.color}">
+        <div class="prof-emoji">${meta.emoji}</div>
+        <div class="prof-name">${esc(meta.he)}</div>
+        <div class="prof-count">${cats.length} קטגוריות · ${itemsCount} פריטים</div>
+      </a>
+    `;
+  }).join('');
+
+  return `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>סקירת קטלוג תעריפים — הצעות מחיר</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Heebo", "Segoe UI", "Arial Hebrew", Tahoma, sans-serif;
+      color: #111827;
+      margin: 0;
+      padding: 14px;
+      background: #F9FAFB;
+      -webkit-text-size-adjust: 100%;
+    }
+    .container { max-width: 640px; margin: 40px auto; }
+    .header {
+      background: linear-gradient(135deg, #1E40AF, #2563EB);
+      color: #fff;
+      border-radius: 14px;
+      padding: 22px 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    h1 { font-size: 22px; margin: 0 0 6px; }
+    .subtitle { font-size: 13px; opacity: 0.9; margin: 0; }
+    .intro {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #374151;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .prof-grid { display: flex; flex-direction: column; gap: 12px; }
+    .prof-card {
+      display: block;
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      text-decoration: none;
+      color: #111827;
+      border-right: 6px solid var(--prof-color, #6B7280);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: transform 0.1s;
+    }
+    .prof-card:active { transform: scale(0.98); }
+    .prof-emoji { font-size: 28px; margin-bottom: 4px; }
+    .prof-name { font-size: 18px; font-weight: 700; color: var(--prof-color, #111827); }
+    .prof-count { font-size: 13px; color: #6B7280; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📋 סקירת קטלוג תעריפים</h1>
+      <p class="subtitle">אפליקציית "הצעות מחיר" · עודכן ${today}</p>
+    </div>
+    <div class="intro">
+      תבחר את המקצוע שלך למטה, ותעבור רק על הפריטים ששייכים אליך — לא על כל הקטלוג.
+    </div>
+    <div class="prof-grid">
+      ${cards}
+    </div>
+  </div>
+</body>
+</html>
+`;
+}
+
 const docsDir = path.join(projectRoot, 'docs');
 if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
-const docsOut = path.join(docsDir, 'catalog-review.html');
-const docsIndex = path.join(docsDir, 'index.html');
 
-fs.writeFileSync(desktopOut, html, 'utf8');
-fs.writeFileSync(docsOut, html, 'utf8');
-fs.writeFileSync(docsIndex, html, 'utf8');
+fs.writeFileSync(path.join(docsDir, 'index.html'), renderIndexPage(), 'utf8');
+console.log(`✅ Wrote docs/index.html (profession picker)`);
 
-console.log(`✅ Wrote ${desktopOut}`);
-console.log(`✅ Wrote ${docsOut}`);
-console.log(`✅ Wrote ${docsIndex} (so / and /catalog-review both work)`);
-console.log(`   ${totalItems} items across ${totalCategories} categories.`);
+for (const profId of PROFESSIONS) {
+  const meta = professionLabels[profId];
+  fs.writeFileSync(path.join(docsDir, meta.file), renderProfessionPage(profId), 'utf8');
+  console.log(`✅ Wrote docs/${meta.file} (${meta.he}: ${catsByProf[profId].length} categories, ${catsByProf[profId].reduce((s, c) => s + (itemsByCat[c.id]?.length || 0), 0)} items)`);
+}
+
+// Old combined page is replaced by the picker flow — remove it so no stale link stays live.
+const oldCombined = path.join(docsDir, 'catalog-review.html');
+if (fs.existsSync(oldCombined)) {
+  fs.unlinkSync(oldCombined);
+  console.log(`🗑️  Removed stale docs/catalog-review.html`);
+}

@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>סקירת קטלוג — קבלן / שיפוצניק — הצעות מחיר</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Heebo", "Segoe UI", "Arial Hebrew", Tahoma, sans-serif;
+      font-size: 14px;
+      color: #111827;
+      line-height: 1.4;
+      margin: 0;
+      padding: 14px;
+      background: #F9FAFB;
+      -webkit-text-size-adjust: 100%;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .header {
+      background: linear-gradient(135deg, var(--prof-color, #1E40AF), #2563EB);
+      color: #fff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+    }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .subtitle { font-size: 13px; opacity: 0.9; margin: 0; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: #374151;
+      font-size: 13px;
+      text-decoration: none;
+      background: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .reviewer-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .reviewer-card label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #374151; }
+    .reviewer-card input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #D1D5DB;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+    .instructions {
+      background: #FEF3C7;
+      border: 1px solid #FCD34D;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .instructions strong { color: #92400E; }
+    .instructions ul { margin: 6px 0 0; padding-right: 18px; }
+    .summary-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .summary-bar div {
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #374151;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .summary-bar strong { color: #111827; font-size: 14px; }
+    .category { margin: 10px 0 6px; }
+    .category h3 {
+      font-size: 14px;
+      margin: 12px 0 4px;
+      color: #1F2937;
+      background: #F9FAFB;
+      padding: 7px 10px;
+      border-radius: 6px;
+      border-right: 4px solid var(--prof-color, #6B7280);
+    }
+    .count { color: #6B7280; font-weight: 400; font-size: 12px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      background: #F3F4F6;
+      text-align: right;
+      padding: 6px 8px;
+      font-weight: 700;
+      border-bottom: 1px solid #D1D5DB;
+      font-size: 12px;
+      color: #4B5563;
+    }
+    td {
+      padding: 8px 8px;
+      border-bottom: 1px solid #F1F5F9;
+      vertical-align: middle;
+    }
+    tr[data-mark="del"] td.name { text-decoration: line-through; color: #9CA3AF; }
+    tr[data-mark="del"] { background: #FEF2F2; }
+    tr[data-mark="edit"] { background: #FFFBEB; }
+    th.check, td.check { width: 36%; min-width: 220px; }
+    th.unit, td.unit { width: 8%; text-align: center; color: #6B7280; }
+    th.name, td.name { width: 26%; font-weight: 500; }
+    th.notes, td.notes { width: 30%; }
+    .note-input {
+      width: 100%;
+      padding: 5px 7px;
+      border: 1px solid #E5E7EB;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 12.5px;
+      background: #FAFBFC;
+    }
+    .note-input:focus { background: #fff; outline: 2px solid #2563EB; border-color: #2563EB; }
+    .opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 7px 12px;
+      margin: 2px 2px 2px 0;
+      font-size: 13px;
+      font-family: inherit;
+      color: #374151;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1.5px solid #E5E7EB;
+      background: #fff;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .opt:active { transform: scale(0.97); }
+    .opt.active { font-weight: 700; }
+    .opt-edit.active { background: #FEF3C7; border-color: #D97706; color: #92400E; }
+    .opt-del.active { background: #FEE2E2; border-color: #DC2626; color: #991B1B; }
+    .missing-row {
+      margin-top: 6px;
+      padding: 8px 10px;
+      background: #F0F9FF;
+      border-radius: 7px;
+      border: 1px dashed #93C5FD;
+    }
+    .missing-row label { display: block; font-size: 12px; color: #1E40AF; margin-bottom: 4px; font-weight: 600; }
+    .missing-input {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #BFDBFE;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 13px;
+      resize: vertical;
+      background: #fff;
+    }
+    .submit-bar {
+      position: sticky;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(249,250,251,0.6), #F9FAFB 30%);
+      padding: 14px 0;
+      margin-top: 18px;
+      z-index: 10;
+    }
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #16A34A, #15803D);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(22,163,74,0.35);
+      font-family: inherit;
+    }
+    .submit-btn:hover { transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .submit-hint { text-align: center; font-size: 12px; color: #6B7280; margin-top: 8px; }
+    .submit-stats {
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 14px;
+      font-size: 13px;
+      justify-content: center;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .submit-stats span { display: inline-flex; align-items: center; gap: 4px; }
+    .stat-edit { color: #D97706; }
+    .stat-del { color: #DC2626; }
+    .stat-keep { color: #16A34A; }
+    .stat-missing { color: #1E40AF; }
+
+    /* Mobile tweaks */
+    @media (max-width: 720px) {
+      body { padding: 8px; font-size: 14px; }
+      .header { padding: 14px; }
+      h1 { font-size: 19px; }
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      tr {
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 8px;
+      }
+      td { padding: 4px 0; border: none; }
+      td.name { font-size: 15px; font-weight: 600; color: #111827; }
+      td.name::before { content: "📦 "; }
+      td.unit { color: #6B7280; font-size: 12px; text-align: right; }
+      td.unit::before { content: "יחידה: "; }
+      td.check { width: 100%; min-width: 0; }
+      td.notes { width: 100%; padding-top: 6px; }
+      .opt { flex: 1; justify-content: center; padding: 10px; font-size: 14px; }
+      .note-input { font-size: 14px; padding: 8px; }
+      .missing-input { font-size: 14px; padding: 8px; }
+      tr[data-mark="del"] { border-color: #FCA5A5; }
+      tr[data-mark="edit"] { border-color: #FCD34D; }
+    }
+</style>
+</head>
+<body style="--prof-color: #B45309">
+  <div class="container">
+    <a class="back-link" href="index.html">→ חזרה לבחירת מקצוע</a>
+
+    <div class="header">
+      <h1>🎨 סקירת קטלוג — קבלן / שיפוצניק</h1>
+      <p class="subtitle">אפליקציית "הצעות מחיר" · עודכן 29.7.2026</p>
+    </div>
+
+    <div class="reviewer-card">
+      <label for="reviewerName">השם שלך (כדי שסתיו יידע מי שלח):</label>
+      <input type="text" id="reviewerName" placeholder="לדוגמה: דני כהן" autocomplete="name">
+    </div>
+
+    <div class="instructions">
+      <strong>איך זה עובד — פשוט:</strong>
+      <ul>
+        <li>כל פריט כבר נחשב <strong style="color:#16A34A">תקין</strong> — אין צורך לגעת בו. תסמן רק פריטים שבאמת <strong>יש איתם בעיה</strong>.</li>
+        <li>פריט לא טוב? לחץ <strong style="color:#D97706">📝 תקן</strong> וכתוב בעמודת ההערות מה לתקן, או <strong style="color:#DC2626">🗑️ מחק</strong> אם הוא מיותר.</li>
+        <li>חסר פריט? כתוב אותו בתיבת "פריטים חסרים" בתחתית הקטגוריה המתאימה.</li>
+        <li>אין צורך לתת מחירים — רק להחליט אילו פריטים צריכים להיות ברשימה.</li>
+        <li>בסוף — לחץ על הכפתור הירוק למטה לשליחת הסיכום בוואטסאפ.</li>
+      </ul>
+    </div>
+
+    <div class="summary-bar">
+      <div><strong>113</strong> פריטים סה"כ</div>
+      <div><strong>8</strong> קטגוריות</div>
+    </div>
+
+    
+    <section class="category" data-cat-id="paintPrimers" data-cat-label="צבע ופרימרים">
+      <h3>צבע ופרימרים <span class="count">(14 פריטים)</span></h3>
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="paintSuperKril" data-item-label="סופרקריל פנים (גלון)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">סופרקריל פנים (גלון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintAcrylic" data-item-label="אקרילי פנים (גלון)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">אקרילי פנים (גלון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintExterior" data-item-label="צבע חוץ (גלון)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">צבע חוץ (גלון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="primerUniversal" data-item-label="פרימר רב-תכליתי (גלון)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פרימר רב-תכליתי (גלון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintOil" data-item-label="צבע שמן (ליטר)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">צבע שמן (ליטר)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="lacquerWood" data-item-label="לכה לעץ (ליטר)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לכה לעץ (ליטר)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="epoxyKit" data-item-label="מערכת אפוקסי 2-קומפ" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מערכת אפוקסי 2-קומפ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="antiMold" data-item-label="צבע אנטי-עובש (גלון)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">צבע אנטי-עובש (גלון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintMetal" data-item-label="צבע מתכת (גלון)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">צבע מתכת (גלון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintRoof" data-item-label="צבע גג (גלון)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">צבע גג (גלון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintExteriorAcrylic" data-item-label="אקרילי חוץ (גלון)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">אקרילי חוץ (גלון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintCeiling" data-item-label="צבע תקרה (גלון)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">צבע תקרה (גלון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintWaterproof" data-item-label="איטום קיר (גלון)" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">איטום קיר (גלון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="wallSealer" data-item-label="חורש - מדבק קיר" data-cat-id="paintPrimers" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">חורש - מדבק קיר</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="gypsumWalls" data-cat-label="גבס וקירות">
+      <h3>גבס וקירות <span class="count">(18 פריטים)</span></h3>
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="gypsumBoard125" data-item-label="לוח גבס 12.5 מ&quot;מ" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח גבס 12.5 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="gypsumBoardWaterproof" data-item-label="לוח גבס עמיד מים" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח גבס עמיד מים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="gypsumBoardFire" data-item-label="לוח גבס חסין אש" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח גבס חסין אש</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="profileUd27" data-item-label="פרופיל UD27 (3 מ׳)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פרופיל UD27 (3 מ׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="profileCd60" data-item-label="פרופיל CD60 (3 מ׳)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פרופיל CD60 (3 מ׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="gypsumScrews" data-item-label="ברגי גבס (קופסה)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">ברגי גבס (קופסה)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="spackleFill" data-item-label="שפכטל מילוי (5 ק&quot;ג)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שפכטל מילוי (5 ק&quot;ג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="spackleFinish" data-item-label="שפכטל גמר (5 ק&quot;ג)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שפכטל גמר (5 ק&quot;ג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="jointTape" data-item-label="רשת זכוכית (90 מ׳)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">רשת זכוכית (90 מ׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cornerBead" data-item-label="פינת מתכת לגבס" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פינת מתכת לגבס</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="gypsumBoardThin" data-item-label="לוח גבס 9.5 מ&quot;מ" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח גבס 9.5 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="gypsumBoardAcoustic" data-item-label="לוח גבס אקוסטי" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח גבס אקוסטי</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="profileCw100" data-item-label="פרופיל CW100 (3 מ׳)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פרופיל CW100 (3 מ׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="profileUw100" data-item-label="פרופיל UW100 (3 מ׳)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פרופיל UW100 (3 מ׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="concreteScrews" data-item-label="ברגי בטון לגבס (קופסה)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">ברגי בטון לגבס (קופסה)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="quickSpackle" data-item-label="שפכטל מהיר ייבוש (5 ק&quot;ג)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שפכטל מהיר ייבוש (5 ק&quot;ג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="nylonDowel" data-item-label="דיבל פלסטיק (קופסה)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דיבל פלסטיק (קופסה)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="concreteAnchor" data-item-label="אנקור לבטון (10 יח׳)" data-cat-id="gypsumWalls" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">אנקור לבטון (10 יח׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="flooringTiles" data-cat-label="ריצוף וקרמיקה">
+      <h3>ריצוף וקרמיקה <span class="count">(21 פריטים)</span></h3>
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="graniteCountertop" data-item-label="משטח גרניט (מ&quot;ר)" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">משטח גרניט (מ&quot;ר)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="marbleSlab" data-item-label="משטח שיש (מ&quot;ר)" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">משטח שיש (מ&quot;ר)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tileCer6060" data-item-label="אריח קרמיקה 60×60" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">אריח קרמיקה 60×60</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tileCer3030" data-item-label="אריח קרמיקה 30×30" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">אריח קרמיקה 30×30</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tilePorcelain8080" data-item-label="גרניט פורצלן 80×80" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">גרניט פורצלן 80×80</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tilePorcelain6060" data-item-label="גרניט פורצלן 60×60" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">גרניט פורצלן 60×60</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="laminateFloor" data-item-label="פרקט למינציה" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">פרקט למינציה</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="woodFloor" data-item-label="פרקט עץ אמיתי" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">פרקט עץ אמיתי</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="pvcFloor" data-item-label="PVC ויניל" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">PVC ויניל</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tileGlue" data-item-label="דבק לאריחים (שק 25 ק&quot;ג)" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דבק לאריחים (שק 25 ק&quot;ג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="grout5kg" data-item-label="רובה (5 ק&quot;ג)" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">רובה (5 ק&quot;ג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="aluminumProfile" data-item-label="פרופיל אלומיניום סף" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פרופיל אלומיניום סף</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tileCer2020" data-item-label="אריח קרמיקה 20×20" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">אריח קרמיקה 20×20</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tileCer4040" data-item-label="אריח קרמיקה 40×40" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">אריח קרמיקה 40×40</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tileWall2540" data-item-label="אריח קיר 25×40" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">אריח קיר 25×40</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mosaicTile" data-item-label="מוזאיקה (מ&quot;ר)" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">מוזאיקה (מ&quot;ר)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="naturalStone" data-item-label="אריח אבן טבעית" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">אריח אבן טבעית</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="spcFloor" data-item-label="פרקט SPC" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">פרקט SPC</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="transitionProfile" data-item-label="פרופיל מעבר אלומיניום" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פרופיל מעבר אלומיניום</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tileSpacers" data-item-label="מרווחים לאריחים (חבילה)" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מרווחים לאריחים (חבילה)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tileLevelingClip" data-item-label="קליפסים לפילוס אריחים (100 יח׳)" data-cat-id="flooringTiles" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קליפסים לפילוס אריחים (100 יח׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="buildMaterials" data-cat-label="חומרי בניין">
+      <h3>חומרי בניין <span class="count">(19 פריטים)</span></h3>
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="cementGray50" data-item-label="מלט אפור (50 ק&quot;ג)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מלט אפור (50 ק&quot;ג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cementWhite25" data-item-label="מלט לבן (25 ק&quot;ג)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מלט לבן (25 ק&quot;ג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="sandTon" data-item-label="חול שטוף (טון)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">חול שטוף (טון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="gravelTon" data-item-label="חצץ (טון)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">חצץ (טון)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="plasterHand" data-item-label="גבס ידני (25 ק&quot;ג)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">גבס ידני (25 ק&quot;ג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mortar25" data-item-label="טיט (25 ק&quot;ג)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">טיט (25 ק&quot;ג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="block20" data-item-label="בלוק 20" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">בלוק 20</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="block10" data-item-label="בלוק 10" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">בלוק 10</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="rebar12" data-item-label="מוט ברזל 12 מ&quot;מ (6 מ׳)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מוט ברזל 12 מ&quot;מ (6 מ׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="quickCement" data-item-label="מלט מהיר (5 ק&quot;ג)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מלט מהיר (5 ק&quot;ג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="readyMixConcrete" data-item-label="בטון מוכן (מ&quot;ק)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">בטון מוכן (מ&quot;ק)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="block15" data-item-label="בלוק 15" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">בלוק 15</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="block7" data-item-label="בלוק 7" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">בלוק 7</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="blockYtong" data-item-label="בלוק איטונג" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">בלוק איטונג</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="rebar8" data-item-label="מוט ברזל 8 מ&quot;מ (6 מ׳)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מוט ברזל 8 מ&quot;מ (6 מ׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="rebar10" data-item-label="מוט ברזל 10 מ&quot;מ (6 מ׳)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מוט ברזל 10 מ&quot;מ (6 מ׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="rebar14" data-item-label="מוט ברזל 14 מ&quot;מ (6 מ׳)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מוט ברזל 14 מ&quot;מ (6 מ׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="weldMesh" data-item-label="רשת ברזל מרותכת" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">רשת ברזל מרותכת</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="bitumenSheet" data-item-label="יריעה ביטומנית (מ&quot;ר)" data-cat-id="buildMaterials" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">יריעה ביטומנית (מ&quot;ר)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="buildOpenings" data-cat-label="חלונות ודלתות">
+      <h3>חלונות ודלתות <span class="count">(9 פריטים)</span></h3>
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="windowAluminum" data-item-label="חלון אלומיניום (מ&quot;ר)" data-cat-id="buildOpenings" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">חלון אלומיניום (מ&quot;ר)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="doorInterior" data-item-label="דלת פנים" data-cat-id="buildOpenings" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דלת פנים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="doorSecurity" data-item-label="דלת ביטחון" data-cat-id="buildOpenings" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דלת ביטחון</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="windowPvc" data-item-label="חלון PVC (מ&quot;ר)" data-cat-id="buildOpenings" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">חלון PVC (מ&quot;ר)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="windowScreen" data-item-label="מסך לחלון (מ&quot;ר)" data-cat-id="buildOpenings" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">מסך לחלון (מ&quot;ר)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="doorKitchen" data-item-label="דלת מטבח" data-cat-id="buildOpenings" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דלת מטבח</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="doorHandle" data-item-label="ידית לדלת" data-cat-id="buildOpenings" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">ידית לדלת</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="doorLock" data-item-label="מנעול לדלת" data-cat-id="buildOpenings" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מנעול לדלת</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="doorHinge" data-item-label="ציר לדלת (זוג)" data-cat-id="buildOpenings" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">ציר לדלת (זוג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="buildInsulation" data-cat-label="בידוד">
+      <h3>בידוד <span class="count">(4 פריטים)</span></h3>
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="insulationStyrofoam" data-item-label="בידוד קלקר 5 ס&quot;מ" data-cat-id="buildInsulation" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">בידוד קלקר 5 ס&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="insulationGlassWool" data-item-label="בידוד צמר זכוכית" data-cat-id="buildInsulation" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">בידוד צמר זכוכית</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="insulationPolyurethane" data-item-label="בידוד פוליאוריטן (התזה)" data-cat-id="buildInsulation" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">בידוד פוליאוריטן (התזה)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="acousticInsulation" data-item-label="בידוד אקוסטי לקיר (גליל)" data-cat-id="buildInsulation" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">בידוד אקוסטי לקיר (גליל)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="toolConsumables" data-cat-label="חומרים מתכלים">
+      <h3>חומרים מתכלים <span class="count">(21 פריטים)</span></h3>
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="scaffoldingRental" data-item-label="השכרת פיגום (יום)" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">השכרת פיגום (יום)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="rubbishContainer" data-item-label="מיכל פסולת (יום)" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מיכל פסולת (יום)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="siliconeKitchen" data-item-label="סיליקון מטבח/אמבטיה" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">סיליקון מטבח/אמבטיה</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="puGlue" data-item-label="דבק פוליאוריטן" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דבק פוליאוריטן</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cuttingDisc115" data-item-label="דיסק חיתוך 115 מ&quot;מ" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דיסק חיתוך 115 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="diamondDisc115" data-item-label="דיסק יהלום 115 מ&quot;מ" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דיסק יהלום 115 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="sandpaperSheet" data-item-label="נייר זכוכית (יחידה)" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">נייר זכוכית (יחידה)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintBrush2" data-item-label="מברשת צבע 2&quot;" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מברשת צבע 2&quot;</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintBrush3" data-item-label="מברשת צבע 3&quot;" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מברשת צבע 3&quot;</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="paintRoller" data-item-label="גלגלת צבע + ידית" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">גלגלת צבע + ידית</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="nylonCover" data-item-label="מסך הגנה ניילון" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מסך הגנה ניילון</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="maskingTape" data-item-label="מסקנטייפ (גליל)" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מסקנטייפ (גליל)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="utilityBlade" data-item-label="להב סכין יפנית (5 יח׳)" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">להב סכין יפנית (5 יח׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="siliconeCartridge" data-item-label="דבק סיליקון (שפופרת)" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דבק סיליקון (שפופרת)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="puFoam" data-item-label="קצף PU מבודד" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קצף PU מבודד</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cuttingDisc230" data-item-label="דיסק חיתוך 230 מ&quot;מ" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דיסק חיתוך 230 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="diamondDisc230" data-item-label="דיסק יהלום 230 מ&quot;מ" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">דיסק יהלום 230 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="sdsBit8" data-item-label="מקדח SDS 8 מ&quot;מ" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מקדח SDS 8 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="sdsBit10" data-item-label="מקדח SDS 10 מ&quot;מ" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מקדח SDS 10 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="sdsBit12" data-item-label="מקדח SDS 12 מ&quot;מ" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מקדח SDS 12 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="drillMetal6" data-item-label="מקדח למתכת 6 מ&quot;מ" data-cat-id="toolConsumables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מקדח למתכת 6 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="safetyGear" data-cat-label="ציוד בטיחות אישי">
+      <h3>ציוד בטיחות אישי <span class="count">(7 פריטים)</span></h3>
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="workGloves" data-item-label="כפפות עבודה (זוג)" data-cat-id="safetyGear" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">כפפות עבודה (זוג)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="safetyGoggles" data-item-label="משקפי מגן" data-cat-id="safetyGear" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">משקפי מגן</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="dustMask" data-item-label="מסכת אבק (10 יח׳)" data-cat-id="safetyGear" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מסכת אבק (10 יח׳)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="earProtection" data-item-label="אוזניות אקוסטיות" data-cat-id="safetyGear" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">אוזניות אקוסטיות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="safetyHelmet" data-item-label="קסדת בטיחות" data-cat-id="safetyGear" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קסדת בטיחות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="measuringTape5m" data-item-label="מטר נמתח 5 מ׳" data-cat-id="safetyGear" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מטר נמתח 5 מ׳</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="laserLevel" data-item-label="מד פלס לייזר" data-cat-id="safetyGear" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מד פלס לייזר</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+
+    <div class="submit-bar">
+      <div class="submit-stats" id="submitStats">
+        <span class="stat-keep">✅ <strong id="countKeep">0</strong> לשמור</span>
+        <span class="stat-edit">📝 <strong id="countEdit">0</strong> לתקן</span>
+        <span class="stat-del">🗑️ <strong id="countDel">0</strong> למחיקה</span>
+        <span class="stat-missing">➕ <strong id="countMissing">0</strong> חסרים</span>
+      </div>
+      <button class="submit-btn" id="submitBtn" onclick="submitToWhatsApp()">
+        📲 שלח סיכום בוואטסאפ לסתיו
+      </button>
+      <p class="submit-hint">הכפתור יפתח וואטסאפ עם הודעה מוכנה. רק תלחץ "שליחה".</p>
+    </div>
+  </div>
+
+  <script>
+    const STAV_NUMBER = "972526873674";
+    const PROF_LABEL = "קבלן / שיפוצניק";
+
+    function getCatLabel(catId) {
+      const el = document.querySelector('section.category[data-cat-id="' + catId + '"]');
+      return el ? el.getAttribute('data-cat-label') : catId;
+    }
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-mark-btn]');
+      if (!btn) return;
+      const row = btn.closest('tr[data-item-id]');
+      if (!row) return;
+      const clicked = btn.getAttribute('data-mark-btn');
+      const current = row.getAttribute('data-mark');
+      const next = current === clicked ? '' : clicked;
+      row.setAttribute('data-mark', next);
+      row.querySelectorAll('[data-mark-btn]').forEach((b) => {
+        b.classList.toggle('active', b.getAttribute('data-mark-btn') === next);
+      });
+      updateStats();
+    });
+
+    function updateStats() {
+      let total = 0, edit = 0, del = 0, missing = 0;
+      document.querySelectorAll('tr[data-item-id]').forEach((row) => {
+        total++;
+        const mark = row.getAttribute('data-mark');
+        if (mark === 'edit') edit++;
+        else if (mark === 'del') del++;
+      });
+      document.querySelectorAll('.missing-input').forEach((ta) => {
+        const v = ta.value.trim();
+        if (v) {
+          missing += v.split(/[,\n]/).map((s) => s.trim()).filter(Boolean).length;
+        }
+      });
+      document.getElementById('countKeep').textContent = total - edit - del;
+      document.getElementById('countEdit').textContent = edit;
+      document.getElementById('countDel').textContent = del;
+      document.getElementById('countMissing').textContent = missing;
+    }
+
+    document.addEventListener('input', updateStats);
+
+    function submitToWhatsApp() {
+      const name = document.getElementById('reviewerName').value.trim();
+      if (!name) {
+        alert('אנא הזן את שמך בראש הדף לפני השליחה');
+        document.getElementById('reviewerName').focus();
+        return;
+      }
+
+      const editsByCat = {};
+      const delsByCat = {};
+      let keepCount = 0;
+
+      document.querySelectorAll('tr[data-item-id]').forEach((row) => {
+        const mark = row.getAttribute('data-mark');
+        const itemLabel = row.getAttribute('data-item-label');
+        const catId = row.getAttribute('data-cat-id');
+        const catLabel = getCatLabel(catId);
+        const noteInput = row.querySelector('.note-input');
+        const note = noteInput ? noteInput.value.trim() : '';
+
+        if (mark === 'edit') {
+          if (!editsByCat[catLabel]) editsByCat[catLabel] = [];
+          editsByCat[catLabel].push(note ? itemLabel + ' → ' + note : itemLabel + ' (ללא פירוט)');
+        } else if (mark === 'del') {
+          if (!delsByCat[catLabel]) delsByCat[catLabel] = [];
+          delsByCat[catLabel].push(note ? itemLabel + ' (' + note + ')' : itemLabel);
+        } else {
+          keepCount++;
+        }
+      });
+
+      const missingByCat = {};
+      document.querySelectorAll('section.category').forEach((sec) => {
+        const ta = sec.querySelector('.missing-input');
+        if (!ta) return;
+        const v = ta.value.trim();
+        if (!v) return;
+        const catLabel = sec.getAttribute('data-cat-label');
+        missingByCat[catLabel] = v.split(/[,\n]/).map((s) => s.trim()).filter(Boolean);
+      });
+
+      const lines = [];
+      lines.push('📋 סקירת קטלוג (' + PROF_LABEL + ') מאת ' + name);
+      lines.push('תאריך: ' + new Date().toLocaleDateString('he-IL'));
+      lines.push('');
+
+      const editEntries = Object.entries(editsByCat);
+      if (editEntries.length > 0) {
+        const total = editEntries.reduce((s, [, arr]) => s + arr.length, 0);
+        lines.push('📝 לתיקון (' + total + ' פריטים):');
+        for (const [cat, arr] of editEntries) {
+          lines.push('• ' + cat + ':');
+          for (const item of arr) lines.push('   – ' + item);
+        }
+        lines.push('');
+      }
+
+      const delEntries = Object.entries(delsByCat);
+      if (delEntries.length > 0) {
+        const total = delEntries.reduce((s, [, arr]) => s + arr.length, 0);
+        lines.push('🗑️ למחיקה (' + total + ' פריטים):');
+        for (const [cat, arr] of delEntries) {
+          lines.push('• ' + cat + ':');
+          for (const item of arr) lines.push('   – ' + item);
+        }
+        lines.push('');
+      }
+
+      const missingEntries = Object.entries(missingByCat);
+      if (missingEntries.length > 0) {
+        const total = missingEntries.reduce((s, [, arr]) => s + arr.length, 0);
+        lines.push('➕ פריטים חסרים שצריך להוסיף (' + total + '):');
+        for (const [cat, arr] of missingEntries) {
+          lines.push('• ' + cat + ':');
+          for (const item of arr) lines.push('   – ' + item);
+        }
+        lines.push('');
+      }
+
+      if (keepCount > 0) {
+        lines.push('✅ לשמור כמו שזה: ' + keepCount + ' פריטים');
+        lines.push('');
+      }
+
+      const totalActioned = Object.values(editsByCat).reduce((s, a) => s + a.length, 0)
+                          + Object.values(delsByCat).reduce((s, a) => s + a.length, 0);
+      if (totalActioned === 0 && missingEntries.length === 0) {
+        if (!confirm('לא סימנת אף פריט לתיקון או מחיקה ולא הוספת פריטים חסרים. לשלוח בכל זאת?')) return;
+      }
+
+      const message = lines.join('\n');
+      const url = 'https://wa.me/' + STAV_NUMBER + '?text=' + encodeURIComponent(message);
+      window.open(url, '_blank');
+    }
+
+    updateStats();
+  </script>
+
+</body>
+</html>
