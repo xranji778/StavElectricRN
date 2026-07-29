@@ -615,6 +615,8 @@ function renderIndexPage() {
     .prof-emoji { font-size: 28px; margin-bottom: 4px; }
     .prof-name { font-size: 18px; font-weight: 700; color: var(--prof-color, #111827); }
     .prof-count { font-size: 13px; color: #6B7280; margin-top: 2px; }
+    .footer-links { text-align: center; margin-top: 22px; font-size: 12px; }
+    .footer-links a { color: #6B7280; text-decoration: none; margin: 0 8px; }
   </style>
 </head>
 <body>
@@ -628,6 +630,9 @@ function renderIndexPage() {
     </div>
     <div class="prof-grid">
       ${cards}
+    </div>
+    <div class="footer-links">
+      <a href="privacy.html">מדיניות פרטיות</a> · <a href="terms.html">תנאי שימוש</a>
     </div>
   </div>
 </body>
