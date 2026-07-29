@@ -130,7 +130,7 @@ export default function AuthScreen() {
 
             <View style={styles.brand}>
               <ProQuoteLogo size={84} gradient={['#2A4FBF', '#4A7AFF']} />
-              <Text style={styles.brandText}>הצעות מחיר</Text>
+              <Text style={styles.brandText}>מחירן</Text>
               <Text style={styles.brandSub}>{t('auth.tagline')}</Text>
             </View>
 

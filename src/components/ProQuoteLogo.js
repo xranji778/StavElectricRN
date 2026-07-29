@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, View } from 'react-native';
 
-// Brand mark: the official "הצעות מחיר" logo image.
+// Brand mark: the official "מחירן" logo image.
 // `gradient` is accepted for backward compatibility but ignored.
 export default function ProQuoteLogo({ size = 44 }) {
   return (

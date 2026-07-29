@@ -4,7 +4,7 @@ import { getProfessionTheme } from '../theme/professionThemes';
 import { LOGO_PNG_BASE64 } from './logoBase64';
 import { readPhotoAsBase64 } from './photos';
 
-const APP_NAME = 'הצעות מחיר';
+const APP_NAME = 'מחירן';
 const LOGO_DATA_URI = `data:image/png;base64,${LOGO_PNG_BASE64}`;
 
 function fmt(n) {
@@ -225,7 +225,7 @@ export async function buildQuoteHtml(quote, user) {
 </head>
 <body>
   <div class="header">
-    <div class="header-logo"><img src="${LOGO_DATA_URI}" alt="הצעות מחיר" /></div>
+    <div class="header-logo"><img src="${LOGO_DATA_URI}" alt="${APP_NAME}" /></div>
     <div class="header-text">
       <h1>הצעת מחיר</h1>
       <div class="sub">${dateStr}${projectName ? ' · ' + projectName : ''}</div>
@@ -347,7 +347,7 @@ export function buildSupplierHtml(quote, user) {
 </head>
 <body>
   <div class="header">
-    <div class="header-logo"><img src="${LOGO_DATA_URI}" alt="הצעות מחיר" /></div>
+    <div class="header-logo"><img src="${LOGO_DATA_URI}" alt="${APP_NAME}" /></div>
     <div class="header-text">
       <h1>רשימת ציוד לספק</h1>
       <div class="sub">${dateStr}${projectName ? ' · פרויקט: ' + projectName : ''}</div>
@@ -455,7 +455,7 @@ function buildAnnualReportHtml(quotes, year, user) {
 </head>
 <body>
   <div class="header">
-    <div class="header-logo"><img src="${LOGO_DATA_URI}" alt="הצעות מחיר" /></div>
+    <div class="header-logo"><img src="${LOGO_DATA_URI}" alt="${APP_NAME}" /></div>
     <div class="header-text">
       <h1>דוח שנתי לרו"ח · ${year}</h1>
       <div class="sub">סיכום חודשי של כל ההצעות לשנת ${year}</div>

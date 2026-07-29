@@ -1,6 +1,6 @@
 # StavElectric — React Native ⚡
 
-גרסת **React Native (Expo)** של אפליקציית StavElectric — הצעות מחיר לחשמלאים, עברית RTL, אופליין-first.
+גרסת **React Native (Expo)** של **מחירן** (StavElectric) — הצעות מחיר לבעלי מקצוע, עברית RTL, אופליין-first.
 
 ## איך להריץ על הטלפון (Expo Go)
 

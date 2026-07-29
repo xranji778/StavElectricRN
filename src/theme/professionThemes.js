@@ -1,7 +1,7 @@
 // Per-profession theming — each profession owns a vivid signature color.
 // Inspired by Notion/Duolingo: bold accent, friendly icons, soft surfaces.
 
-const APP_NAME = 'הצעות מחיר';
+const APP_NAME = 'מחירן';
 
 export const PROFESSION_THEMES = {
   electrician: {

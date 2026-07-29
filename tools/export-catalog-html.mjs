@@ -493,7 +493,7 @@ function renderProfessionPage(profId) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>סקירת קטלוג — ${esc(meta.he)} — הצעות מחיר</title>
+  <title>סקירת קטלוג — ${esc(meta.he)} — מחירן</title>
   <style>${SHARED_STYLE}</style>
 </head>
 <body style="--prof-color: ${meta.color}">
@@ -502,7 +502,7 @@ function renderProfessionPage(profId) {
 
     <div class="header">
       <h1>${meta.emoji} סקירת קטלוג — ${esc(meta.he)}</h1>
-      <p class="subtitle">אפליקציית "הצעות מחיר" · עודכן ${today}</p>
+      <p class="subtitle">אפליקציית "מחירן" · עודכן ${today}</p>
     </div>
 
     <div class="reviewer-card">
@@ -567,7 +567,7 @@ function renderIndexPage() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>סקירת קטלוג תעריפים — הצעות מחיר</title>
+  <title>סקירת קטלוג תעריפים — מחירן</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -621,7 +621,7 @@ function renderIndexPage() {
   <div class="container">
     <div class="header">
       <h1>📋 סקירת קטלוג תעריפים</h1>
-      <p class="subtitle">אפליקציית "הצעות מחיר" · עודכן ${today}</p>
+      <p class="subtitle">אפליקציית "מחירן" · עודכן ${today}</p>
     </div>
     <div class="intro">
       תבחר את המקצוע שלך למטה, ותעבור רק על הפריטים ששייכים אליך — לא על כל הקטלוג.
