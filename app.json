@@ -6,12 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/proquote-logo.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/proquote-logo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
-    },
     "ios": {
       "supportsTablet": true
     },
@@ -20,14 +14,23 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/proquote-logo.png",
         "backgroundColor": "#FFFFFF"
-      },
-      "edgeToEdgeEnabled": true
+      }
     },
     "web": {
       "favicon": "./assets/proquote-logo.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      "expo-sharing",
+      "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/proquote-logo.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#FFFFFF"
+        }
+      ]
     ],
     "extra": {
       "eas": {
@@ -35,7 +38,7 @@
       }
     },
     "owner": "stavco",
-    "runtimeVersion": "exposdk:54.0.0",
+    "runtimeVersion": "exposdk:57.0.0",
     "updates": {
       "url": "https://u.expo.dev/15edb612-8df0-4a48-bb50-c85e64e00d39"
     }
