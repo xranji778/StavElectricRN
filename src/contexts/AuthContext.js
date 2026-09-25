@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged } from '@firebase/auth';
+import { onAuthStateChanged, reload } from '@firebase/auth';
 import { doc, getDoc } from '@firebase/firestore';
 import { auth, db } from '../firebase/firebaseConfig';
 import * as authApi from '../data/auth';
@@ -95,6 +95,18 @@ export function AuthProvider({ children }) {
     await authApi.resendVerificationEmail();
   };
 
+  const refreshEmailVerification = async () => {
+    if (!auth.currentUser) return user;
+    try {
+      await reload(auth.currentUser);
+    } catch (e) {
+      // Offline or transient — keep last known state.
+    }
+    const u = await buildUserFromFirebase(auth.currentUser);
+    setUser(u);
+    return u;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -107,6 +119,7 @@ export function AuthProvider({ children }) {
         switchProfession,
         resetPassword,
         resendVerificationEmail,
+        refreshEmailVerification,
       }}
     >
       {children}

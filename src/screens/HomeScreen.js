@@ -99,8 +99,29 @@ function monthlyStats(quotes) {
 }
 
 export default function HomeScreen({ navigation }) {
-  const { user } = useAuth();
+  const { user, resendVerificationEmail, refreshEmailVerification } = useAuth();
   const { t } = useLanguage();
+  const [verifyBusy, setVerifyBusy] = useState(false);
+
+  const onResendVerification = async () => {
+    setVerifyBusy(true);
+    try {
+      await resendVerificationEmail();
+      Alert.alert('', t('home.verifyBanner.resent'));
+    } finally {
+      setVerifyBusy(false);
+    }
+  };
+
+  const onRefreshVerification = async () => {
+    setVerifyBusy(true);
+    try {
+      const u = await refreshEmailVerification();
+      if (!u?.emailVerified) Alert.alert('', t('home.verifyBanner.stillNot'));
+    } finally {
+      setVerifyBusy(false);
+    }
+  };
   const theme = getProfessionTheme(user?.activeProfession);
   const [rates, setRates] = useState({});
   const [quotes, setQuotes] = useState([]);
@@ -249,6 +270,25 @@ export default function HomeScreen({ navigation }) {
             title={theme.appName}
             subtitle={`${t(greetingKey())}, ${user?.displayName || ''} 👋   ${t('home.readyForNew')}`}
           />
+
+          {user && !user.emailVerified && (
+            <View style={styles.verifyBanner}>
+              <MaterialIcons name="mark-email-unread" size={26} color={colors.circuitTeal} />
+              <View style={{ flex: 1, marginHorizontal: 12 }}>
+                <Text style={styles.verifyBannerTitle}>{t('home.verifyBanner.title')}</Text>
+                <Text style={styles.verifyBannerSub}>{t('home.verifyBanner.sub')}</Text>
+                <View style={styles.verifyBannerActions}>
+                  <Pressable onPress={onResendVerification} disabled={verifyBusy} hitSlop={6}>
+                    <Text style={styles.verifyBannerAction}>{t('home.verifyBanner.resend')}</Text>
+                  </Pressable>
+                  <Pressable onPress={onRefreshVerification} disabled={verifyBusy} hitSlop={6}>
+                    <Text style={styles.verifyBannerAction}>{t('home.verifyBanner.refresh')}</Text>
+                  </Pressable>
+                </View>
+              </View>
+              {verifyBusy && <ActivityIndicator size="small" color={colors.circuitTeal} />}
+            </View>
+          )}
 
           {!ratesSet && (
             <Pressable style={styles.banner} onPress={() => navigation.navigate('Rates')}>
@@ -703,6 +743,19 @@ const styles = StyleSheet.create({
   bannerTitle: { fontWeight: '800', color: colors.text, fontSize: 14 },
   bannerSub: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
   bannerCta: { color: colors.voltageYellow, fontWeight: '800' },
+
+  verifyBanner: {
+    flexDirection: 'row', alignItems: 'center',
+    padding: 14,
+    backgroundColor: colors.circuitTeal + '14',
+    borderRadius: 16,
+    borderWidth: 1, borderColor: colors.circuitTeal + '66',
+    marginTop: 16,
+  },
+  verifyBannerTitle: { fontWeight: '800', color: colors.text, fontSize: 14 },
+  verifyBannerSub: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
+  verifyBannerActions: { flexDirection: 'row', gap: 18, marginTop: 8 },
+  verifyBannerAction: { color: colors.circuitTeal, fontWeight: '800', fontSize: 12 },
 
   ctaShadow: {
     marginTop: 18,
