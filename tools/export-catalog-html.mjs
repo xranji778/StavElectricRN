@@ -18,11 +18,12 @@ const categoriesBlock = src.match(/export const CATEGORIES = \[([\s\S]*?)\n\];/)
 const catalogBlock = src.match(/export const CATALOG = \[([\s\S]*?)\n\];/)[1];
 
 const categories = [];
-const catRe = /\{\s*id:\s*'([^']+)',\s*label:\s*'([^']+)'[^}]*?professions:\s*\[([^\]]+)\][^}]*\}/g;
+const catRe = /\{\s*id:\s*'([^']+)',\s*label:\s*'([^']+)'[^}]*?professions:\s*\[([^\]]+)\]([^}]*)\}/g;
 let m;
 while ((m = catRe.exec(categoriesBlock)) !== null) {
   const professions = m[3].split(',').map((s) => s.trim().replace(/'/g, '')).filter(Boolean);
-  categories.push({ id: m[1], label: m[2], professions });
+  const isMaterial = /isMaterial:\s*true/.test(m[4]);
+  categories.push({ id: m[1], label: m[2], professions, isMaterial });
 }
 
 const items = [];
@@ -79,9 +80,13 @@ function renderCategory(cat) {
       <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
     </tr>
   `).join('');
+  const materialNote = cat.isMaterial
+    ? `<div class="material-note">📦 פריטי חומר גלם — אופציונלי. לשימוש כשרוצים לפרט ללקוח חומרים בנפרד מהעבודה. לא חובה להוסיף אותם לכל הצעת מחיר.</div>`
+    : '';
   return `
     <section class="category" data-cat-id="${esc(cat.id)}" data-cat-label="${esc(cat.label)}">
       <h3>${esc(cat.label)} <span class="count">(${list.length} פריטים)</span></h3>
+      ${materialNote}
       <table>
         <thead>
           <tr>
@@ -187,6 +192,16 @@ const SHARED_STYLE = `
       border-right: 4px solid var(--prof-color, #6B7280);
     }
     .count { color: #6B7280; font-weight: 400; font-size: 12px; }
+    .material-note {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin: 4px 0 8px;
+      font-size: 12.5px;
+      color: #1E40AF;
+      line-height: 1.5;
+    }
     table {
       width: 100%;
       border-collapse: collapse;

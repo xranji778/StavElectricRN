@@ -3,8 +3,8 @@ export const CATEGORIES = [
   { id: 'lighting', label: 'תאורה', icon: 'lightbulb', professions: ['electrician'] },
   { id: 'outlets', label: 'שקעים', icon: 'power', professions: ['electrician'] },
   { id: 'switches', label: 'מפסקים', icon: 'toggle-on', professions: ['electrician'] },
-  { id: 'cables', label: 'כבלים', icon: 'cable', professions: ['electrician'] },
-  { id: 'conduits', label: 'צנרת', icon: 'plumbing', professions: ['electrician'] },
+  { id: 'cables', label: 'כבלים', icon: 'cable', professions: ['electrician'], isMaterial: true },
+  { id: 'conduits', label: 'צנרת', icon: 'plumbing', professions: ['electrician'], isMaterial: true },
   { id: 'panels', label: 'לוחות חשמל', icon: 'dashboard', professions: ['electrician'] },
   { id: 'safety', label: 'בטיחות והגנה', icon: 'security', professions: ['electrician'] },
   { id: 'control', label: 'בקרה וטיימרים', icon: 'schedule', professions: ['electrician'] },
@@ -15,7 +15,7 @@ export const CATEGORIES = [
   { id: 'frames', label: 'מסגרות', icon: 'crop-free', professions: ['electrician'] },
 
   // ============ אינסטלטור ============
-  { id: 'plumbingPipes', label: 'צנרת מים וחיבורים', icon: 'plumbing', professions: ['plumber'] },
+  { id: 'plumbingPipes', label: 'צנרת מים וחיבורים', icon: 'plumbing', professions: ['plumber'], isMaterial: true },
   { id: 'plumbingFaucets', label: 'ברזים ושסתומים', icon: 'water-drop', professions: ['plumber'] },
   { id: 'plumbingDrains', label: 'ניקוז וביוב', icon: 'waves', professions: ['plumber'] },
   { id: 'plumbingBath', label: 'אמבטיה ושירותים', icon: 'bathtub', professions: ['plumber'] },
@@ -25,7 +25,7 @@ export const CATEGORIES = [
   { id: 'plumbingGas', label: 'גז', icon: 'local-fire-department', professions: ['plumber'] },
 
   // ============ איש תקשורת ============
-  { id: 'commsCabling', label: 'כבילה', icon: 'cable', professions: ['comms'] },
+  { id: 'commsCabling', label: 'כבילה', icon: 'cable', professions: ['comms'], isMaterial: true },
   { id: 'commsJacks', label: 'שקעים ופאנלים', icon: 'settings-ethernet', professions: ['comms'] },
   { id: 'commsActive', label: 'ציוד רשת', icon: 'router', professions: ['comms'] },
   { id: 'commsMultimedia', label: 'מולטימדיה ושמע', icon: 'speaker', professions: ['comms'] },
@@ -38,11 +38,11 @@ export const CATEGORIES = [
   { id: 'paintPrimers', label: 'צבע ופרימרים', icon: 'format-paint', professions: ['contractor'] },
   { id: 'gypsumWalls', label: 'גבס וקירות', icon: 'view-day', professions: ['contractor'] },
   { id: 'flooringTiles', label: 'ריצוף וקרמיקה', icon: 'grid-on', professions: ['contractor'] },
-  { id: 'buildMaterials', label: 'חומרי בניין', icon: 'inventory', professions: ['contractor'] },
+  { id: 'buildMaterials', label: 'חומרי בניין', icon: 'inventory', professions: ['contractor'], isMaterial: true },
   { id: 'buildOpenings', label: 'חלונות ודלתות', icon: 'door-front', professions: ['contractor'] },
   { id: 'buildInsulation', label: 'בידוד', icon: 'blur-on', professions: ['contractor'] },
-  { id: 'toolConsumables', label: 'חומרים מתכלים', icon: 'handyman', professions: ['contractor'] },
-  { id: 'safetyGear', label: 'ציוד בטיחות אישי', icon: 'health-and-safety', professions: ['contractor'] },
+  { id: 'toolConsumables', label: 'חומרים מתכלים', icon: 'handyman', professions: ['contractor'], isMaterial: true },
+  { id: 'safetyGear', label: 'ציוד בטיחות אישי', icon: 'health-and-safety', professions: ['contractor'], isMaterial: true },
 
   // ============ משותף לכל המקצועות ============
   { id: 'misc', label: 'אביזרים נוספים', icon: 'category', professions: ['electrician', 'plumber', 'comms', 'contractor'] },
