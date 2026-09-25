@@ -95,6 +95,11 @@ export function AuthProvider({ children }) {
     await authApi.resendVerificationEmail();
   };
 
+  const deleteAccount = async (password) => {
+    await authApi.deleteAccount(password);
+    setUser(null);
+  };
+
   const refreshEmailVerification = async () => {
     if (!auth.currentUser) return user;
     try {
@@ -120,6 +125,7 @@ export function AuthProvider({ children }) {
         resetPassword,
         resendVerificationEmail,
         refreshEmailVerification,
+        deleteAccount,
       }}
     >
       {children}

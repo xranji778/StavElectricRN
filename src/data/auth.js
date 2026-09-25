@@ -6,10 +6,13 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
   updateProfile as updateAuthProfile,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  deleteUser,
 } from '@firebase/auth';
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { auth, db } from '../firebase/firebaseConfig';
-import { copyLegacyLocalData, migrateLocalDataToFirestore } from './storage';
+import { copyLegacyLocalData, migrateLocalDataToFirestore, deleteAllUserData } from './storage';
 
 const LEGACY_USERS_KEY = 'stavelectric.users.v1';
 const LEGACY_MIGRATED_PREFIX = 'stavelectric.legacyMigrated.';
@@ -258,4 +261,26 @@ export async function updateProfile(userId, patch) {
 
 export async function setActiveProfession(userId, professionId) {
   return updateProfile(userId, { activeProfession: professionId });
+}
+
+export async function deleteAccount(password) {
+  const fbUser = auth.currentUser;
+  if (!fbUser) throw new Error('אין משתמש מחובר');
+  const p = String(password || '');
+  if (!p) throw new Error('יש להזין סיסמה לאימות');
+
+  try {
+    const credential = EmailAuthProvider.credential(fbUser.email, p);
+    await reauthenticateWithCredential(fbUser, credential);
+  } catch (e) {
+    throw mapAuthError(e);
+  }
+
+  await deleteAllUserData(fbUser.uid);
+
+  try {
+    await deleteUser(fbUser);
+  } catch (e) {
+    throw mapAuthError(e);
+  }
 }

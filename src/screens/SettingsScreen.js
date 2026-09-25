@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -164,6 +165,100 @@ const annualStyles = StyleSheet.create({
   },
   exportBtnText: { color: '#fff', fontWeight: '800', fontSize: 14 },
 });
+
+function DeleteAccountSection({ t }) {
+  const { deleteAccount } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+
+  const openModal = () => {
+    Alert.alert(
+      t('settings.deleteAccountConfirmTitle'),
+      t('settings.deleteAccountConfirmMsg'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('settings.deleteAccountConfirmYes'),
+          style: 'destructive',
+          onPress: () => {
+            setPassword('');
+            setError(null);
+            setModalOpen(true);
+          },
+        },
+      ],
+    );
+  };
+
+  const confirmDelete = async () => {
+    if (!password || busy) return;
+    setError(null);
+    setBusy(true);
+    try {
+      await deleteAccount(password);
+      // Success: AuthContext clears the user and the app returns to AuthScreen on its own.
+    } catch (e) {
+      setError(e.message || t('common.error'));
+      setBusy(false);
+    }
+  };
+
+  return (
+    <>
+      <Pressable onPress={openModal} style={styles.deleteAccountBtn}>
+        <MaterialIcons name="delete-forever" size={18} color={colors.danger} />
+        <Text style={styles.deleteAccountText}>{t('settings.deleteAccount')}</Text>
+      </Pressable>
+
+      <Modal visible={modalOpen} transparent animationType="fade" onRequestClose={() => !busy && setModalOpen(false)}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <MaterialIcons name="delete-forever" size={22} color={colors.danger} />
+              <Text style={styles.modalTitle}>{t('settings.deleteAccount')}</Text>
+            </View>
+            <Text style={styles.modalSubtitle}>{t('settings.deleteAccountPasswordHint')}</Text>
+
+            <TextInput
+              style={styles.modalInput}
+              value={password}
+              onChangeText={setPassword}
+              placeholder={t('auth.passwordPh')}
+              placeholderTextColor={colors.textFaint}
+              secureTextEntry
+              autoCapitalize="none"
+            />
+
+            {error && <Text style={styles.deleteAccountError}>{error}</Text>}
+
+            <View style={styles.modalActions}>
+              <Pressable
+                onPress={() => setModalOpen(false)}
+                disabled={busy}
+                style={[styles.modalBtn, styles.modalBtnCancel]}
+              >
+                <Text style={styles.modalBtnCancelText}>{t('common.cancel')}</Text>
+              </Pressable>
+              <Pressable
+                onPress={confirmDelete}
+                disabled={busy || !password}
+                style={[styles.modalBtn, styles.modalBtnDanger, (busy || !password) && { opacity: 0.5 }]}
+              >
+                {busy ? (
+                  <ActivityIndicator color="#fff" size="small" />
+                ) : (
+                  <Text style={styles.modalBtnDangerText}>{t('settings.deleteAccountConfirmYes')}</Text>
+                )}
+              </Pressable>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+    </>
+  );
+}
 
 export default function SettingsScreen() {
   const { user, logout, updateProfile } = useAuth();
@@ -514,6 +609,8 @@ export default function SettingsScreen() {
             <Text style={styles.logoutText}>{t('settings.logout')}</Text>
           </Pressable>
 
+          <DeleteAccountSection t={t} />
+
           <View style={{ height: 24 }} />
         </ScrollView>
       </View>
@@ -636,6 +733,42 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   logoutText: { color: '#fff', fontSize: 15, fontWeight: '800' },
+
+  deleteAccountBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+    height: 44, marginTop: 10,
+  },
+  deleteAccountText: { color: colors.danger, fontSize: 13, fontWeight: '700' },
+  deleteAccountError: { color: colors.danger, fontSize: 12, marginTop: 8, textAlign: 'center' },
+
+  modalBackdrop: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center', justifyContent: 'center', padding: 24,
+  },
+  modalCard: {
+    width: '100%', maxWidth: 380,
+    backgroundColor: colors.card, borderRadius: 18, padding: 20,
+    borderWidth: 1, borderColor: colors.cardBorder,
+  },
+  modalHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
+  modalTitle: { color: colors.text, fontSize: 16, fontWeight: '800' },
+  modalSubtitle: { color: colors.textMuted, fontSize: 13, lineHeight: 19, marginBottom: 14 },
+  modalInput: {
+    paddingVertical: 11, paddingHorizontal: 14,
+    fontSize: 15, color: colors.text,
+    backgroundColor: colors.cardElevated,
+    borderWidth: 1, borderColor: colors.cardBorder,
+    borderRadius: 12,
+  },
+  modalActions: { flexDirection: 'row', gap: 10, marginTop: 16 },
+  modalBtn: {
+    flex: 1, height: 46, borderRadius: 12,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  modalBtnCancel: { backgroundColor: colors.cardElevated, borderWidth: 1, borderColor: colors.cardBorder },
+  modalBtnCancelText: { color: colors.text, fontWeight: '700' },
+  modalBtnDanger: { backgroundColor: colors.danger },
+  modalBtnDangerText: { color: '#fff', fontWeight: '800' },
 
   professionsGrid: {
     flexDirection: 'row', flexWrap: 'wrap',

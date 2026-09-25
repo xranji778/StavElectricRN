@@ -276,6 +276,24 @@ export async function exportAllUserData(userId) {
   };
 }
 
+export async function deleteAllUserData(userId) {
+  const [quotesSnap, clientsSnap, eventsSnap, customItemsSnap] = await Promise.all([
+    getDocs(userCollection(userId, 'quotes')),
+    getDocs(userCollection(userId, 'clients')),
+    getDocs(userCollection(userId, 'events')),
+    getDocs(userCollection(userId, 'customItems')),
+  ]);
+  const ops = [
+    deleteDoc(userDoc(userId, 'meta', 'rates')),
+    ...quotesSnap.docs.map((d) => deleteDoc(d.ref)),
+    ...clientsSnap.docs.map((d) => deleteDoc(d.ref)),
+    ...eventsSnap.docs.map((d) => deleteDoc(d.ref)),
+    ...customItemsSnap.docs.map((d) => deleteDoc(d.ref)),
+  ];
+  await Promise.all(ops.map((p) => p.catch(() => {})));
+  await deleteDoc(doc(db, 'users', userId)).catch(() => {});
+}
+
 export async function importAllUserData(userId, backup) {
   if (!backup || backup.schema !== 'proquote.backup') {
     throw new Error('קובץ הגיבוי לא תקין');
