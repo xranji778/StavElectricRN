@@ -1081,6 +1081,11 @@ export default function QuoteBuilderScreen({ navigation }) {
                 >
                   <MaterialIcons name={cat.icon} size={18} color={colors.voltageYellow} />
                   <Text style={styles.categoryTitle}>{t('cat.' + cat.id)}</Text>
+                  {cat.isMaterial && (
+                    <View style={styles.materialBadge}>
+                      <Text style={styles.materialBadgeText}>📦 חומר</Text>
+                    </View>
+                  )}
                   {catSelectedQty > 0 && (
                     <View style={styles.categoryCountBadge}>
                       <Text style={styles.categoryCountText}>{catSelectedQty}</Text>
@@ -1729,6 +1734,13 @@ const styles = StyleSheet.create({
   },
   categoryCountText: { color: colors.primaryBright, fontWeight: '800', fontSize: 11 },
   categoryTotal: { color: colors.text, fontWeight: '700', fontSize: 13, marginEnd: 6 },
+  materialBadge: {
+    paddingHorizontal: 7, paddingVertical: 2,
+    borderRadius: 999,
+    backgroundColor: colors.circuitTeal + '22',
+    borderWidth: 1, borderColor: colors.circuitTeal + '55',
+  },
+  materialBadgeText: { color: colors.circuitTeal, fontWeight: '700', fontSize: 10 },
 
   itemRow: {
     flexDirection: 'row', alignItems: 'center',

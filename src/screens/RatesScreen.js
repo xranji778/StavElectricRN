@@ -208,6 +208,11 @@ export default function RatesScreen() {
                     <MaterialIcons name={cat.icon} size={20} color={colors.primaryBright} />
                   </View>
                   <Text style={styles.sectionTitle}>{t('cat.' + cat.id)}</Text>
+                  {cat.isMaterial && (
+                    <View style={styles.materialBadge}>
+                      <Text style={styles.materialBadgeText}>📦 חומר</Text>
+                    </View>
+                  )}
                   {filled > 0 && (
                     <View style={styles.badge}>
                       <Text style={styles.badgeText}>{filled}/{totalCount}</Text>
@@ -464,6 +469,12 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: colors.primaryBright + '55',
   },
   badgeText: { color: colors.primaryBright, fontWeight: '800', fontSize: 11 },
+  materialBadge: {
+    backgroundColor: colors.circuitTeal + '22',
+    borderRadius: 999, paddingHorizontal: 7, paddingVertical: 2,
+    borderWidth: 1, borderColor: colors.circuitTeal + '55',
+  },
+  materialBadgeText: { color: colors.circuitTeal, fontWeight: '700', fontSize: 10 },
   sectionBody: {
     paddingHorizontal: 14, paddingBottom: 14,
     borderTopWidth: 1, borderTopColor: colors.dividerDark,
