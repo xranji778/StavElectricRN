@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>סקירת קטלוג — חשמלאי — מחירן</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Heebo", "Segoe UI", "Arial Hebrew", Tahoma, sans-serif;
+      font-size: 14px;
+      color: #111827;
+      line-height: 1.4;
+      margin: 0;
+      padding: 14px;
+      background: #F9FAFB;
+      -webkit-text-size-adjust: 100%;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .header {
+      background: linear-gradient(135deg, var(--prof-color, #1E40AF), #2563EB);
+      color: #fff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+    }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .subtitle { font-size: 13px; opacity: 0.9; margin: 0; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: #374151;
+      font-size: 13px;
+      text-decoration: none;
+      background: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .reviewer-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .reviewer-card label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #374151; }
+    .reviewer-card input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #D1D5DB;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+    .instructions {
+      background: #FEF3C7;
+      border: 1px solid #FCD34D;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .instructions strong { color: #92400E; }
+    .instructions ul { margin: 6px 0 0; padding-right: 18px; }
+    .summary-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .summary-bar div {
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #374151;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .summary-bar strong { color: #111827; font-size: 14px; }
+    .category { margin: 10px 0 6px; }
+    .category h3 {
+      font-size: 14px;
+      margin: 12px 0 4px;
+      color: #1F2937;
+      background: #F9FAFB;
+      padding: 7px 10px;
+      border-radius: 6px;
+      border-right: 4px solid var(--prof-color, #6B7280);
+    }
+    .count { color: #6B7280; font-weight: 400; font-size: 12px; }
+    .material-note {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin: 4px 0 8px;
+      font-size: 12.5px;
+      color: #1E40AF;
+      line-height: 1.5;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      background: #F3F4F6;
+      text-align: right;
+      padding: 6px 8px;
+      font-weight: 700;
+      border-bottom: 1px solid #D1D5DB;
+      font-size: 12px;
+      color: #4B5563;
+    }
+    td {
+      padding: 8px 8px;
+      border-bottom: 1px solid #F1F5F9;
+      vertical-align: middle;
+    }
+    tr[data-mark="del"] td.name { text-decoration: line-through; color: #9CA3AF; }
+    tr[data-mark="del"] { background: #FEF2F2; }
+    tr[data-mark="edit"] { background: #FFFBEB; }
+    th.check, td.check { width: 36%; min-width: 220px; }
+    th.unit, td.unit { width: 8%; text-align: center; color: #6B7280; }
+    th.name, td.name { width: 26%; font-weight: 500; }
+    th.notes, td.notes { width: 30%; }
+    .note-input {
+      width: 100%;
+      padding: 5px 7px;
+      border: 1px solid #E5E7EB;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 12.5px;
+      background: #FAFBFC;
+    }
+    .note-input:focus { background: #fff; outline: 2px solid #2563EB; border-color: #2563EB; }
+    .opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 7px 12px;
+      margin: 2px 2px 2px 0;
+      font-size: 13px;
+      font-family: inherit;
+      color: #374151;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1.5px solid #E5E7EB;
+      background: #fff;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .opt:active { transform: scale(0.97); }
+    .opt.active { font-weight: 700; }
+    .opt-edit.active { background: #FEF3C7; border-color: #D97706; color: #92400E; }
+    .opt-del.active { background: #FEE2E2; border-color: #DC2626; color: #991B1B; }
+    .missing-row {
+      margin-top: 6px;
+      padding: 8px 10px;
+      background: #F0F9FF;
+      border-radius: 7px;
+      border: 1px dashed #93C5FD;
+    }
+    .missing-row label { display: block; font-size: 12px; color: #1E40AF; margin-bottom: 4px; font-weight: 600; }
+    .missing-input {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #BFDBFE;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 13px;
+      resize: vertical;
+      background: #fff;
+    }
+    .submit-bar {
+      position: sticky;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(249,250,251,0.6), #F9FAFB 30%);
+      padding: 14px 0;
+      margin-top: 18px;
+      z-index: 10;
+    }
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #16A34A, #15803D);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(22,163,74,0.35);
+      font-family: inherit;
+    }
+    .submit-btn:hover { transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .submit-hint { text-align: center; font-size: 12px; color: #6B7280; margin-top: 8px; }
+    .submit-stats {
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 14px;
+      font-size: 13px;
+      justify-content: center;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .submit-stats span { display: inline-flex; align-items: center; gap: 4px; }
+    .stat-edit { color: #D97706; }
+    .stat-del { color: #DC2626; }
+    .stat-keep { color: #16A34A; }
+    .stat-missing { color: #1E40AF; }
+
+    /* Mobile tweaks */
+    @media (max-width: 720px) {
+      body { padding: 8px; font-size: 14px; }
+      .header { padding: 14px; }
+      h1 { font-size: 19px; }
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      tr {
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 8px;
+      }
+      td { padding: 4px 0; border: none; }
+      td.name { font-size: 15px; font-weight: 600; color: #111827; }
+      td.name::before { content: "📦 "; }
+      td.unit { color: #6B7280; font-size: 12px; text-align: right; }
+      td.unit::before { content: "יחידה: "; }
+      td.check { width: 100%; min-width: 0; }
+      td.notes { width: 100%; padding-top: 6px; }
+      .opt { flex: 1; justify-content: center; padding: 10px; font-size: 14px; }
+      .note-input { font-size: 14px; padding: 8px; }
+      .missing-input { font-size: 14px; padding: 8px; }
+      tr[data-mark="del"] { border-color: #FCA5A5; }
+      tr[data-mark="edit"] { border-color: #FCD34D; }
+    }
+</style>
+</head>
+<body style="--prof-color: #1D4ED8">
+  <div class="container">
+    <a class="back-link" href="index.html">→ חזרה לבחירת מקצוע</a>
+
+    <div class="header">
+      <h1>⚡ סקירת קטלוג — חשמלאי</h1>
+      <p class="subtitle">אפליקציית "מחירן" · עודכן 8.10.2026</p>
+    </div>
+
+    <div class="reviewer-card">
+      <label for="reviewerName">השם שלך (כדי שסתיו יידע מי שלח):</label>
+      <input type="text" id="reviewerName" placeholder="לדוגמה: דני כהן" autocomplete="name">
+    </div>
+
+    <div class="instructions">
+      <strong>איך זה עובד — פשוט:</strong>
+      <ul>
+        <li>כל פריט כבר נחשב <strong style="color:#16A34A">תקין</strong> — אין צורך לגעת בו. תסמן רק פריטים שבאמת <strong>יש איתם בעיה</strong>.</li>
+        <li>פריט לא טוב? לחץ <strong style="color:#D97706">📝 תקן</strong> וכתוב בעמודת ההערות מה לתקן, או <strong style="color:#DC2626">🗑️ מחק</strong> אם הוא מיותר.</li>
+        <li>חסר פריט? כתוב אותו בתיבת "פריטים חסרים" בתחתית הקטגוריה המתאימה.</li>
+        <li>אין צורך לתת מחירים — רק להחליט אילו פריטים צריכים להיות ברשימה.</li>
+        <li>בסוף — לחץ על הכפתור הירוק למטה לשליחת הסיכום בוואטסאפ.</li>
+      </ul>
+    </div>
+
+    <div class="summary-bar">
+      <div><strong>124</strong> פריטים סה"כ</div>
+      <div><strong>13</strong> קטגוריות</div>
+    </div>
+
+    
+    <section class="category" data-cat-id="lighting" data-cat-label="תאורה">
+      <h3>תאורה <span class="count">(5 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="lightPoint" data-item-label="נקודת מאור" data-cat-id="lighting" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">נקודת מאור</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="recessedSpot" data-item-label="ספוט שקוע" data-cat-id="lighting" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">ספוט שקוע</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="wallLamp" data-item-label="נקודת מנורת קיר" data-cat-id="lighting" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">נקודת מנורת קיר</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="gardenLight" data-item-label="גוף תאורת גינה" data-cat-id="lighting" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">גוף תאורת גינה</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="emergencyLight" data-item-label="תאורת חירום" data-cat-id="lighting" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">תאורת חירום</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="outlets" data-cat-label="שקעים">
+      <h3>שקעים <span class="count">(12 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="outlet16Single" data-item-label="שקע כח יחיד" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שקע כח יחיד</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="outlet16Double" data-item-label="שקע כח כפול" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שקע כח כפול</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="outlet16Triple" data-item-label="שלישיית שקעים" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שלישיית שקעים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="outletUsb" data-item-label="שקע USB" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שקע USB</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="outletWaterproof" data-item-label="שקע מוגן מים" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שקע מוגן מים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="outlet3Phase" data-item-label="שקע תלת פאזי" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שקע תלת פאזי</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="outletFloor" data-item-label="שקע רצפה" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שקע רצפה</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="outletWithSwitch" data-item-label="שקע עם מפסק" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שקע עם מפסק</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="outletPhone" data-item-label="שקע טלפון" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שקע טלפון</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="outletPower" data-item-label="נקודת שקע רגיל" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">נקודת שקע רגיל</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="ventPoint" data-item-label="נקודת וונטה" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">נקודת וונטה</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="acPoint" data-item-label="פקט למזגן" data-cat-id="outlets" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">פקט למזגן</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="switches" data-cat-label="מפסקים">
+      <h3>מפסקים <span class="count">(6 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="switchSingle" data-item-label="מפסק יחיד" data-cat-id="switches" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק יחיד</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="switchDouble" data-item-label="מפסק כפול" data-cat-id="switches" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק כפול</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="switchCrossover" data-item-label="מפסק חילופים" data-cat-id="switches" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק חילופים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="switchDimmer" data-item-label="מפסק דימר" data-cat-id="switches" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק דימר</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="switchSmart" data-item-label="מפסק חכם" data-cat-id="switches" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק חכם</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="switchTimer" data-item-label="מפסק טיימר" data-cat-id="switches" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק טיימר</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="cables" data-cat-label="כבלים">
+      <h3>כבלים <span class="count">(11 פריטים)</span></h3>
+      <div class="material-note">📦 פריטי חומר גלם — אופציונלי. לשימוש כשרוצים לפרט ללקוח חומרים בנפרד מהעבודה. לא חובה להוסיף אותם לכל הצעת מחיר.</div>
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="cable3x1_5" data-item-label="כבל NYM 3×1.5 mm²" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל NYM 3×1.5 mm²</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cable3x2_5" data-item-label="כבל NYM 3×2.5 mm²" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל NYM 3×2.5 mm²</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cable5x2_5" data-item-label="כבל NYM 5×2.5 mm²" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל NYM 5×2.5 mm²</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cable3x4" data-item-label="כבל NYM 3×4 mm²" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל NYM 3×4 mm²</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cable3x6" data-item-label="כבל NYM 3×6 mm²" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל NYM 3×6 mm²</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cable5x6" data-item-label="כבל NYM 5×6 mm²" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל NYM 5×6 mm²</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cable3x10" data-item-label="כבל NYM 3×10 mm²" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל NYM 3×10 mm²</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cable5x10" data-item-label="כבל NYM 5×10 mm²" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל NYM 5×10 mm²</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableGround16" data-item-label="כבל אדמה 16 mm²" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל אדמה 16 mm²</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableGround25" data-item-label="כבל אדמה 25 mm²" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל אדמה 25 mm²</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableTelephone" data-item-label="כבל טלפון" data-cat-id="cables" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל טלפון</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="conduits" data-cat-label="צנרת">
+      <h3>צנרת <span class="count">(16 פריטים)</span></h3>
+      <div class="material-note">📦 פריטי חומר גלם — אופציונלי. לשימוש כשרוצים לפרט ללקוח חומרים בנפרד מהעבודה. לא חובה להוסיף אותם לכל הצעת מחיר.</div>
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="conduitMarichef_16" data-item-label="צינור מריכף 16" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור מריכף 16</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitMarichef_20" data-item-label="צינור מריכף 20" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור מריכף 20</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitMarichef_25" data-item-label="צינור מריכף 25" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור מריכף 25</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitShirshuri_16" data-item-label="צינור שרשורי 16" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור שרשורי 16</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitShirshuri_20" data-item-label="צינור שרשורי 20" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור שרשורי 20</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitCobra_50" data-item-label="צינור קוברה 50" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור קוברה 50</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitPG_16" data-item-label="צינור פיגי 16" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור פיגי 16</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitPG_20" data-item-label="צינור פיגי 20" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור פיגי 20</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitMariron_34" data-item-label="צינור מרירון 3/4&quot;" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור מרירון 3/4&quot;</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitMariron_1" data-item-label="צינור מרירון 1&quot;" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור מרירון 1&quot;</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitMariron_1_5" data-item-label="צינור מרירון 1.5&quot;" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור מרירון 1.5&quot;</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="conduitMariron_2" data-item-label="צינור מרירון 2&quot;" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">צינור מרירון 2&quot;</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableTray_100" data-item-label="תעלת רשת 100 מ&quot;מ" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">תעלת רשת 100 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableTray_200" data-item-label="תעלת רשת 200 מ&quot;מ" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">תעלת רשת 200 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableTray_300" data-item-label="תעלת רשת 300 מ&quot;מ" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">תעלת רשת 300 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableTray_400" data-item-label="תעלת רשת 400 מ&quot;מ" data-cat-id="conduits" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">תעלת רשת 400 מ&quot;מ</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="panels" data-cat-label="לוחות חשמל">
+      <h3>לוחות חשמל <span class="count">(11 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="panel1ph_4" data-item-label="לוח חד-פאזי 4 מודולים" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח חד-פאזי 4 מודולים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="panel1ph_6" data-item-label="לוח חד-פאזי 6 מודולים" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח חד-פאזי 6 מודולים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="panel1ph_8" data-item-label="לוח חד-פאזי 8 מודולים" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח חד-פאזי 8 מודולים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="panel1ph_12" data-item-label="לוח חד-פאזי 12 מודולים" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח חד-פאזי 12 מודולים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="panel1ph_24" data-item-label="לוח חד-פאזי 24 מודולים" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח חד-פאזי 24 מודולים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="panel3ph_12" data-item-label="לוח תלת-פאזי 12 מודולים" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח תלת-פאזי 12 מודולים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="panel3ph_24" data-item-label="לוח תלת-פאזי 24 מודולים" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח תלת-פאזי 24 מודולים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="panel3ph_36" data-item-label="לוח תלת-פאזי 36 מודולים" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח תלת-פאזי 36 מודולים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="panel3ph_48" data-item-label="לוח תלת-פאזי 48 מודולים" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח תלת-פאזי 48 מודולים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="panelOutdoor" data-item-label="לוח חיצוני IP65" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">לוח חיצוני IP65</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="panelRail" data-item-label="פס DIN למודולים" data-cat-id="panels" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פס DIN למודולים</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="safety" data-cat-label="בטיחות והגנה">
+      <h3>בטיחות והגנה <span class="count">(23 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="mcb1ph_10" data-item-label="מפסק אוטומטי חד-פאזי 10A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי חד-פאזי 10A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mcb1ph_16" data-item-label="מפסק אוטומטי חד-פאזי 16A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי חד-פאזי 16A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mcb1ph_20" data-item-label="מפסק אוטומטי חד-פאזי 20A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי חד-פאזי 20A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mcb1ph_25" data-item-label="מפסק אוטומטי חד-פאזי 25A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי חד-פאזי 25A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mcb1ph_32" data-item-label="מפסק אוטומטי חד-פאזי 32A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי חד-פאזי 32A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mcb1ph_40" data-item-label="מפסק אוטומטי חד-פאזי 40A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי חד-פאזי 40A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mcb3ph_16" data-item-label="מפסק אוטומטי תלת-פאזי 16A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי תלת-פאזי 16A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mcb3ph_25" data-item-label="מפסק אוטומטי תלת-פאזי 25A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי תלת-פאזי 25A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mcb3ph_32" data-item-label="מפסק אוטומטי תלת-פאזי 32A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי תלת-פאזי 32A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mcb3ph_40" data-item-label="מפסק אוטומטי תלת-פאזי 40A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי תלת-פאזי 40A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mcb3ph_63" data-item-label="מפסק אוטומטי תלת-פאזי 63A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק אוטומטי תלת-פאזי 63A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="rcbo_16" data-item-label="מפסק פחת משולב 16A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק פחת משולב 16A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="rcbo_25" data-item-label="מפסק פחת משולב 25A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק פחת משולב 25A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="rcbo_32" data-item-label="מפסק פחת משולב 32A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק פחת משולב 32A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="rcbo_40" data-item-label="מפסק פחת משולב 40A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק פחת משולב 40A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="contactor_25" data-item-label="מגען 25A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מגען 25A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="contactor_32" data-item-label="מגען 32A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מגען 32A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="contactor_40" data-item-label="מגען 40A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מגען 40A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="contactor_63" data-item-label="מגען 63A" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מגען 63A</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="rcd" data-item-label="מפסק פחת" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק פחת</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="mainBreaker" data-item-label="מפסק זרם ראשי" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מפסק זרם ראשי</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="voltageProtector" data-item-label="מגן מתח" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מגן מתח</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="surgeProtector" data-item-label="הגנת ברק (SPD)" data-cat-id="safety" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">הגנת ברק (SPD)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="control" data-cat-label="בקרה וטיימרים">
+      <h3>בקרה וטיימרים <span class="count">(3 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="photocell" data-item-label="פוטוצל (חיישן יום-לילה)" data-cat-id="control" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פוטוצל (חיישן יום-לילה)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="timeSwitch" data-item-label="טיימר תאורה" data-cat-id="control" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">טיימר תאורה</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="sabbathTimer" data-item-label="שעון שבת" data-cat-id="control" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שעון שבת</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="comms" data-cat-label="תקשורת ומולטימדיה">
+      <h3>תקשורת ומולטימדיה <span class="count">(11 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="dataPoint" data-item-label="נקודת רשת CAT6" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">נקודת רשת CAT6</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="dataPointCat7" data-item-label="נקודת רשת CAT7" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">נקודת רשת CAT7</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="tvPoint" data-item-label="נקודת טלוויזיה" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">נקודת טלוויזיה</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="intercomPoint" data-item-label="נקודת אינטרקום" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">נקודת אינטרקום</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="speakerPoint" data-item-label="נקודת רמקול" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">נקודת רמקול</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cameraPoint" data-item-label="נקודת מצלמה (CCTV)" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">נקודת מצלמה (CCTV)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="doorbellPoint" data-item-label="נקודת פעמון/אינטרקום" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">נק׳</td>
+      <td class="name">נקודת פעמון/אינטרקום</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableCat6" data-item-label="כבל רשת CAT6" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל רשת CAT6</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableCat7" data-item-label="כבל רשת CAT7" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל רשת CAT7</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableCoax" data-item-label="כבל קואקסיאלי" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל קואקסיאלי</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="cableHdmi" data-item-label="כבל HDMI" data-cat-id="comms" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">כבל HDMI</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="smartHome" data-cat-label="בית חכם">
+      <h3>בית חכם <span class="count">(4 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="smartSwitchShelly" data-item-label="מודול חכם Shelly 1" data-cat-id="smartHome" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מודול חכם Shelly 1</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="smartSwitchShelly2" data-item-label="מודול חכם Shelly 2.5 (תריס)" data-cat-id="smartHome" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מודול חכם Shelly 2.5 (תריס)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="smartSocketSonoff" data-item-label="שקע חכם Sonoff" data-cat-id="smartHome" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">שקע חכם Sonoff</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="smartLockYale" data-item-label="מנעול חכם דלת" data-cat-id="smartHome" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מנעול חכם דלת</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="energy" data-cat-label="אנרגיה וטעינה">
+      <h3>אנרגיה וטעינה <span class="count">(6 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="evCharger7kw" data-item-label="עמדת טעינה לרכב חשמלי 7kW" data-cat-id="energy" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">עמדת טעינה לרכב חשמלי 7kW</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="evCharger22kw" data-item-label="עמדת טעינה לרכב חשמלי 22kW" data-cat-id="energy" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">עמדת טעינה לרכב חשמלי 22kW</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="solarInverter5kw" data-item-label="אינוורטר סולארי 5kW" data-cat-id="energy" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">אינוורטר סולארי 5kW</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="solarPanel400w" data-item-label="פאנל סולארי 400W" data-cat-id="energy" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">פאנל סולארי 400W</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="floorHeatingPad" data-item-label="יריעת חימום רצפה חשמלית" data-cat-id="energy" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">מטר</td>
+      <td class="name">יריעת חימום רצפה חשמלית</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="floorHeatingThermo" data-item-label="תרמוסטט חימום רצפה" data-cat-id="energy" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">תרמוסטט חימום רצפה</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="boxes" data-cat-label="קופסאות">
+      <h3>קופסאות <span class="count">(11 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="concreteBox_3" data-item-label="קופסת בטון 3 מקומות" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קופסת בטון 3 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="concreteBox_4" data-item-label="קופסת בטון 4 מקומות" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קופסת בטון 4 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="concreteBox_6" data-item-label="קופסת בטון 6 מקומות" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קופסת בטון 6 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="gypsumBox_3" data-item-label="קופסת גבס 3 מקומות" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קופסת גבס 3 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="gypsumBox_4" data-item-label="קופסת גבס 4 מקומות" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קופסת גבס 4 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="gypsumBox_5" data-item-label="קופסת גבס 5 מקומות" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קופסת גבס 5 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="adapterConcrete_3" data-item-label="מתאם 3 מקומות" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מתאם 3 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="adapterConcrete_4" data-item-label="מתאם 4 מקומות" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מתאם 4 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="adapterConcrete_6" data-item-label="מתאם 6 מקומות" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מתאם 6 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="ceilingBox" data-item-label="קופסת תקרה (הסתעפות)" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קופסת תקרה (הסתעפות)</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="officeFloorBox" data-item-label="קופסת אופיס" data-cat-id="boxes" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">קופסת אופיס</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+    <section class="category" data-cat-id="frames" data-cat-label="מסגרות">
+      <h3>מסגרות <span class="count">(5 פריטים)</span></h3>
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="check">יש בעיה?</th>
+            <th class="unit">יח׳</th>
+            <th class="name">שם הפריט</th>
+            <th class="notes">הערות / תיקון</th>
+          </tr>
+        </thead>
+        <tbody>
+    <tr data-item-id="frame_1" data-item-label="מסגרת 1 מקום" data-cat-id="frames" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מסגרת 1 מקום</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="frame_2" data-item-label="מסגרת 2 מקומות" data-cat-id="frames" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מסגרת 2 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="frame_3" data-item-label="מסגרת 3 מקומות" data-cat-id="frames" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מסגרת 3 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="frame_4" data-item-label="מסגרת 4 מקומות" data-cat-id="frames" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מסגרת 4 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  
+    <tr data-item-id="frame_6" data-item-label="מסגרת 6 מקומות" data-cat-id="frames" data-mark="">
+      <td class="check">
+        <button type="button" class="opt opt-edit" data-mark-btn="edit">📝 תקן</button>
+        <button type="button" class="opt opt-del" data-mark-btn="del">🗑️ מחק</button>
+      </td>
+      <td class="unit">יח׳</td>
+      <td class="name">מסגרת 6 מקומות</td>
+      <td class="notes"><input type="text" class="note-input" placeholder="הערה / תיקון..."></td>
+    </tr>
+  </tbody>
+      </table>
+      <div class="missing-row">
+        <label>פריטים חסרים בקטגוריה זו (כתבו מופרדים בפסיק או שורה חדשה):</label>
+        <textarea class="missing-input" rows="2" placeholder="לדוגמה: נקודת מאור בגינה, שקע מוגן IP67..."></textarea>
+      </div>
+    </section>
+  
+
+    <div class="submit-bar">
+      <div class="submit-stats" id="submitStats">
+        <span class="stat-keep">✅ <strong id="countKeep">0</strong> לשמור</span>
+        <span class="stat-edit">📝 <strong id="countEdit">0</strong> לתקן</span>
+        <span class="stat-del">🗑️ <strong id="countDel">0</strong> למחיקה</span>
+        <span class="stat-missing">➕ <strong id="countMissing">0</strong> חסרים</span>
+      </div>
+      <button class="submit-btn" id="submitBtn" onclick="submitToWhatsApp()">
+        📲 שלח סיכום בוואטסאפ לסתיו
+      </button>
+      <p class="submit-hint">הכפתור יפתח וואטסאפ עם הודעה מוכנה. רק תלחץ "שליחה".</p>
+    </div>
+  </div>
+
+  <script>
+    const STAV_NUMBER = "972526873674";
+    const PROF_LABEL = "חשמלאי";
+
+    function getCatLabel(catId) {
+      const el = document.querySelector('section.category[data-cat-id="' + catId + '"]');
+      return el ? el.getAttribute('data-cat-label') : catId;
+    }
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-mark-btn]');
+      if (!btn) return;
+      const row = btn.closest('tr[data-item-id]');
+      if (!row) return;
+      const clicked = btn.getAttribute('data-mark-btn');
+      const current = row.getAttribute('data-mark');
+      const next = current === clicked ? '' : clicked;
+      row.setAttribute('data-mark', next);
+      row.querySelectorAll('[data-mark-btn]').forEach((b) => {
+        b.classList.toggle('active', b.getAttribute('data-mark-btn') === next);
+      });
+      updateStats();
+    });
+
+    function updateStats() {
+      let total = 0, edit = 0, del = 0, missing = 0;
+      document.querySelectorAll('tr[data-item-id]').forEach((row) => {
+        total++;
+        const mark = row.getAttribute('data-mark');
+        if (mark === 'edit') edit++;
+        else if (mark === 'del') del++;
+      });
+      document.querySelectorAll('.missing-input').forEach((ta) => {
+        const v = ta.value.trim();
+        if (v) {
+          missing += v.split(/[,\n]/).map((s) => s.trim()).filter(Boolean).length;
+        }
+      });
+      document.getElementById('countKeep').textContent = total - edit - del;
+      document.getElementById('countEdit').textContent = edit;
+      document.getElementById('countDel').textContent = del;
+      document.getElementById('countMissing').textContent = missing;
+    }
+
+    document.addEventListener('input', updateStats);
+
+    function submitToWhatsApp() {
+      const name = document.getElementById('reviewerName').value.trim();
+      if (!name) {
+        alert('אנא הזן את שמך בראש הדף לפני השליחה');
+        document.getElementById('reviewerName').focus();
+        return;
+      }
+
+      const editsByCat = {};
+      const delsByCat = {};
+      let keepCount = 0;
+
+      document.querySelectorAll('tr[data-item-id]').forEach((row) => {
+        const mark = row.getAttribute('data-mark');
+        const itemLabel = row.getAttribute('data-item-label');
+        const catId = row.getAttribute('data-cat-id');
+        const catLabel = getCatLabel(catId);
+        const noteInput = row.querySelector('.note-input');
+        const note = noteInput ? noteInput.value.trim() : '';
+
+        if (mark === 'edit') {
+          if (!editsByCat[catLabel]) editsByCat[catLabel] = [];
+          editsByCat[catLabel].push(note ? itemLabel + ' → ' + note : itemLabel + ' (ללא פירוט)');
+        } else if (mark === 'del') {
+          if (!delsByCat[catLabel]) delsByCat[catLabel] = [];
+          delsByCat[catLabel].push(note ? itemLabel + ' (' + note + ')' : itemLabel);
+        } else {
+          keepCount++;
+        }
+      });
+
+      const missingByCat = {};
+      document.querySelectorAll('section.category').forEach((sec) => {
+        const ta = sec.querySelector('.missing-input');
+        if (!ta) return;
+        const v = ta.value.trim();
+        if (!v) return;
+        const catLabel = sec.getAttribute('data-cat-label');
+        missingByCat[catLabel] = v.split(/[,\n]/).map((s) => s.trim()).filter(Boolean);
+      });
+
+      const lines = [];
+      lines.push('📋 סקירת קטלוג (' + PROF_LABEL + ') מאת ' + name);
+      lines.push('תאריך: ' + new Date().toLocaleDateString('he-IL'));
+      lines.push('');
+
+      const editEntries = Object.entries(editsByCat);
+      if (editEntries.length > 0) {
+        const total = editEntries.reduce((s, [, arr]) => s + arr.length, 0);
+        lines.push('📝 לתיקון (' + total + ' פריטים):');
+        for (const [cat, arr] of editEntries) {
+          lines.push('• ' + cat + ':');
+          for (const item of arr) lines.push('   – ' + item);
+        }
+        lines.push('');
+      }
+
+      const delEntries = Object.entries(delsByCat);
+      if (delEntries.length > 0) {
+        const total = delEntries.reduce((s, [, arr]) => s + arr.length, 0);
+        lines.push('🗑️ למחיקה (' + total + ' פריטים):');
+        for (const [cat, arr] of delEntries) {
+          lines.push('• ' + cat + ':');
+          for (const item of arr) lines.push('   – ' + item);
+        }
+        lines.push('');
+      }
+
+      const missingEntries = Object.entries(missingByCat);
+      if (missingEntries.length > 0) {
+        const total = missingEntries.reduce((s, [, arr]) => s + arr.length, 0);
+        lines.push('➕ פריטים חסרים שצריך להוסיף (' + total + '):');
+        for (const [cat, arr] of missingEntries) {
+          lines.push('• ' + cat + ':');
+          for (const item of arr) lines.push('   – ' + item);
+        }
+        lines.push('');
+      }
+
+      if (keepCount > 0) {
+        lines.push('✅ לשמור כמו שזה: ' + keepCount + ' פריטים');
+        lines.push('');
+      }
+
+      const totalActioned = Object.values(editsByCat).reduce((s, a) => s + a.length, 0)
+                          + Object.values(delsByCat).reduce((s, a) => s + a.length, 0);
+      if (totalActioned === 0 && missingEntries.length === 0) {
+        if (!confirm('לא סימנת אף פריט לתיקון או מחיקה ולא הוספת פריטים חסרים. לשלוח בכל זאת?')) return;
+      }
+
+      const message = lines.join('\n');
+      const url = 'https://wa.me/' + STAV_NUMBER + '?text=' + encodeURIComponent(message);
+      window.open(url, '_blank');
+    }
+
+    updateStats();
+  </script>
+
+</body>
+</html>

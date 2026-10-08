@@ -1,5 +1,5 @@
 // One-off: read src/data/catalog.js and emit a landing page + one review page per profession.
-// Electrician section is excluded — already reviewed by טובי.
+
 // Output goes to docs/ for GitHub Pages hosting (index.html = picker, review-<prof>.html = per-trade review).
 // Usage: node tools/export-catalog-html.mjs
 
@@ -43,10 +43,10 @@ for (const it of items) {
   itemsByCat[it.category].push(it);
 }
 
-// Electrician already reviewed — not offered in the picker anymore.
-const PROFESSIONS = ['plumber', 'comms', 'contractor'];
+const PROFESSIONS = ['electrician', 'plumber', 'comms', 'contractor'];
 
 const professionLabels = {
+  electrician: { he: 'חשמלאי', emoji: '⚡', color: '#1D4ED8', file: 'review-electrician.html' },
   plumber: { he: 'אינסטלטור', emoji: '🔧', color: '#0E7490', file: 'review-plumber.html' },
   comms: { he: 'איש תקשורת', emoji: '📡', color: '#6D28D9', file: 'review-comms.html' },
   contractor: { he: 'קבלן / שיפוצניק', emoji: '🎨', color: '#B45309', file: 'review-contractor.html' },
@@ -55,7 +55,7 @@ const professionLabels = {
 const unitLabels = { point: 'נק׳', piece: 'יח׳', meter: 'מטר' };
 
 // Only categories exclusive to that one profession — shared/electrician items are left out.
-const catsByProf = { plumber: [], comms: [], contractor: [] };
+const catsByProf = { electrician: [], plumber: [], comms: [], contractor: [] };
 for (const c of categories) {
   if (c.professions.length === 1 && catsByProf[c.professions[0]]) {
     catsByProf[c.professions[0]].push(c);
