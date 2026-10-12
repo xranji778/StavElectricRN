@@ -22,7 +22,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { colors } from '../theme/colors';
 import { getProfessionTheme } from '../theme/professionThemes';
 import { loadRates, saveRates, loadCustomItems, saveCustomItem, deleteCustomItem } from '../data/storage';
-import { categoriesForProfession, itemsByCategory } from '../data/catalog';
+import { categoriesForProfession, pricedItemsByCategory as itemsByCategory } from '../data/catalog';
 import { PROFESSIONS } from '../data/auth';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -156,14 +156,14 @@ export default function RatesScreen() {
   const filledByCategory = useMemo(() => {
     const out = {};
     for (const cat of visibleCategories) {
-      const items = itemsByCategory(cat.id);
+      const items = itemsByCategory(cat.id, activeProfession);
       const customs = customByCategory[cat.id] || [];
       const filledBuiltin = items.filter((i) => Number(rates[i.id] || 0) > 0).length;
       const filledCustom = customs.filter((i) => Number(rates[i.id] || 0) > 0).length;
       out[cat.id] = filledBuiltin + filledCustom;
     }
     return out;
-  }, [rates, visibleCategories, customByCategory]);
+  }, [rates, visibleCategories, customByCategory, activeProfession]);
 
   if (loading) {
     return (
@@ -195,9 +195,10 @@ export default function RatesScreen() {
           <ProfessionSwitcher />
 
           {visibleCategories.map((cat) => {
-            const items = itemsByCategory(cat.id);
+            const items = itemsByCategory(cat.id, activeProfession);
             const customs = customByCategory[cat.id] || [];
             const totalCount = items.length + customs.length;
+            if (totalCount === 0) return null;
             const filled = filledByCategory[cat.id];
             const open = expanded[cat.id];
 
@@ -257,7 +258,7 @@ export default function RatesScreen() {
                                   {familyItems.map((sub) => (
                                     <View key={sub.id} style={styles.field}>
                                       <View style={styles.fieldLabelRow}>
-                                        <Text style={styles.fieldLabel}>{sub.size}{sub.sizeUnit || ' mm'}</Text>
+                                        <Text style={styles.fieldLabel}>{sub.size}{sub.sizeUnit ?? ' mm'}</Text>
                                         <Text style={styles.fieldUnit}>{t('unit.' + sub.unit)}</Text>
                                       </View>
                                       <View style={styles.inputWrap}>
@@ -396,6 +397,8 @@ export default function RatesScreen() {
                 { id: 'piece', label: t('unit.piece') },
                 { id: 'meter', label: t('unit.meter') },
                 { id: 'point', label: t('unit.point') },
+                { id: 'sqm', label: t('unit.sqm') },
+                { id: 'job', label: t('unit.job') },
               ].map((u) => (
                 <Pressable
                   key={u.id}
@@ -581,7 +584,7 @@ const styles = StyleSheet.create({
     fontSize: 15, textAlign: 'right',
   },
 
-  unitRow: { flexDirection: 'row', gap: 8 },
+  unitRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   unitChip: {
     paddingHorizontal: 14, paddingVertical: 8,
     borderRadius: 999, borderWidth: 1, borderColor: colors.cardBorder,

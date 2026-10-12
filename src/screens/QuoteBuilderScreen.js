@@ -21,7 +21,7 @@ import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { colors } from '../theme/colors';
 import { getProfessionTheme } from '../theme/professionThemes';
 import { formatILS } from '../utils/currency';
-import { CATALOG, VAT_RATE, findItem, categoriesForProfession, itemBelongsToProfession } from '../data/catalog';
+import { CATALOG, VAT_RATE, findItem, categoriesForProfession, itemBelongsToProfession, isMaterialItem } from '../data/catalog';
 import { loadRates, saveRates, saveQuote, hasAnyRate, updateQuote, getQuoteById, loadClients, upsertClientFromQuote, loadCustomItems, saveCustomItem } from '../data/storage';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -99,6 +99,7 @@ export default function QuoteBuilderScreen({ navigation }) {
         if (q) {
           const qMap = {};
           (q.items || []).forEach((it) => { qMap[it.id] = it.qty; });
+          (q.materials || []).forEach((it) => { qMap[it.id] = (qMap[it.id] || 0) + it.qty; });
           setQuantities(qMap);
           const exMap = {};
           (q.extras || []).forEach((it) => { exMap[it.id] = it.qty; });
@@ -340,9 +341,14 @@ export default function QuoteBuilderScreen({ navigation }) {
     let extrasSubtotal = 0;
     let itemCount = 0;
     let extrasCount = 0;
+    let materialsCount = 0;
     for (const item of allItems) {
       const qty = quantities[item.id] || 0;
       const eqty = extrasQuantities[item.id] || 0;
+      if (isMaterialItem(item)) {
+        materialsCount += qty + eqty;
+        continue;
+      }
       const rate = rates[item.id] || 0;
       if (qty > 0) {
         subtotal += qty * rate;
@@ -373,19 +379,32 @@ export default function QuoteBuilderScreen({ navigation }) {
       total: afterDiscount + vat,
       itemCount,
       extrasCount,
+      materialsCount,
     };
   }, [quantities, extrasQuantities, rates, discountValue, discountType, allItems]);
 
   const buildQuoteObject = useCallback(() => {
+    const isMat = (id) => isMaterialItem(findAnyItem(id));
+    // חומרים לא נכנסים להצעה ללקוח — הם נשמרים בנפרד לרשימת הספק
+    const materialsMap = new Map();
+    for (const src of [quantities, extrasQuantities]) {
+      for (const [id, qty] of Object.entries(src)) {
+        if (qty > 0 && isMat(id)) materialsMap.set(id, (materialsMap.get(id) || 0) + qty);
+      }
+    }
+    const materials = Array.from(materialsMap.entries()).map(([id, qty]) => {
+      const item = findAnyItem(id);
+      return { id, label: item?.label || id, qty, unit: item?.unit || null };
+    });
     const lineItems = Object.entries(quantities)
-      .filter(([, qty]) => qty > 0)
+      .filter(([id, qty]) => qty > 0 && !isMat(id))
       .map(([id, qty]) => {
         const item = findAnyItem(id);
         const unitPrice = rates[id] || 0;
         return { id, label: item?.label || id, qty, unitPrice, lineTotal: qty * unitPrice };
       });
     const extrasItems = Object.entries(extrasQuantities)
-      .filter(([, qty]) => qty > 0)
+      .filter(([id, qty]) => qty > 0 && !isMat(id))
       .map(([id, qty]) => {
         const item = findAnyItem(id);
         const unitPrice = rates[id] || 0;
@@ -414,6 +433,7 @@ export default function QuoteBuilderScreen({ navigation }) {
       total: totals.total,
       items: lineItems,
       extras: extrasItems,
+      materials,
       progress: progress,
       createdAt: editingCreatedAt || new Date(),
     };
@@ -425,8 +445,18 @@ export default function QuoteBuilderScreen({ navigation }) {
     [activeProfession],
   );
 
+  // יש לפחות עבודה אחת עם מחיר במקצוע הפעיל? אם לא — חומרים לבד לא יוצרים הצעה
+  const professionHasRates = useMemo(
+    () => allItems.some((i) => !i.hidden && !isMaterialItem(i) && (rates[i.id] || 0) > 0
+      && (i.isCustom
+        ? (!i.profession || !activeProfession || i.profession === activeProfession)
+        : itemBelongsToProfession(i, activeProfession))),
+    [allItems, rates, activeProfession],
+  );
+
   const availableItems = useMemo(() => {
     const s = search.trim().toLowerCase();
+    if (!professionHasRates) return [];
     return allItems.filter((i) => {
       const hasRate = (rates[i.id] || 0) > 0;
       const inProfession = i.isCustom
@@ -438,9 +468,10 @@ export default function QuoteBuilderScreen({ navigation }) {
         || itemLabel.toLowerCase().includes(s)
         || (i.label && i.label.toLowerCase().includes(s))
         || (familyLabel && familyLabel.toLowerCase().includes(s));
-      return hasRate && inProfession && matches;
+      if (i.hidden) return false;
+      return (hasRate || isMaterialItem(i)) && inProfession && matches;
     });
-  }, [allItems, rates, search, t, activeProfession]);
+  }, [allItems, rates, search, t, activeProfession, professionHasRates]);
 
   const toggleFamily = (familyId) => {
     setExpandedFamilies((prev) => ({ ...prev, [familyId]: !prev[familyId] }));
@@ -561,8 +592,8 @@ export default function QuoteBuilderScreen({ navigation }) {
   };
 
   const onExportSupplier = async () => {
-    if (totals.itemCount === 0) {
-      Alert.alert(t('quote.nothingToExport'), t('quote.addAtLeastOne'));
+    if (totals.materialsCount === 0) {
+      Alert.alert(t('quote.noMaterialsTitle'), t('quote.noMaterialsMsg'));
       return;
     }
     try {
@@ -931,6 +962,17 @@ export default function QuoteBuilderScreen({ navigation }) {
             </Pressable>
           )}
 
+          {!professionHasRates && (
+            <View style={styles.noRatesCard}>
+              <MaterialIcons name="price-change" size={44} color={colors.accentAmber} />
+              <Text style={styles.noRatesTitle}>{t('quote.noRatesProfTitle')}</Text>
+              <Text style={styles.noRatesSub}>{t('quote.noRatesProfSub')}</Text>
+              <Pressable style={styles.noRatesButton} onPress={() => navigation.navigate('Rates')}>
+                <Text style={styles.noRatesButtonText}>{t('quote.openRates')}</Text>
+              </Pressable>
+            </View>
+          )}
+
           {visibleCategories.map((cat) => {
             const items = availableItems.filter((i) => i.category === cat.id);
             if (items.length === 0) return null;
@@ -956,10 +998,11 @@ export default function QuoteBuilderScreen({ navigation }) {
                     <Text style={[styles.sizeBadgeText, selected && { color: '#fff' }]}>{item.size}</Text>
                   </View>
                   <View style={{ flex: 1, marginHorizontal: 12 }}>
-                    <Text style={styles.itemLabel}>{item.size}{item.sizeUnit || ' mm'}</Text>
+                    <Text style={styles.itemLabel}>{item.size}{item.sizeUnit ?? ' mm'}</Text>
                     <Text style={styles.itemPrice}>
-                      {formatILS(price)} / {t('unit.' + item.unit)}
-                      {lineTotal > 0 ? ` · ${t('home.total')} ${formatILS(lineTotal)}` : ''}
+                      {isMaterialItem(item)
+                        ? `${t('quote.forSupplier')} · ${t('unit.' + item.unit)}`
+                        : `${formatILS(price)} / ${t('unit.' + item.unit)}${lineTotal > 0 ? ` · ${t('home.total')} ${formatILS(lineTotal)}` : ''}`}
                     </Text>
                     {otherQty > 0 && (
                       <Text style={styles.otherQtyHint}>
@@ -1006,7 +1049,9 @@ export default function QuoteBuilderScreen({ navigation }) {
                         <Text style={styles.itemLabel}>{t('family.' + item.family)}</Text>
                         <Text style={styles.itemPrice}>
                           {familyQty > 0
-                            ? `${familyQty} ${t('unit.' + item.unit)} · ${formatILS(familyTotal)}`
+                            ? (isMaterialItem(item)
+                              ? `${familyQty} ${t('unit.' + item.unit)} · ${t('quote.forSupplier')}`
+                              : `${familyQty} ${t('unit.' + item.unit)} · ${formatILS(familyTotal)}`)
                             : t('family.chooseSize')}
                         </Text>
                       </View>
@@ -1047,8 +1092,9 @@ export default function QuoteBuilderScreen({ navigation }) {
                         )}
                       </View>
                       <Text style={styles.itemPrice}>
-                        {formatILS(price)} / {t('unit.' + item.unit)}
-                        {lineTotal > 0 ? ` · ${t('home.total')} ${formatILS(lineTotal)}` : ''}
+                        {isMaterialItem(item)
+                          ? `${t('quote.forSupplier')} · ${t('unit.' + item.unit)}`
+                          : `${formatILS(price)} / ${t('unit.' + item.unit)}${lineTotal > 0 ? ` · ${t('home.total')} ${formatILS(lineTotal)}` : ''}`}
                       </Text>
                       {otherQty > 0 && (
                         <Text style={styles.otherQtyHint}>
@@ -1231,9 +1277,9 @@ export default function QuoteBuilderScreen({ navigation }) {
             </View>
 
             <Pressable
-              style={[styles.supplierBtn, totals.itemCount === 0 && { opacity: 0.5 }]}
+              style={[styles.supplierBtn, totals.materialsCount === 0 && { opacity: 0.5 }]}
               onPress={onExportSupplier}
-              disabled={totals.itemCount === 0 || exporting}
+              disabled={exporting}
             >
               <MaterialIcons name="local-shipping" size={18} color={colors.voltageYellow} />
               <Text style={styles.supplierBtnText}>{t('quote.supplierPdf')}</Text>
@@ -1348,8 +1394,9 @@ export default function QuoteBuilderScreen({ navigation }) {
           </KeyboardAvoidingView>
         </Modal>
 
-        {totals.itemCount > 0 && (
+        {(totals.itemCount > 0 || totals.materialsCount > 0) && (
           <View style={styles.fabRow} pointerEvents="box-none">
+            {totals.materialsCount > 0 && (
             <Pressable
               style={({ pressed }) => [styles.fabSupplier, pressed && { opacity: 0.85 }]}
               onPress={onExportSupplier}
@@ -1361,6 +1408,8 @@ export default function QuoteBuilderScreen({ navigation }) {
                 <MaterialIcons name="local-shipping" size={22} color={colors.voltageYellow} />
               )}
             </Pressable>
+            )}
+            {totals.itemCount > 0 && (<>
             <Pressable
               style={({ pressed }) => [styles.fabWhatsapp, pressed && { opacity: 0.9 }]}
               onPress={onShareWhatsApp}
@@ -1389,6 +1438,7 @@ export default function QuoteBuilderScreen({ navigation }) {
                 </>
               )}
             </Pressable>
+            </>)}
           </View>
         )}
       </SafeAreaView>
@@ -1417,6 +1467,8 @@ export default function QuoteBuilderScreen({ navigation }) {
                 { id: 'piece', label: t('unit.piece') },
                 { id: 'meter', label: t('unit.meter') },
                 { id: 'point', label: t('unit.point') },
+                { id: 'sqm', label: t('unit.sqm') },
+                { id: 'job', label: t('unit.job') },
               ].map((u) => (
                 <Pressable
                   key={u.id}
@@ -1935,7 +1987,7 @@ const styles = StyleSheet.create({
   customModalInputFlex: { flex: 1, paddingVertical: 10, fontSize: 15, color: colors.text, textAlign: 'right' },
   customModalSuffix: { color: colors.voltageYellow, fontWeight: '800', marginStart: 8 },
 
-  customUnitRow: { flexDirection: 'row', gap: 8 },
+  customUnitRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   customUnitChip: {
     paddingHorizontal: 14, paddingVertical: 8,
     borderRadius: 999, borderWidth: 1, borderColor: colors.cardBorder,

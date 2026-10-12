@@ -323,8 +323,10 @@ export async function buildQuoteHtml(quote, user) {
 export function buildSupplierHtml(quote, user) {
   const projectName = escapeHtml(quote.projectName || '');
   const dateStr = formatDate(quote.createdAt);
-  const originalItems = quote.items || [];
-  const extras = quote.extras || [];
+  // רשימת הספק = חומרים בלבד. הצעות ישנות (בלי materials) — כל הפריטים כמו קודם
+  const hasMaterials = Array.isArray(quote.materials);
+  const originalItems = hasMaterials ? quote.materials : (quote.items || []);
+  const extras = hasMaterials ? [] : (quote.extras || []);
   // Combine quantities by item id for the supplier (original + extras)
   const merged = new Map();
   for (const it of originalItems) {
@@ -349,7 +351,7 @@ export function buildSupplierHtml(quote, user) {
   <div class="header">
     <div class="header-logo"><img src="${LOGO_DATA_URI}" alt="${APP_NAME}" /></div>
     <div class="header-text">
-      <h1>רשימת ציוד לספק</h1>
+      <h1>רשימת חומרים לספק</h1>
       <div class="sub">${dateStr}${projectName ? ' · פרויקט: ' + projectName : ''}</div>
       ${businessHeader(user)}
     </div>
