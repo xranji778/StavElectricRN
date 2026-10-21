@@ -484,7 +484,6 @@ const T = {
     'item.switchTimer': 'טיימר לדוד',
 
     'item.cableGround25': 'כבל אדמה 25 mm²',
-    'item.cableTelephone': 'כבל טלפון',
 
     'item.panel1ph_4': 'לוח חד-פאזי 4 מודולים',
     'item.panel1ph_6': 'לוח חד-פאזי 6 מודולים',
@@ -843,7 +842,6 @@ const T = {
     'item.cableNYY3x2_5': 'NYY 3×2.5 outdoor cable',
     'item.cableNYY3x4': 'NYY 3×4 outdoor cable',
     'item.cableGround25': 'Ground cable 25 mm²',
-    'item.cableTelephone': 'Telephone cable',
 
     'item.panel1ph_4': 'Single-phase panel 4 modules',
     'item.panel1ph_6': 'Single-phase panel 6 modules',
@@ -1167,7 +1165,6 @@ const T = {
     'item.cableNYY3x2_5': 'كابل NYY 3×2.5 (خارجي)',
     'item.cableNYY3x4': 'كابل NYY 3×4 (خارجي)',
     'item.cableGround25': 'كابل تأريض 25 مم²',
-    'item.cableTelephone': 'كابل هاتف',
 
     'item.panel1ph_4': 'لوحة أحادية الطور 4 وحدات',
     'item.panel1ph_6': 'لوحة أحادية الطور 6 وحدات',
@@ -1491,7 +1488,6 @@ const T = {
     'item.cableNYY3x2_5': 'Кабель NYY 3×2.5 (уличный)',
     'item.cableNYY3x4': 'Кабель NYY 3×4 (уличный)',
     'item.cableGround25': 'Кабель заземления 25 мм²',
-    'item.cableTelephone': 'Телефонный кабель',
 
     'item.panel1ph_4': 'Однофазный щит 4 модуля',
     'item.panel1ph_6': 'Однофазный щит 6 модулей',
