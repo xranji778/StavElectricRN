@@ -178,7 +178,7 @@ export const CATALOG = [
 
   // לוחות אחרים
   { id: 'panelOutdoor', label: 'לוח חיצוני IP65', icon: 'shield', category: 'panels', unit: 'piece', hidden: true },
-  { id: 'panelRail', label: 'פס DIN למודולים', icon: 'view-stream', category: 'panels', unit: 'piece', isMaterial: true },
+  { id: 'panelRail', label: 'פס DIN למודולים', icon: 'view-stream', category: 'elecMatPanel', unit: 'piece' },
 
   // ============ בטיחות והגנה ============
 
