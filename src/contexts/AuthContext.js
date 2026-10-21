@@ -16,9 +16,7 @@ async function buildUserFromFirebase(fbUser) {
   } catch (e) {
     profileData = null;
   }
-  const professions = Array.isArray(profileData?.professions) && profileData.professions.length > 0
-    ? profileData.professions
-    : ['electrician'];
+  const professions = authApi.sanitizeProfessions(profileData?.professions);
   const activeProfession = professions.includes(profileData?.activeProfession)
     ? profileData.activeProfession
     : professions[0];

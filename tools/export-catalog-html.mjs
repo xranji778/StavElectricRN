@@ -43,19 +43,18 @@ for (const it of items) {
   itemsByCat[it.category].push(it);
 }
 
-const PROFESSIONS = ['electrician', 'plumber', 'comms', 'contractor'];
+const PROFESSIONS = ['electrician', 'plumber', 'comms'];
 
 const professionLabels = {
   electrician: { he: 'חשמלאי', emoji: '⚡', color: '#1D4ED8', file: 'review-electrician.html' },
   plumber: { he: 'אינסטלטור', emoji: '🔧', color: '#0E7490', file: 'review-plumber.html' },
   comms: { he: 'איש תקשורת', emoji: '📡', color: '#6D28D9', file: 'review-comms.html' },
-  contractor: { he: 'קבלן / שיפוצניק', emoji: '🎨', color: '#B45309', file: 'review-contractor.html' },
 };
 
 const unitLabels = { point: 'נק׳', piece: 'יח׳', meter: 'מטר' };
 
 // Only categories exclusive to that one profession — shared/electrician items are left out.
-const catsByProf = { electrician: [], plumber: [], comms: [], contractor: [] };
+const catsByProf = { electrician: [], plumber: [], comms: [] };
 for (const c of categories) {
   if (c.professions.length === 1 && catsByProf[c.professions[0]]) {
     catsByProf[c.professions[0]].push(c);

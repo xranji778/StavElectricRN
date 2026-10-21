@@ -17,13 +17,14 @@ import { copyLegacyLocalData, migrateLocalDataToFirestore, deleteAllUserData } f
 const LEGACY_USERS_KEY = 'stavelectric.users.v1';
 const LEGACY_MIGRATED_PREFIX = 'stavelectric.legacyMigrated.';
 
-export const PROFESSION_IDS = ['electrician', 'plumber', 'comms', 'contractor'];
+// 'contractor' (שיפוצניק) was removed 2026-10-21; profiles that still list it
+// are cleaned up by sanitizeProfessions (falls back to electrician).
+export const PROFESSION_IDS = ['electrician', 'plumber', 'comms'];
 
 export const PROFESSIONS = [
   { id: 'electrician', label: 'חשמלאי', icon: 'electrical-services', emoji: '👷' },
   { id: 'plumber', label: 'אינסטלטור', icon: 'plumbing', emoji: '🔧' },
   { id: 'comms', label: 'איש תקשורת', icon: 'router', emoji: '📡' },
-  { id: 'contractor', label: 'שיפוצניק', icon: 'construction', emoji: '🎨' },
 ];
 
 function validateEmail(email) {
@@ -35,7 +36,7 @@ function validatePhone(phone) {
   return /^[\d\s\-+()]{6,20}$/.test(phone);
 }
 
-function sanitizeProfessions(list) {
+export function sanitizeProfessions(list) {
   if (!Array.isArray(list)) return ['electrician'];
   const cleaned = list.filter((p) => PROFESSION_IDS.includes(p));
   return cleaned.length > 0 ? Array.from(new Set(cleaned)) : ['electrician'];

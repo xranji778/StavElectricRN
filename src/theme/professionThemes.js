@@ -58,24 +58,6 @@ export const PROFESSION_THEMES = {
     ctaGradient: ['#FBBF24', '#FCD34D'],
     headerGradient: ['#0A0F12', '#101820', '#0A0F12'],
   },
-  contractor: {
-    appName: APP_NAME,
-    professionLabel: 'שיפוצניק',
-    accent: '#F97316',           // warm orange
-    accentSoft: '#FB923C',
-    accentDark: '#C2410C',
-    secondary: '#F59E0B',
-    iconAccent: '#FDBA74',
-    bgIconPrimary: 'construction',
-    bgIconSecondary: 'handyman',
-    bgIconTertiary: 'home-repair-service',
-    headerIcon: 'construction',
-    ctaIcon: 'home-repair-service',
-    ctaBgIcon: 'construction',
-    tileIcon: 'construction',
-    ctaGradient: ['#F97316', '#FB923C'],
-    headerGradient: ['#2A1408', '#3A1F0E', '#2A1408'],
-  },
 };
 
 export function getProfessionTheme(professionId) {

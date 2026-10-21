@@ -38,20 +38,8 @@ export const CATEGORIES = [
   { id: 'cmMatParts', label: 'אביזרים וחיבורים', icon: 'settings-input-component', professions: ['comms'], isMaterial: true },
   { id: 'cmMatEquipment', label: 'ציוד להזמנה', icon: 'router', professions: ['comms'], isMaterial: true },
 
-  // ============ שיפוצניק ============
-  { id: 'rnDemolition', label: 'הריסה ופינוי', icon: 'delete-sweep', professions: ['contractor'] },
-  { id: 'rnMasonry', label: 'בנייה וטיח', icon: 'foundation', professions: ['contractor'] },
-  { id: 'rnDrywall', label: 'גבס', icon: 'view-day', professions: ['contractor'] },
-  { id: 'rnPaint', label: 'צבע ושפכטל', icon: 'format-paint', professions: ['contractor'] },
-  { id: 'rnTiling', label: 'ריצוף וחיפוי', icon: 'grid-on', professions: ['contractor'] },
-  { id: 'rnWaterproof', label: 'איטום', icon: 'water-damage', professions: ['contractor'] },
-  { id: 'rnPackages', label: 'שיפוץ קומפלט', icon: 'home-repair-service', professions: ['contractor'] },
-  { id: 'rnGeneral', label: 'עבודות כלליות', icon: 'handyman', professions: ['contractor'] },
-  { id: 'rnMatBuild', label: 'חומרי בניין וריצוף', icon: 'inventory', professions: ['contractor'], isMaterial: true },
-  { id: 'rnMatFinish', label: 'גבס, צבע ואיטום', icon: 'inventory-2', professions: ['contractor'], isMaterial: true },
-
   // ============ משותף לכל המקצועות ============
-  { id: 'misc', label: 'אביזרים נוספים', icon: 'category', professions: ['electrician', 'plumber', 'comms', 'contractor'] },
+  { id: 'misc', label: 'אביזרים נוספים', icon: 'category', professions: ['electrician', 'plumber', 'comms'] },
 ];
 
 export const CATALOG = [
@@ -505,131 +493,6 @@ export const CATALOG = [
   { id: 'cmMatUps', label: 'אל-פסק (UPS)', icon: 'battery-charging-full', category: 'cmMatEquipment', unit: 'piece' },
   { id: 'cmMatDetector', label: 'גלאי נפח', icon: 'sensors', category: 'cmMatEquipment', unit: 'piece' },
   { id: 'cmMatMagnet', label: 'מגנט לדלת / חלון', icon: 'sensor-door', category: 'cmMatEquipment', unit: 'piece' },
-
-  // ============================================================
-  // ============ שיפוצניק ============
-  // תמחור לפי מ״ר / מטר / עבודה קומפלט — כמו שקבלני שיפוצים נותנים הצעה.
-  // חומרי בניין, גבס וצבע בקטגוריות 📦 — לרשימת הספק בלבד.
-
-  // הריסה ופינוי
-  { id: 'rnDemoFloor', label: 'פירוק ריצוף', icon: 'grid-off', category: 'rnDemolition', unit: 'sqm' },
-  { id: 'rnDemoWallTiles', label: 'פירוק חיפוי קירות', icon: 'grid-off', category: 'rnDemolition', unit: 'sqm' },
-  { id: 'rnDemoWall', label: 'הריסת קיר בלוקים', icon: 'delete-sweep', category: 'rnDemolition', unit: 'sqm' },
-  { id: 'rnDemoPlaster', label: 'קילוף טיח', icon: 'layers-clear', category: 'rnDemolition', unit: 'sqm' },
-  { id: 'rnDemoBathroom', label: 'פירוק חדר רחצה קומפלט', icon: 'bathtub', category: 'rnDemolition', unit: 'job' },
-  { id: 'rnDemoKitchen', label: 'פירוק מטבח', icon: 'kitchen', category: 'rnDemolition', unit: 'job' },
-  { id: 'rnChasing', label: 'חציבת תעלות בקיר (חשמל / אינסטלציה)', icon: 'linear-scale', category: 'rnDemolition', unit: 'meter' },
-  { id: 'rnCoreDrill', label: 'קידוח יהלום בבטון', icon: 'adjust', category: 'rnDemolition', unit: 'piece' },
-  { id: 'rnContainer', label: 'מכולת פסולת (כולל פינוי)', icon: 'local-shipping', category: 'rnDemolition', unit: 'piece' },
-  { id: 'rnDebrisBag', label: 'פינוי פסולת בשק גדול (באלה)', icon: 'delete', category: 'rnDemolition', unit: 'piece' },
-
-  // בנייה וטיח
-  { id: 'rnBlockWall_7', family: 'rnBlockWall', familyLabel: 'בניית קיר בלוקים', size: '7', sizeUnit: ' ס״מ', label: 'בניית קיר בלוקים 7 ס״מ', icon: 'view-module', category: 'rnMasonry', unit: 'sqm' },
-  { id: 'rnBlockWall_10', family: 'rnBlockWall', familyLabel: 'בניית קיר בלוקים', size: '10', sizeUnit: ' ס״מ', label: 'בניית קיר בלוקים 10 ס״מ', icon: 'view-module', category: 'rnMasonry', unit: 'sqm' },
-  { id: 'rnBlockWall_15', family: 'rnBlockWall', familyLabel: 'בניית קיר בלוקים', size: '15', sizeUnit: ' ס״מ', label: 'בניית קיר בלוקים 15 ס״מ', icon: 'view-module', category: 'rnMasonry', unit: 'sqm' },
-  { id: 'rnBlockWall_20', family: 'rnBlockWall', familyLabel: 'בניית קיר בלוקים', size: '20', sizeUnit: ' ס״מ', label: 'בניית קיר בלוקים 20 ס״מ', icon: 'view-module', category: 'rnMasonry', unit: 'sqm' },
-  { id: 'rnInteriorPlaster', label: 'טיח פנים', icon: 'format-paint', category: 'rnMasonry', unit: 'sqm' },
-  { id: 'rnExteriorPlaster', label: 'טיח חוץ', icon: 'format-paint', category: 'rnMasonry', unit: 'sqm' },
-  { id: 'rnPlasterRepair', label: 'תיקוני טיח', icon: 'healing', category: 'rnMasonry', unit: 'sqm' },
-  { id: 'rnScreed', label: 'יציקת מדה / שכבת פילוס', icon: 'layers', category: 'rnMasonry', unit: 'sqm' },
-  { id: 'rnConcreteSlab', label: 'יציקת משטח בטון', icon: 'layers', category: 'rnMasonry', unit: 'sqm' },
-  { id: 'rnWallOpening', label: 'פתיחת פתח בקיר קיים (כולל חיזוק)', icon: 'door-front', category: 'rnMasonry', unit: 'piece' },
-
-  // גבס
-  { id: 'rnDrywallPartition', label: 'קיר גבס (מחיצה)', icon: 'view-day', category: 'rnDrywall', unit: 'sqm' },
-  { id: 'rnDrywallCeiling', label: 'תקרת גבס', icon: 'view-day', category: 'rnDrywall', unit: 'sqm' },
-  { id: 'rnAcousticCeiling', label: 'תקרה אקוסטית (מגשים 60×60)', icon: 'grid-on', category: 'rnDrywall', unit: 'sqm' },
-  { id: 'rnDrywallCornice', label: 'סינר / קרניז גבס', icon: 'linear-scale', category: 'rnDrywall', unit: 'meter' },
-  { id: 'rnHiddenLightCove', label: 'הנמכה לתאורה נסתרת', icon: 'light', category: 'rnDrywall', unit: 'meter' },
-  { id: 'rnPipeBoxing', label: 'סגירת צנרת בגבס', icon: 'crop-portrait', category: 'rnDrywall', unit: 'meter' },
-  { id: 'rnDrywallNiche', label: 'נישה בגבס', icon: 'crop-square', category: 'rnDrywall', unit: 'piece' },
-  { id: 'rnDrywallDoorOpening', label: 'פתח לדלת במחיצת גבס', icon: 'door-front', category: 'rnDrywall', unit: 'piece' },
-  { id: 'rnDrywallInsulation', label: 'תוספת בידוד אקוסטי (צמר סלעים)', icon: 'blur-on', category: 'rnDrywall', unit: 'sqm' },
-
-  // צבע ושפכטל
-  { id: 'rnPaintApartment_2', family: 'rnPaintApartment', familyLabel: 'צביעת דירה קומפלט', size: '2', sizeUnit: ' חדרים', label: 'צביעת דירת 2 חדרים', icon: 'format-paint', category: 'rnPaint', unit: 'job' },
-  { id: 'rnPaintApartment_3', family: 'rnPaintApartment', familyLabel: 'צביעת דירה קומפלט', size: '3', sizeUnit: ' חדרים', label: 'צביעת דירת 3 חדרים', icon: 'format-paint', category: 'rnPaint', unit: 'job' },
-  { id: 'rnPaintApartment_4', family: 'rnPaintApartment', familyLabel: 'צביעת דירה קומפלט', size: '4', sizeUnit: ' חדרים', label: 'צביעת דירת 4 חדרים', icon: 'format-paint', category: 'rnPaint', unit: 'job' },
-  { id: 'rnPaintApartment_5', family: 'rnPaintApartment', familyLabel: 'צביעת דירה קומפלט', size: '5', sizeUnit: ' חדרים', label: 'צביעת דירת 5 חדרים', icon: 'format-paint', category: 'rnPaint', unit: 'job' },
-  { id: 'rnPaintWalls', label: 'צביעת קירות פנים', icon: 'format-paint', category: 'rnPaint', unit: 'sqm' },
-  { id: 'rnPaintCeiling', label: 'צביעת תקרה', icon: 'format-paint', category: 'rnPaint', unit: 'sqm' },
-  { id: 'rnSkimCoat', label: 'שפכטל מלא (2 שכבות)', icon: 'texture', category: 'rnPaint', unit: 'sqm' },
-  { id: 'rnCrackRepair', label: 'תיקון סדקים ושפכטל נקודתי', icon: 'healing', category: 'rnPaint', unit: 'job' },
-  { id: 'rnMoldTreatment', label: 'טיפול ברטיבות ועובש', icon: 'water-damage', category: 'rnPaint', unit: 'sqm' },
-  { id: 'rnExteriorPaint', label: 'צביעה חיצונית', icon: 'format-paint', category: 'rnPaint', unit: 'sqm' },
-  { id: 'rnPaintDoor', label: 'צביעת דלת', icon: 'door-front', category: 'rnPaint', unit: 'piece' },
-  { id: 'rnPaintRailing', label: 'צביעת מעקה / סורג', icon: 'fence', category: 'rnPaint', unit: 'meter' },
-  { id: 'rnDecorativePaint', label: 'צבע דקורטיבי / מראה בטון', icon: 'brush', category: 'rnPaint', unit: 'sqm' },
-
-  // ריצוף וחיפוי
-  { id: 'rnFloorTiling_60', family: 'rnFloorTiling', familyLabel: 'ריצוף (לפי גודל אריח)', size: '60×60', sizeUnit: '', label: 'ריצוף באריחים עד 60×60', icon: 'grid-on', category: 'rnTiling', unit: 'sqm' },
-  { id: 'rnFloorTiling_80', family: 'rnFloorTiling', familyLabel: 'ריצוף (לפי גודל אריח)', size: '80×80', sizeUnit: '', label: 'ריצוף באריחים 80×80', icon: 'grid-on', category: 'rnTiling', unit: 'sqm' },
-  { id: 'rnFloorTiling_120', family: 'rnFloorTiling', familyLabel: 'ריצוף (לפי גודל אריח)', size: '120×60', sizeUnit: '', label: 'ריצוף באריחים 120×60 ומעלה', icon: 'grid-on', category: 'rnTiling', unit: 'sqm' },
-  { id: 'rnWallTiling', label: 'חיפוי קירות', icon: 'grid-on', category: 'rnTiling', unit: 'sqm' },
-  { id: 'rnOutdoorTiling', label: 'ריצוף חוץ / מרפסת', icon: 'deck', category: 'rnTiling', unit: 'sqm' },
-  { id: 'rnSkirting', label: 'פנלים', icon: 'linear-scale', category: 'rnTiling', unit: 'meter' },
-  { id: 'rnTileTrim', label: 'פינות אלומיניום', icon: 'square-foot', category: 'rnTiling', unit: 'meter' },
-  { id: 'rnStairTiling', label: 'ריצוף מדרגה', icon: 'stairs', category: 'rnTiling', unit: 'piece' },
-  { id: 'rnLaminate', label: 'התקנת פרקט (למינציה / SPC)', icon: 'view-week', category: 'rnTiling', unit: 'sqm' },
-  { id: 'rnRegrout', label: 'חידוש רובה (פוגות)', icon: 'grid-4x4', category: 'rnTiling', unit: 'sqm' },
-  { id: 'rnFloorPolish', label: 'ליטוש והברקת רצפה', icon: 'auto-awesome', category: 'rnTiling', unit: 'sqm' },
-
-  // איטום
-  { id: 'rnRoofBitumen', label: 'איטום גג ביריעות ביטומניות', icon: 'roofing', category: 'rnWaterproof', unit: 'sqm' },
-  { id: 'rnRoofCoating', label: 'איטום גג בציפוי (אקרילי / פוליאוריטני)', icon: 'roofing', category: 'rnWaterproof', unit: 'sqm' },
-  { id: 'rnBathWaterproof', label: 'איטום רצפת חדר רחצה', icon: 'shower', category: 'rnWaterproof', unit: 'sqm' },
-  { id: 'rnBalconyWaterproof', label: 'איטום מרפסת', icon: 'deck', category: 'rnWaterproof', unit: 'sqm' },
-  { id: 'rnWallWaterproof', label: 'איטום קיר חיצוני', icon: 'water-damage', category: 'rnWaterproof', unit: 'sqm' },
-  { id: 'rnLeakTreatment', label: 'טיפול נקודתי בחדירת מים', icon: 'healing', category: 'rnWaterproof', unit: 'job' },
-  { id: 'rnFloodTest', label: 'בדיקת הצפה', icon: 'water', category: 'rnWaterproof', unit: 'job' },
-
-  // שיפוץ קומפלט
-  { id: 'rnPkgBathroom', label: 'שיפוץ חדר רחצה קומפלט (ללא כלים סניטריים)', icon: 'bathtub', category: 'rnPackages', unit: 'job' },
-  { id: 'rnPkgGuestToilet', label: 'שיפוץ שירותי אורחים קומפלט', icon: 'wc', category: 'rnPackages', unit: 'job' },
-  { id: 'rnPkgKitchen', label: 'שיפוץ מטבח — בנייה, ריצוף וחיפוי', icon: 'kitchen', category: 'rnPackages', unit: 'job' },
-  { id: 'rnPkgApartment', label: 'שיפוץ כללי לדירה', icon: 'home', category: 'rnPackages', unit: 'sqm' },
-
-  // עבודות כלליות
-  { id: 'rnWorkDay', label: 'יום עבודה — בעל מקצוע', icon: 'engineering', category: 'rnGeneral', unit: 'day' },
-  { id: 'rnHelperDay', label: 'יום עבודה — עוזר', icon: 'person', category: 'rnGeneral', unit: 'day' },
-  { id: 'rnWorkHour', label: 'שעת עבודה', icon: 'schedule', category: 'rnGeneral', unit: 'hour' },
-  { id: 'rnProtection', label: 'כיסוי והגנה על הבית', icon: 'shield', category: 'rnGeneral', unit: 'job' },
-  { id: 'rnHauling', label: 'הובלת חומרים ושינוע לקומה', icon: 'local-shipping', category: 'rnGeneral', unit: 'job' },
-  { id: 'rnFinalCleaning', label: 'ניקיון סוף עבודה', icon: 'cleaning-services', category: 'rnGeneral', unit: 'job' },
-  { id: 'rnDoorInstall', label: 'התקנת דלת פנים', icon: 'door-front', category: 'rnGeneral', unit: 'piece' },
-  { id: 'rnWindowSill', label: 'התקנת אדן חלון', icon: 'window', category: 'rnGeneral', unit: 'piece' },
-
-  // 📦 חומרי בניין וריצוף
-  { id: 'rnMatCement', label: 'מלט (שק)', icon: 'inventory', category: 'rnMatBuild', unit: 'piece' },
-  { id: 'rnMatSand', label: 'חול (באלה)', icon: 'landscape', category: 'rnMatBuild', unit: 'piece' },
-  { id: 'rnMatReadyPlaster', label: 'טיח מוכן (שק)', icon: 'inventory', category: 'rnMatBuild', unit: 'piece' },
-  { id: 'rnMatBlock_7', family: 'rnMatBlock', familyLabel: 'בלוקים', size: '7', sizeUnit: ' ס״מ', label: 'בלוק 7 ס״מ', icon: 'view-module', category: 'rnMatBuild', unit: 'piece' },
-  { id: 'rnMatBlock_10', family: 'rnMatBlock', familyLabel: 'בלוקים', size: '10', sizeUnit: ' ס״מ', label: 'בלוק 10 ס״מ', icon: 'view-module', category: 'rnMatBuild', unit: 'piece' },
-  { id: 'rnMatBlock_15', family: 'rnMatBlock', familyLabel: 'בלוקים', size: '15', sizeUnit: ' ס״מ', label: 'בלוק 15 ס״מ', icon: 'view-module', category: 'rnMatBuild', unit: 'piece' },
-  { id: 'rnMatBlock_20', family: 'rnMatBlock', familyLabel: 'בלוקים', size: '20', sizeUnit: ' ס״מ', label: 'בלוק 20 ס״מ', icon: 'view-module', category: 'rnMatBuild', unit: 'piece' },
-  { id: 'rnMatTileAdhesive', label: 'דבק אריחים (שק)', icon: 'inventory-2', category: 'rnMatBuild', unit: 'piece' },
-  { id: 'rnMatGrout', label: 'רובה (שק)', icon: 'inventory-2', category: 'rnMatBuild', unit: 'piece' },
-  { id: 'rnMatTileTrim', label: 'פינת אלומיניום (מוט)', icon: 'square-foot', category: 'rnMatBuild', unit: 'piece' },
-  { id: 'rnMatLevelingClips', label: 'קליפסים לפילוס אריחים (חבילה)', icon: 'horizontal-rule', category: 'rnMatBuild', unit: 'piece' },
-
-  // 📦 גבס, צבע ואיטום
-  { id: 'rnMatGypsumBoard', label: 'לוח גבס רגיל', icon: 'view-day', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatGypsumBoardGreen', label: 'לוח גבס ירוק (עמיד מים)', icon: 'view-day', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatGypsumBoardFire', label: 'לוח גבס אדום (חסין אש)', icon: 'view-day', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatStud_50', family: 'rnMatStud', familyLabel: 'פרופיל גבס (ניצב / מסלול)', size: '50', sizeUnit: ' מ״מ', label: 'פרופיל גבס 50 מ״מ', icon: 'linear-scale', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatStud_70', family: 'rnMatStud', familyLabel: 'פרופיל גבס (ניצב / מסלול)', size: '70', sizeUnit: ' מ״מ', label: 'פרופיל גבס 70 מ״מ', icon: 'linear-scale', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatStud_100', family: 'rnMatStud', familyLabel: 'פרופיל גבס (ניצב / מסלול)', size: '100', sizeUnit: ' מ״מ', label: 'פרופיל גבס 100 מ״מ', icon: 'linear-scale', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatGypsumScrews', label: 'ברגי גבס (קופסה)', icon: 'settings', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatJointTape', label: 'סרט רשת לגבס', icon: 'view-stream', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatSpackle', label: 'שפכטל (דלי)', icon: 'inventory-2', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatPaintInterior', label: 'צבע פנים (דלי 18 ל׳)', icon: 'format-paint', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatPaintExterior', label: 'צבע חוץ (דלי 18 ל׳)', icon: 'format-paint', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatPrimer', label: 'יסוד / פריימר', icon: 'opacity', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatCementWaterproof', label: 'איטום צמנטי דו-רכיבי', icon: 'water-damage', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatBitumenRoll', label: 'יריעה ביטומנית (גליל)', icon: 'roofing', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatSealant', label: 'סיליקון / אקריל לאיטום', icon: 'colorize', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatMaskingTape', label: 'מסקינגטייפ', icon: 'colorize', category: 'rnMatFinish', unit: 'piece' },
-  { id: 'rnMatNylon', label: 'ניילון כיסוי', icon: 'layers', category: 'rnMatFinish', unit: 'piece' },
 ];
 
 export const FAMILIES = [
