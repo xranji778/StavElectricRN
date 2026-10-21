@@ -20,6 +20,7 @@ import RatesScreen from './src/screens/RatesScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import ClientsScreen from './src/screens/ClientsScreen';
 import CalendarScreen from './src/screens/CalendarScreen';
+import SupplierOrderScreen from './src/screens/SupplierOrderScreen';
 import AuthScreen from './src/screens/AuthScreen';
 import { colors } from './src/theme/colors';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
@@ -81,6 +82,14 @@ function MainTabs() {
         component={SettingsScreen}
         options={{
           tabBarLabel: t('tabs.settings'),
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: 'none' },
+        }}
+      />
+      <Tab.Screen
+        name="SupplierOrder"
+        component={SupplierOrderScreen}
+        options={{
           tabBarButton: () => null,
           tabBarItemStyle: { display: 'none' },
         }}

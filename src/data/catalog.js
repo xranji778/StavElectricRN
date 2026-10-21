@@ -13,6 +13,11 @@ export const CATEGORIES = [
   { id: 'energy', label: 'אנרגיה וטעינה', icon: 'solar-power', professions: ['electrician'] },
   { id: 'boxes', label: 'קופסאות', icon: 'inventory-2', professions: ['electrician'], isMaterial: true },
   { id: 'frames', label: 'מסגרות', icon: 'crop-free', professions: ['electrician'], isMaterial: true },
+  { id: 'elecMatDevices', label: 'אביזרי שקעים ומפסקים', icon: 'power', professions: ['electrician'], isMaterial: true },
+  { id: 'elecMatPanel', label: 'ציוד ללוח חשמל', icon: 'dashboard', professions: ['electrician'], isMaterial: true },
+  { id: 'elecMatLighting', label: 'גופי תאורה ונורות', icon: 'lightbulb', professions: ['electrician'], isMaterial: true },
+  { id: 'elecMatConnectors', label: 'מהדקים, חיבורים והארקה', icon: 'settings-input-component', professions: ['electrician'], isMaterial: true },
+  { id: 'elecMatConsumables', label: 'ברגים, דיבלים ומתכלים', icon: 'hardware', professions: ['electrician'], isMaterial: true },
 
   // ============ אינסטלטור ============
   { id: 'plumbWater', label: 'נקודות מים וצנרת', icon: 'water-drop', professions: ['plumber'] },
@@ -90,6 +95,22 @@ export const CATALOG = [
   { id: 'cableGround16', label: 'כבל אדמה 16 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
   { id: 'cableGround25', label: 'כבל אדמה 25 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
   { id: 'cableTelephone', label: 'כבל טלפון', icon: 'cable', category: 'cables', unit: 'meter' },
+  { id: 'cable5x1_5', label: 'כבל NYM 5×1.5 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
+  { id: 'cable5x4', label: 'כבל NYM 5×4 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
+  { id: 'cable5x16', label: 'כבל NYM 5×16 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
+  { id: 'cableN2xy4x16', label: 'כבל N2XY 4×16 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
+  { id: 'cableN2xy4x25', label: 'כבל N2XY 4×25 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
+  { id: 'cableFlex3x1_5', label: 'כבל גמיש 3×1.5 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
+  { id: 'cableFlex3x2_5', label: 'כבל גמיש 3×2.5 mm²', icon: 'cable', category: 'cables', unit: 'meter' },
+  { id: 'cableAlarm', label: 'כבל אזעקה / פיקוד', icon: 'cable', category: 'cables', unit: 'meter' },
+
+  // חוט מושחל (משפחה — לפי חתך)
+  { id: 'wire_1_5', family: 'wire', familyLabel: 'חוט מושחל', size: '1.5', sizeUnit: ' mm²', label: 'חוט מושחל 1.5 mm²', icon: 'timeline', category: 'cables', unit: 'meter' },
+  { id: 'wire_2_5', family: 'wire', familyLabel: 'חוט מושחל', size: '2.5', sizeUnit: ' mm²', label: 'חוט מושחל 2.5 mm²', icon: 'timeline', category: 'cables', unit: 'meter' },
+  { id: 'wire_4', family: 'wire', familyLabel: 'חוט מושחל', size: '4', sizeUnit: ' mm²', label: 'חוט מושחל 4 mm²', icon: 'timeline', category: 'cables', unit: 'meter' },
+  { id: 'wire_6', family: 'wire', familyLabel: 'חוט מושחל', size: '6', sizeUnit: ' mm²', label: 'חוט מושחל 6 mm²', icon: 'timeline', category: 'cables', unit: 'meter' },
+  { id: 'wire_10', family: 'wire', familyLabel: 'חוט מושחל', size: '10', sizeUnit: ' mm²', label: 'חוט מושחל 10 mm²', icon: 'timeline', category: 'cables', unit: 'meter' },
+  { id: 'wire_16', family: 'wire', familyLabel: 'חוט מושחל', size: '16', sizeUnit: ' mm²', label: 'חוט מושחל 16 mm²', icon: 'timeline', category: 'cables', unit: 'meter' },
 
   // ============ צנרת ============
 
@@ -120,6 +141,30 @@ export const CATALOG = [
   { id: 'cableTray_200', family: 'cableTray', familyLabel: 'תעלת רשת', size: '200', label: 'תעלת רשת 200 מ"מ', icon: 'view-week', category: 'conduits', unit: 'meter' },
   { id: 'cableTray_300', family: 'cableTray', familyLabel: 'תעלת רשת', size: '300', label: 'תעלת רשת 300 מ"מ', icon: 'view-week', category: 'conduits', unit: 'meter' },
   { id: 'cableTray_400', family: 'cableTray', familyLabel: 'תעלת רשת', size: '400', label: 'תעלת רשת 400 מ"מ', icon: 'view-week', category: 'conduits', unit: 'meter' },
+
+  // גדלים נוספים לצנרת
+  { id: 'conduitMarichef_32', family: 'conduitMarichef', familyLabel: 'צינור מריכף', size: '32', label: 'צינור מריכף 32', icon: 'linear-scale', category: 'conduits', unit: 'meter' },
+  { id: 'conduitShirshuri_25', family: 'conduitShirshuri', familyLabel: 'צינור שרשורי', size: '25', label: 'צינור שרשורי 25', icon: 'waves', category: 'conduits', unit: 'meter' },
+  { id: 'conduitShirshuri_32', family: 'conduitShirshuri', familyLabel: 'צינור שרשורי', size: '32', label: 'צינור שרשורי 32', icon: 'waves', category: 'conduits', unit: 'meter' },
+
+  // תעלת פלסטיק (משפחה — תעלה לבנה על הקיר)
+  { id: 'pvcTrunking_16x16', family: 'pvcTrunking', familyLabel: 'תעלת פלסטיק', size: '16×16', sizeUnit: ' מ״מ', label: 'תעלת פלסטיק 16×16 מ״מ', icon: 'view-stream', category: 'conduits', unit: 'meter' },
+  { id: 'pvcTrunking_25x16', family: 'pvcTrunking', familyLabel: 'תעלת פלסטיק', size: '25×16', sizeUnit: ' מ״מ', label: 'תעלת פלסטיק 25×16 מ״מ', icon: 'view-stream', category: 'conduits', unit: 'meter' },
+  { id: 'pvcTrunking_40x25', family: 'pvcTrunking', familyLabel: 'תעלת פלסטיק', size: '40×25', sizeUnit: ' מ״מ', label: 'תעלת פלסטיק 40×25 מ״מ', icon: 'view-stream', category: 'conduits', unit: 'meter' },
+  { id: 'pvcTrunking_60x40', family: 'pvcTrunking', familyLabel: 'תעלת פלסטיק', size: '60×40', sizeUnit: ' מ״מ', label: 'תעלת פלסטיק 60×40 מ״מ', icon: 'view-stream', category: 'conduits', unit: 'meter' },
+  { id: 'pvcTrunking_100x60', family: 'pvcTrunking', familyLabel: 'תעלת פלסטיק', size: '100×60', sizeUnit: ' מ״מ', label: 'תעלת פלסטיק 100×60 מ״מ', icon: 'view-stream', category: 'conduits', unit: 'meter' },
+
+  // תפס לצינור (משפחה)
+  { id: 'conduitClip_16', family: 'conduitClip', familyLabel: 'תפס לצינור', size: '16', label: 'תפס לצינור 16', icon: 'push-pin', category: 'conduits', unit: 'piece' },
+  { id: 'conduitClip_20', family: 'conduitClip', familyLabel: 'תפס לצינור', size: '20', label: 'תפס לצינור 20', icon: 'push-pin', category: 'conduits', unit: 'piece' },
+  { id: 'conduitClip_25', family: 'conduitClip', familyLabel: 'תפס לצינור', size: '25', label: 'תפס לצינור 25', icon: 'push-pin', category: 'conduits', unit: 'piece' },
+  { id: 'conduitClip_32', family: 'conduitClip', familyLabel: 'תפס לצינור', size: '32', label: 'תפס לצינור 32', icon: 'push-pin', category: 'conduits', unit: 'piece' },
+
+  // אביזרי צנרת
+  { id: 'conduitCoupler', label: 'מחבר לצינור (מופה)', icon: 'compare-arrows', category: 'conduits', unit: 'piece' },
+  { id: 'conduitBend', label: 'קשת / זווית לצינור', icon: 'turn-right', category: 'conduits', unit: 'piece' },
+  { id: 'conduitBoxConnector', label: 'מחבר צינור לקופסה', icon: 'input', category: 'conduits', unit: 'piece' },
+  { id: 'trunkingAccessories', label: 'אביזרים לתעלה (זוויות, מכסי קצה)', icon: 'crop-free', category: 'conduits', unit: 'piece' },
 
   // ============ לוחות חשמל ============
 
@@ -217,15 +262,146 @@ export const CATALOG = [
 
   // קופסאות אחרות
   { id: 'ceilingBox', label: 'קופסת תקרה (הסתעפות)', icon: 'crop-square', category: 'boxes', unit: 'piece' },
+  { id: 'boxWaterproof', label: 'קופסת הסתעפות מוגנת מים (IP65)', icon: 'water-drop', category: 'boxes', unit: 'piece' },
+  { id: 'boxSurface', label: 'קופסה חיצונית לאביזר (על הטיח)', icon: 'crop-square', category: 'boxes', unit: 'piece' },
+  { id: 'boxRound', label: 'קופסה עגולה (מעבר)', icon: 'radio-button-unchecked', category: 'boxes', unit: 'piece' },
+  { id: 'boxCover', label: 'מכסה לקופסה', icon: 'check-box-outline-blank', category: 'boxes', unit: 'piece' },
   // קופסת אופיס (משפחה — עבודה ללקוח, לא חומר לספק)
   { id: 'officeFloorBox', family: 'officeFloorBox', familyLabel: 'קופסת אופיס', size: 'D16', sizeUnit: '', label: 'קופסת אופיס D16', icon: 'view-quilt', category: 'outlets', unit: 'piece' },
   { id: 'officeFloorBox_d17', family: 'officeFloorBox', familyLabel: 'קופסת אופיס', size: 'D17', sizeUnit: '', label: 'קופסת אופיס D17', icon: 'view-quilt', category: 'outlets', unit: 'piece' },
   { id: 'officeFloorBox_d18', family: 'officeFloorBox', familyLabel: 'קופסת אופיס', size: 'D18', sizeUnit: '', label: 'קופסת אופיס D18', icon: 'view-quilt', category: 'outlets', unit: 'piece' },
 
   // ============ אביזרים נוספים (חשמלאי) ============
-  { id: 'electricalTape', label: 'בידוד (סלוטייפ חשמלאי)', icon: 'colorize', category: 'misc', unit: 'piece', professions: ['electrician'] },
-  { id: 'cableTie', label: 'אזיקון/חבק (חבילה)', icon: 'link', category: 'misc', unit: 'piece', professions: ['electrician'] },
   { id: 'smokeDetector', label: 'גלאי עשן', icon: 'sensors', category: 'misc', unit: 'piece', professions: ['electrician'] },
+
+  // ============ 📦 חומרים לספק — חשמלאי ============
+  // הקטגוריות האלה לא מופיעות בהצעה ללקוח — רק ברשימת החומרים לספק.
+
+  // 📦 אביזרי שקעים ומפסקים
+  { id: 'devOutlet', label: 'שקע חשמל', icon: 'power', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devOutletDouble', label: 'שקע כפול', icon: 'power', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devOutletWaterproof', label: 'שקע מוגן מים (IP44)', icon: 'water-drop', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devOutlet16a', label: 'שקע 16A (מזגן / תנור)', icon: 'power', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devOutlet3ph', label: 'שקע תלת-פאזי CEE', icon: 'power', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devOutletUsb', label: 'שקע USB', icon: 'usb', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devRj45', label: 'שקע תקשורת RJ45', icon: 'settings-ethernet', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devTvOutlet', label: 'שקע טלוויזיה', icon: 'tv', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devPhoneOutlet', label: 'שקע טלפון', icon: 'phone', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devSwitch', label: 'מפסק יחיד', icon: 'toggle-on', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devSwitchDouble', label: 'מפסק כפול', icon: 'toggle-on', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devSwitch2way', label: 'מפסק מחליף', icon: 'swap-horiz', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devSwitchCross', label: 'מפסק צלב', icon: 'shuffle', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devPushButton', label: 'לחצן (פעמון / מדרגות)', icon: 'radio-button-checked', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devBoilerSwitch', label: 'מפסק דוד 20A עם נורית', icon: 'hot-tub', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devBoilerTimer', label: 'מפסק זמן לדוד (טיימר)', icon: 'timer', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devShutterSwitch', label: 'מפסק תריס חשמלי', icon: 'blinds', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devDimmer', label: 'דימר LED', icon: 'brightness-6', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devSwitchWaterproof', label: 'מפסק מוגן מים', icon: 'water-drop', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devBlankCover', label: 'מכסה עיוור', icon: 'check-box-outline-blank', category: 'elecMatDevices', unit: 'piece' },
+  { id: 'devDoorbell', label: 'פעמון', icon: 'notifications', category: 'elecMatDevices', unit: 'piece' },
+
+  // 📦 ציוד ללוח חשמל
+  // מאמ״ת חד-קוטבי (משפחה)
+  { id: 'mcbMat1p_6', family: 'mcbMat1p', familyLabel: 'מאמ״ת חד-קוטבי', size: '6', sizeUnit: 'A', label: 'מאמ״ת 1×6A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat1p_10', family: 'mcbMat1p', familyLabel: 'מאמ״ת חד-קוטבי', size: '10', sizeUnit: 'A', label: 'מאמ״ת 1×10A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat1p_16', family: 'mcbMat1p', familyLabel: 'מאמ״ת חד-קוטבי', size: '16', sizeUnit: 'A', label: 'מאמ״ת 1×16A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat1p_20', family: 'mcbMat1p', familyLabel: 'מאמ״ת חד-קוטבי', size: '20', sizeUnit: 'A', label: 'מאמ״ת 1×20A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat1p_25', family: 'mcbMat1p', familyLabel: 'מאמ״ת חד-קוטבי', size: '25', sizeUnit: 'A', label: 'מאמ״ת 1×25A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat1p_32', family: 'mcbMat1p', familyLabel: 'מאמ״ת חד-קוטבי', size: '32', sizeUnit: 'A', label: 'מאמ״ת 1×32A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat1p_40', family: 'mcbMat1p', familyLabel: 'מאמ״ת חד-קוטבי', size: '40', sizeUnit: 'A', label: 'מאמ״ת 1×40A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  // מאמ״ת תלת-קוטבי (משפחה)
+  { id: 'mcbMat3p_16', family: 'mcbMat3p', familyLabel: 'מאמ״ת תלת-קוטבי', size: '16', sizeUnit: 'A', label: 'מאמ״ת 3×16A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat3p_20', family: 'mcbMat3p', familyLabel: 'מאמ״ת תלת-קוטבי', size: '20', sizeUnit: 'A', label: 'מאמ״ת 3×20A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat3p_25', family: 'mcbMat3p', familyLabel: 'מאמ״ת תלת-קוטבי', size: '25', sizeUnit: 'A', label: 'מאמ״ת 3×25A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat3p_32', family: 'mcbMat3p', familyLabel: 'מאמ״ת תלת-קוטבי', size: '32', sizeUnit: 'A', label: 'מאמ״ת 3×32A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat3p_40', family: 'mcbMat3p', familyLabel: 'מאמ״ת תלת-קוטבי', size: '40', sizeUnit: 'A', label: 'מאמ״ת 3×40A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat3p_50', family: 'mcbMat3p', familyLabel: 'מאמ״ת תלת-קוטבי', size: '50', sizeUnit: 'A', label: 'מאמ״ת 3×50A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mcbMat3p_63', family: 'mcbMat3p', familyLabel: 'מאמ״ת תלת-קוטבי', size: '63', sizeUnit: 'A', label: 'מאמ״ת 3×63A', icon: 'electric-bolt', category: 'elecMatPanel', unit: 'piece' },
+  // ממסר פחת (משפחה)
+  { id: 'rcdMat_2p40', family: 'rcdMat', familyLabel: 'ממסר פחת 30mA', size: '2P 40A', sizeUnit: '', label: 'ממסר פחת 2P 40A 30mA', icon: 'gpp-good', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'rcdMat_4p40', family: 'rcdMat', familyLabel: 'ממסר פחת 30mA', size: '4P 40A', sizeUnit: '', label: 'ממסר פחת 4P 40A 30mA', icon: 'gpp-good', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'rcdMat_4p63', family: 'rcdMat', familyLabel: 'ממסר פחת 30mA', size: '4P 63A', sizeUnit: '', label: 'ממסר פחת 4P 63A 30mA', icon: 'gpp-good', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'rcboMat_16', label: 'מאמ״ת פחת משולב (RCBO) 16A', icon: 'gpp-good', category: 'elecMatPanel', unit: 'piece' },
+  // מפסק ראשי / מנתק (משפחה)
+  { id: 'mainSwitchMat_40', family: 'mainSwitchMat', familyLabel: 'מפסק ראשי (מנתק)', size: '3×40', sizeUnit: 'A', label: 'מפסק ראשי 3×40A', icon: 'power-settings-new', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mainSwitchMat_63', family: 'mainSwitchMat', familyLabel: 'מפסק ראשי (מנתק)', size: '3×63', sizeUnit: 'A', label: 'מפסק ראשי 3×63A', icon: 'power-settings-new', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'mainSwitchMat_80', family: 'mainSwitchMat', familyLabel: 'מפסק ראשי (מנתק)', size: '3×80', sizeUnit: 'A', label: 'מפסק ראשי 3×80A', icon: 'power-settings-new', category: 'elecMatPanel', unit: 'piece' },
+  // ארגז ללוח (משפחה — לפי מספר מודולים)
+  { id: 'enclosure_12', family: 'enclosure', familyLabel: 'ארגז ללוח חשמל', size: '12', sizeUnit: ' מודולים', label: 'ארגז ללוח 12 מודולים', icon: 'dashboard', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'enclosure_24', family: 'enclosure', familyLabel: 'ארגז ללוח חשמל', size: '24', sizeUnit: ' מודולים', label: 'ארגז ללוח 24 מודולים', icon: 'dashboard', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'enclosure_36', family: 'enclosure', familyLabel: 'ארגז ללוח חשמל', size: '36', sizeUnit: ' מודולים', label: 'ארגז ללוח 36 מודולים', icon: 'dashboard', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'enclosure_48', family: 'enclosure', familyLabel: 'ארגז ללוח חשמל', size: '48', sizeUnit: ' מודולים', label: 'ארגז ללוח 48 מודולים', icon: 'dashboard', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'enclosure_72', family: 'enclosure', familyLabel: 'ארגז ללוח חשמל', size: '72', sizeUnit: ' מודולים', label: 'ארגז ללוח 72 מודולים', icon: 'dashboard', category: 'elecMatPanel', unit: 'piece' },
+  // ציוד נוסף ללוח
+  { id: 'contactorMat_25', label: 'מגען 25A', icon: 'settings-power', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'stepRelay', label: 'ממסר צעד (אימפולס)', icon: 'repeat', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'shabbatClock', label: 'שעון שבת דיגיטלי', icon: 'schedule', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'spdMat', label: 'מגן ברקים (SPD)', icon: 'flash-on', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'subMeter', label: 'מונה צריכה (מונה משנה)', icon: 'speed', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'indicatorLamp', label: 'נורית סימון ללוח', icon: 'emoji-objects', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'busbar1ph', label: 'פס צבירה (מסרק) חד-פאזי', icon: 'view-column', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'busbar3ph', label: 'פס צבירה (מסרק) תלת-פאזי', icon: 'view-column', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'neutralBar', label: 'פס אפס', icon: 'linear-scale', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'groundBar', label: 'פס הארקה', icon: 'linear-scale', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'dinRail', label: 'מסילת DIN', icon: 'horizontal-rule', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'blankModule', label: 'מכסה עיוור למודולים', icon: 'check-box-outline-blank', category: 'elecMatPanel', unit: 'piece' },
+  { id: 'panelLabels', label: 'מדבקות שילוט ללוח', icon: 'label', category: 'elecMatPanel', unit: 'piece' },
+
+  // 📦 גופי תאורה ונורות
+  { id: 'lightSpotLed', label: 'ספוט LED שקוע', icon: 'highlight', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightSpotGu10', label: 'ספוט שקוע לנורת GU10', icon: 'highlight', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightPanel6060', label: 'פאנל LED 60×60', icon: 'grid-on', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightCeilingLed', label: 'צמודת תקרה LED', icon: 'light', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightBatten', label: 'סרגל LED 120 ס״מ', icon: 'horizontal-rule', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightWaterproof', label: 'גוף תאורה מוגן מים (IP65)', icon: 'water-drop', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightWallOutdoor', label: 'גוף תאורה חיצוני לקיר', icon: 'wb-incandescent', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightFlood', label: 'פנס הצפה LED', icon: 'flashlight-on', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightStrip', label: 'פס LED', icon: 'linear-scale', category: 'elecMatLighting', unit: 'meter' },
+  { id: 'lightStripDriver', label: 'ספק כוח לפס LED', icon: 'power', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightStripProfile', label: 'פרופיל אלומיניום לפס LED', icon: 'linear-scale', category: 'elecMatLighting', unit: 'meter' },
+  { id: 'bulbE27', label: 'נורת LED E27', icon: 'lightbulb', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'bulbGu10', label: 'נורת LED GU10', icon: 'lightbulb', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lampHolderE27', label: 'בית נורה E27', icon: 'lightbulb-outline', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightEmergency', label: 'תאורת חירום', icon: 'emergency', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightExitSign', label: 'שלט יציאה מואר', icon: 'exit-to-app', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightMotionSensor', label: 'גלאי תנועה לתאורה', icon: 'sensors', category: 'elecMatLighting', unit: 'piece' },
+  { id: 'lightTwilightSwitch', label: 'מפסק דמדומים', icon: 'wb-twilight', category: 'elecMatLighting', unit: 'piece' },
+
+  // 📦 מהדקים, חיבורים והארקה
+  // מהדק WAGO (משפחה — לפי מספר חיבורים)
+  { id: 'wago_2', family: 'wago', familyLabel: 'מהדק מהיר (WAGO)', size: '2', sizeUnit: ' חיבורים', label: 'מהדק WAGO ל-2 חיבורים', icon: 'settings-input-component', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'wago_3', family: 'wago', familyLabel: 'מהדק מהיר (WAGO)', size: '3', sizeUnit: ' חיבורים', label: 'מהדק WAGO ל-3 חיבורים', icon: 'settings-input-component', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'wago_5', family: 'wago', familyLabel: 'מהדק מהיר (WAGO)', size: '5', sizeUnit: ' חיבורים', label: 'מהדק WAGO ל-5 חיבורים', icon: 'settings-input-component', category: 'elecMatConnectors', unit: 'piece' },
+  // נעל כבל (משפחה — לפי חתך)
+  { id: 'cableLug_16', family: 'cableLug', familyLabel: 'נעל כבל', size: '16', sizeUnit: ' mm²', label: 'נעל כבל 16 mm²', icon: 'link', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'cableLug_25', family: 'cableLug', familyLabel: 'נעל כבל', size: '25', sizeUnit: ' mm²', label: 'נעל כבל 25 mm²', icon: 'link', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'cableLug_35', family: 'cableLug', familyLabel: 'נעל כבל', size: '35', sizeUnit: ' mm²', label: 'נעל כבל 35 mm²', icon: 'link', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'cableLug_50', family: 'cableLug', familyLabel: 'נעל כבל', size: '50', sizeUnit: ' mm²', label: 'נעל כבל 50 mm²', icon: 'link', category: 'elecMatConnectors', unit: 'piece' },
+  // אנטיגרון (משפחה)
+  { id: 'cableGland_m16', family: 'cableGland', familyLabel: 'אנטיגרון', size: 'M16', sizeUnit: '', label: 'אנטיגרון M16', icon: 'adjust', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'cableGland_m20', family: 'cableGland', familyLabel: 'אנטיגרון', size: 'M20', sizeUnit: '', label: 'אנטיגרון M20', icon: 'adjust', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'cableGland_m25', family: 'cableGland', familyLabel: 'אנטיגרון', size: 'M25', sizeUnit: '', label: 'אנטיגרון M25', icon: 'adjust', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'cableGland_m32', family: 'cableGland', familyLabel: 'אנטיגרון', size: 'M32', sizeUnit: '', label: 'אנטיגרון M32', icon: 'adjust', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'terminalStrip', label: 'פס מהדקים (שוקולד)', icon: 'view-column', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'ferrules', label: 'שרוולי קצה לחוט (חבילה)', icon: 'inventory-2', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'heatShrink', label: 'שרוול מתכווץ (חבילה)', icon: 'inventory-2', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'groundRod', label: 'אלקטרודת הארקה (מוט)', icon: 'vertical-align-bottom', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'groundClamp', label: 'שלת הארקה לצינור', icon: 'link', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'potentialBar', label: 'פס השוואת פוטנציאלים', icon: 'linear-scale', category: 'elecMatConnectors', unit: 'piece' },
+  { id: 'groundStrip', label: 'פס ברזל מגולוון (הארקת יסוד)', icon: 'linear-scale', category: 'elecMatConnectors', unit: 'meter' },
+
+  // 📦 ברגים, דיבלים ומתכלים
+  { id: 'electricalTape', label: 'בידוד (סלוטייפ חשמלאי)', icon: 'colorize', category: 'elecMatConsumables', unit: 'piece' },
+  { id: 'cableTie', label: 'אזיקון/חבק (חבילה)', icon: 'link', category: 'elecMatConsumables', unit: 'piece' },
+  { id: 'screwsAnchors', label: 'ברגים ודיבלים (חבילה)', icon: 'hardware', category: 'elecMatConsumables', unit: 'piece' },
+  { id: 'butterflyAnchor', label: 'דיבל פרפר לגבס (חבילה)', icon: 'hardware', category: 'elecMatConsumables', unit: 'piece' },
+  { id: 'boxScrews', label: 'ברגים לקופסאות (חבילה)', icon: 'hardware', category: 'elecMatConsumables', unit: 'piece' },
+  { id: 'cableClips', label: 'מסמרי תפס לכבל (חבילה)', icon: 'push-pin', category: 'elecMatConsumables', unit: 'piece' },
+  { id: 'quickPlaster', label: 'גבס מהיר (שק)', icon: 'inventory', category: 'elecMatConsumables', unit: 'piece' },
+  { id: 'siliconeSealant', label: 'סיליקון', icon: 'colorize', category: 'elecMatConsumables', unit: 'piece' },
+  { id: 'pullCord', label: 'חוט משיכה (גליל)', icon: 'gesture', category: 'elecMatConsumables', unit: 'piece' },
+  { id: 'cableMarkers', label: 'מסמני כבלים (חבילה)', icon: 'label', category: 'elecMatConsumables', unit: 'piece' },
+  { id: 'spiralWrap', label: 'ספירלה לאיגוד כבלים', icon: 'all-inclusive', category: 'elecMatConsumables', unit: 'meter' },
 
   // ============ חשמלאי — בית חכם וטכנולוגיה (חדש) ============
   { id: 'smartSwitchShelly', label: 'מודול חכם Shelly 1', icon: 'smart-toy', category: 'smartHome', unit: 'piece', hidden: true },

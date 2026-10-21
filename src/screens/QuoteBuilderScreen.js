@@ -66,6 +66,8 @@ export default function QuoteBuilderScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [savedToast, setSavedToast] = useState(null);
   const [search, setSearch] = useState('');
+  // 'work' = עבודות ללקוח (עם מחיר) · 'materials' = חומרים לספק (בלי מחיר)
+  const [itemsTab, setItemsTab] = useState('work');
   const [exporting, setExporting] = useState(false);
   const [expandedFamilies, setExpandedFamilies] = useState({});
   const [expandedCategories, setExpandedCategories] = useState({});
@@ -313,19 +315,23 @@ export default function QuoteBuilderScreen({ navigation }) {
     }
     const price = Number(String(customForm.price).replace(/[^\d.]/g, '')) || 0;
     const qty = Math.max(1, Math.floor(Number(String(customForm.qty).replace(/[^\d]/g, '')) || 1));
+    const asMaterial = itemsTab === 'materials';
     const item = {
       label,
       unit: customForm.unit,
       category: 'misc',
       profession: activeProfession || null,
+      ...(asMaterial ? { isMaterial: true } : {}),
     };
     const nextCustoms = await saveCustomItem(user.id, item);
     setCustomItems(nextCustoms);
-    const created = nextCustoms.find((i) => i.label === label && i.category === 'misc');
+    const created = nextCustoms.find((i) => i.label === label && i.category === 'misc' && !!i.isMaterial === asMaterial);
     if (created) {
-      const nextRates = { ...rates, [created.id]: price };
-      setRates(nextRates);
-      await saveRates(user.id, nextRates);
+      if (!asMaterial) {
+        const nextRates = { ...rates, [created.id]: price };
+        setRates(nextRates);
+        await saveRates(user.id, nextRates);
+      }
       const target = extrasMode ? setExtrasQuantities : setQuantities;
       target((prev) => ({ ...prev, [created.id]: qty }));
     }
@@ -454,9 +460,11 @@ export default function QuoteBuilderScreen({ navigation }) {
     [allItems, rates, activeProfession],
   );
 
+  const showMaterials = itemsTab === 'materials';
+
   const availableItems = useMemo(() => {
     const s = search.trim().toLowerCase();
-    if (!professionHasRates) return [];
+    if (!showMaterials && !professionHasRates) return [];
     return allItems.filter((i) => {
       const hasRate = (rates[i.id] || 0) > 0;
       const inProfession = i.isCustom
@@ -469,9 +477,27 @@ export default function QuoteBuilderScreen({ navigation }) {
         || (i.label && i.label.toLowerCase().includes(s))
         || (familyLabel && familyLabel.toLowerCase().includes(s));
       if (i.hidden) return false;
-      return (hasRate || isMaterialItem(i)) && inProfession && matches;
+      const isMat = isMaterialItem(i);
+      if (showMaterials ? !isMat : (isMat || !hasRate)) return false;
+      return inProfession && matches;
     });
-  }, [allItems, rates, search, t, activeProfession, professionHasRates]);
+  }, [allItems, rates, search, t, activeProfession, professionHasRates, showMaterials]);
+
+  // כמה פריטים שונים נבחרו בכל לשונית (לתג על הלשונית)
+  const tabCounts = useMemo(() => {
+    const selected = new Set(
+      [...Object.entries(quantities), ...Object.entries(extrasQuantities)]
+        .filter(([, qty]) => qty > 0)
+        .map(([id]) => id),
+    );
+    let work = 0;
+    let materials = 0;
+    for (const id of selected) {
+      if (isMaterialItem(findAnyItem(id))) materials += 1;
+      else work += 1;
+    }
+    return { work, materials };
+  }, [quantities, extrasQuantities, findAnyItem]);
 
   const toggleFamily = (familyId) => {
     setExpandedFamilies((prev) => ({ ...prev, [familyId]: !prev[familyId] }));
@@ -499,6 +525,7 @@ export default function QuoteBuilderScreen({ navigation }) {
     setExtrasMode(false);
     setPhotos([]);
     setSearch('');
+    setItemsTab('work');
     setExpandedCategories({});
     setEditingId(null);
     setEditingCreatedAt(null);
@@ -902,13 +929,40 @@ export default function QuoteBuilderScreen({ navigation }) {
             )}
           </View>
 
+          <View style={styles.itemsTabs}>
+            {[
+              { id: 'work', icon: 'build', label: t('quote.tabWork'), count: tabCounts.work },
+              { id: 'materials', icon: 'inventory-2', label: t('quote.tabMaterials'), count: tabCounts.materials },
+            ].map((tab) => {
+              const active = itemsTab === tab.id;
+              return (
+                <Pressable
+                  key={tab.id}
+                  onPress={() => setItemsTab(tab.id)}
+                  style={[styles.itemsTab, active && { backgroundColor: theme.accent, borderColor: theme.accent }]}
+                >
+                  <MaterialIcons name={tab.icon} size={18} color={active ? '#fff' : colors.textMuted} />
+                  <Text style={[styles.itemsTabText, active && { color: '#fff' }]}>{tab.label}</Text>
+                  {tab.count > 0 && (
+                    <View style={[styles.itemsTabBadge, active && { backgroundColor: 'rgba(255,255,255,0.25)' }]}>
+                      <Text style={styles.itemsTabBadgeText}>{tab.count}</Text>
+                    </View>
+                  )}
+                </Pressable>
+              );
+            })}
+          </View>
+          {showMaterials && (
+            <Text style={styles.itemsTabHint}>{t('quote.materialsTabHint')}</Text>
+          )}
+
           <View style={styles.searchWrap}>
             <MaterialIcons name="search" size={20} color={colors.textMuted} />
             <TextInput
               style={styles.searchInput}
               value={search}
               onChangeText={setSearch}
-              placeholder={t('quote.searchPh')}
+              placeholder={showMaterials ? t('quote.searchMaterialsPh') : t('quote.searchPh')}
               placeholderTextColor={colors.textFaint}
             />
             {search.length > 0 && (
@@ -920,15 +974,15 @@ export default function QuoteBuilderScreen({ navigation }) {
 
           <Pressable onPress={openCustomItemModal} style={styles.addCustomQuoteBtn}>
             <MaterialIcons name="add-circle-outline" size={20} color={colors.primaryBright} />
-            <Text style={styles.addCustomQuoteText}>{t('quote.addCustomItem')}</Text>
+            <Text style={styles.addCustomQuoteText}>{showMaterials ? t('quote.addCustomMaterial') : t('quote.addCustomItem')}</Text>
           </Pressable>
 
-          {availableItems.length === 0 && (
+          {availableItems.length === 0 && (showMaterials || professionHasRates) && (
             <View style={styles.noResults}>
               <Text style={styles.noResultsText}>
-                {search ? t('quote.noMatches') : t('quote.noItemsWithRate')}
+                {search ? t('quote.noMatches') : (showMaterials ? t('quote.noMaterialsForProf') : t('quote.noItemsWithRate'))}
               </Text>
-              {!search && (
+              {!search && !showMaterials && (
                 <Pressable onPress={() => navigation.navigate('Rates')}>
                   <Text style={styles.noResultsLink}>{t('quote.goToRates')}</Text>
                 </Pressable>
@@ -962,7 +1016,7 @@ export default function QuoteBuilderScreen({ navigation }) {
             </Pressable>
           )}
 
-          {!professionHasRates && (
+          {!professionHasRates && !showMaterials && (
             <View style={styles.noRatesCard}>
               <MaterialIcons name="price-change" size={44} color={colors.accentAmber} />
               <Text style={styles.noRatesTitle}>{t('quote.noRatesProfTitle')}</Text>
@@ -1153,6 +1207,25 @@ export default function QuoteBuilderScreen({ navigation }) {
               </View>
             );
           })}
+
+          {showMaterials && (
+            <Pressable
+              style={[styles.materialsSendBtn, tabCounts.materials === 0 && { opacity: 0.5 }]}
+              onPress={onExportSupplier}
+              disabled={exporting}
+            >
+              <MaterialIcons name="local-shipping" size={22} color={colors.voltageYellow} />
+              <View style={{ flex: 1, marginHorizontal: 10 }}>
+                <Text style={styles.materialsSendTitle}>{t('quote.supplierPdf')}</Text>
+                <Text style={styles.materialsSendSub}>
+                  {tabCounts.materials > 0
+                    ? t('quote.materialsSelected', { n: tabCounts.materials })
+                    : t('quote.supplierPdfHint')}
+                </Text>
+              </View>
+              <MaterialIcons name="chevron-left" size={22} color={colors.textMuted} />
+            </Pressable>
+          )}
 
           <LinearGradient
             colors={[colors.cardElevated, colors.card]}
@@ -1447,10 +1520,10 @@ export default function QuoteBuilderScreen({ navigation }) {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.customModalBackdrop}>
           <View style={styles.customModalCard}>
             <View style={styles.customModalHeader}>
-              <MaterialIcons name="add-circle-outline" size={22} color={colors.primaryBright} />
-              <Text style={styles.customModalTitle}>{t('rates.customModalTitle')}</Text>
+              <MaterialIcons name={showMaterials ? 'inventory-2' : 'add-circle-outline'} size={22} color={colors.primaryBright} />
+              <Text style={styles.customModalTitle}>{showMaterials ? t('quote.customMaterialTitle') : t('rates.customModalTitle')}</Text>
             </View>
-            <Text style={styles.customModalSubtitle}>{t('rates.customModalSubtitle')}</Text>
+            <Text style={styles.customModalSubtitle}>{showMaterials ? t('quote.customMaterialSub') : t('rates.customModalSubtitle')}</Text>
 
             <Text style={styles.customModalFieldLabel}>{t('rates.customNameLabel')}</Text>
             <TextInput
@@ -1483,6 +1556,7 @@ export default function QuoteBuilderScreen({ navigation }) {
             </View>
 
             <View style={{ flexDirection: 'row', gap: 10 }}>
+              {!showMaterials && (
               <View style={{ flex: 2 }}>
                 <Text style={styles.customModalFieldLabel}>{t('rates.customPriceLabel')}</Text>
                 <View style={styles.customModalInputWrap}>
@@ -1497,6 +1571,7 @@ export default function QuoteBuilderScreen({ navigation }) {
                   <Text style={styles.customModalSuffix}>₪</Text>
                 </View>
               </View>
+              )}
               <View style={{ flex: 1 }}>
                 <Text style={styles.customModalFieldLabel}>{t('quote.customQty')}</Text>
                 <View style={styles.customModalInputWrap}>
@@ -1890,6 +1965,34 @@ const styles = StyleSheet.create({
   },
   supplierBtnText: { color: colors.voltageYellow, fontWeight: '800', fontSize: 13 },
   supplierBtnHint: { color: colors.textMuted, fontWeight: '600', fontSize: 11 },
+
+  itemsTabs: { flexDirection: 'row', gap: 10, marginTop: 16 },
+  itemsTab: {
+    flex: 1,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
+    paddingVertical: 12, paddingHorizontal: 8,
+    borderRadius: 14,
+    borderWidth: 1, borderColor: colors.cardBorder,
+    backgroundColor: colors.card,
+  },
+  itemsTabText: { color: colors.textMuted, fontWeight: '800', fontSize: 14 },
+  itemsTabBadge: {
+    minWidth: 22, height: 22, borderRadius: 11, paddingHorizontal: 6,
+    alignItems: 'center', justifyContent: 'center',
+    backgroundColor: colors.voltageYellow + '33',
+  },
+  itemsTabBadgeText: { color: '#fff', fontWeight: '800', fontSize: 12 },
+  itemsTabHint: { color: colors.textMuted, fontSize: 12, marginTop: 8, textAlign: 'right' },
+
+  materialsSendBtn: {
+    flexDirection: 'row', alignItems: 'center',
+    marginTop: 14, padding: 14,
+    borderRadius: 16,
+    borderWidth: 1, borderColor: colors.voltageYellow + '88',
+    backgroundColor: colors.voltageYellow + '14',
+  },
+  materialsSendTitle: { color: colors.voltageYellow, fontWeight: '800', fontSize: 15 },
+  materialsSendSub: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
 
   fabRow: {
     position: 'absolute',

@@ -320,6 +320,16 @@ export async function buildQuoteHtml(quote, user) {
 </html>`;
 }
 
+const SUPPLIER_UNIT_LABELS = {
+  meter: 'מטר',
+  piece: 'יח׳',
+  point: 'נק׳',
+  sqm: 'מ״ר',
+  job: 'קומפלט',
+  hour: 'שעה',
+  day: 'יום',
+};
+
 export function buildSupplierHtml(quote, user) {
   const projectName = escapeHtml(quote.projectName || '');
   const dateStr = formatDate(quote.createdAt);
@@ -330,15 +340,15 @@ export function buildSupplierHtml(quote, user) {
   // Combine quantities by item id for the supplier (original + extras)
   const merged = new Map();
   for (const it of originalItems) {
-    merged.set(it.id, { label: it.label, qty: Number(it.qty) || 0 });
+    merged.set(it.id, { label: it.label, qty: Number(it.qty) || 0, unit: it.unit || null });
   }
   for (const it of extras) {
     const existing = merged.get(it.id);
     if (existing) existing.qty += Number(it.qty) || 0;
-    else merged.set(it.id, { label: it.label, qty: Number(it.qty) || 0 });
+    else merged.set(it.id, { label: it.label, qty: Number(it.qty) || 0, unit: it.unit || null });
   }
   const items = Array.from(merged.values());
-  const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
+  const notes = escapeHtml(quote.supplierNotes || '').replace(/\n/g, '<br>');
   const theme = getProfessionTheme(user?.activeProfession);
 
   return `<!DOCTYPE html>
@@ -364,23 +374,29 @@ export function buildSupplierHtml(quote, user) {
   <table>
     <thead>
       <tr>
+        <th>#</th>
         <th>פריט</th>
         <th>כמות</th>
+        <th>יחידה</th>
       </tr>
     </thead>
     <tbody>
-      ${items.map((it) => `
+      ${items.map((it, idx) => `
         <tr>
+          <td class="num">${idx + 1}</td>
           <td>${escapeHtml(it.label)}</td>
           <td class="num">${it.qty}</td>
+          <td>${SUPPLIER_UNIT_LABELS[it.unit] || ''}</td>
         </tr>
       `).join('')}
     </tbody>
   </table>
 
   <div class="totals">
-    <div class="row bold"><span>סה״כ פריטים</span><span class="num">${totalQty}</span></div>
+    <div class="row bold"><span>סה״כ שורות</span><span class="num">${items.length}</span></div>
   </div>
+
+  ${notes ? `<div class="supplier-banner" style="text-align:right">📝 הערות: ${notes}</div>` : ''}
 
   <div class="footer">
     הופק באמצעות <span class="brand">${APP_NAME}</span>

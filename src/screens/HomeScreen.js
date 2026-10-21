@@ -324,6 +324,17 @@ export default function HomeScreen({ navigation }) {
             </Pressable>
           </Animated.View>
 
+          <Pressable style={styles.supplierCard} onPress={() => navigation.navigate('SupplierOrder')}>
+            <View style={styles.supplierIcon}>
+              <MaterialIcons name="local-shipping" size={22} color={colors.voltageYellow} />
+            </View>
+            <View style={{ flex: 1, marginHorizontal: 12 }}>
+              <Text style={styles.bannerTitle}>{t('home.supplierCta.title')}</Text>
+              <Text style={styles.bannerSub}>{t('home.supplierCta.sub')}</Text>
+            </View>
+            <MaterialIcons name="chevron-left" size={24} color={colors.textMuted} />
+          </Pressable>
+
           <View style={styles.statsRow}>
             <StatCard
               icon="receipt-long"
@@ -743,6 +754,21 @@ const styles = StyleSheet.create({
   bannerTitle: { fontWeight: '800', color: colors.text, fontSize: 14 },
   bannerSub: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
   bannerCta: { color: colors.voltageYellow, fontWeight: '800' },
+
+  supplierCard: {
+    flexDirection: 'row', alignItems: 'center',
+    padding: 14,
+    backgroundColor: colors.card,
+    borderRadius: 18,
+    borderWidth: 1, borderColor: colors.voltageYellow + '55',
+    marginTop: 14,
+  },
+  supplierIcon: {
+    width: 44, height: 44, borderRadius: 12,
+    alignItems: 'center', justifyContent: 'center',
+    backgroundColor: colors.voltageYellow + '1A',
+    borderWidth: 1, borderColor: colors.voltageYellow + '55',
+  },
 
   verifyBanner: {
     flexDirection: 'row', alignItems: 'center',

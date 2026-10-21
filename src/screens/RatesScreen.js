@@ -142,6 +142,7 @@ export default function RatesScreen() {
     const out = {};
     for (const ci of customItems) {
       if (ci.profession && activeProfession && ci.profession !== activeProfession) continue;
+      if (ci.isMaterial) continue; // חומר לספק — אין לו מחיר
       if (!out[ci.category]) out[ci.category] = [];
       out[ci.category].push(ci);
     }
